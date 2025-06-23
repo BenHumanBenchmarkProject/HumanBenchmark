@@ -1,13 +1,15 @@
 import { useState } from 'react'
-
+import HomePage from './HomePage/HomePage'
 import './App.css'
 
+
+
+
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
-      <h1>Human BenchMark</h1>
+      <HomePage />
     </>
   )
 }
