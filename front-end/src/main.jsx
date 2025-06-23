@@ -7,6 +7,7 @@ import HomePage from './HomePage/HomePage.jsx'
 import LeaderboardPage from './LeaderboardPage/LeaderboardPage.jsx'
 import {BrowserRouter} from 'react-router'
 import LogWorkoutPage from './LogWorkoutPage/LogWorkoutPage.jsx'
+import BuildWorkoutPage from './BuildWorkoutPage/BuildWorkoutPage.jsx'
 
 const routes = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const routes = createBrowserRouter([
   {
     path: "/log-workout",
     element: <LogWorkoutPage/>
+  },
+  {
+    path: "/build-workout",
+    element: <BuildWorkoutPage/>
   }
 ])
 

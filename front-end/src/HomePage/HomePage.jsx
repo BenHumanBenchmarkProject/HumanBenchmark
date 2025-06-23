@@ -54,9 +54,9 @@ const HomePage = () =>{
             <main className="main-content">
               <div className="top-buttons">
                 <Link to={"/leaderboard"}><button>LEADER BOARD</button></Link>
-                <button>BUILD WORKOUT</button>
+                <Link to ={"/build-workout"}><button>BUILD WORKOUT</button></Link>
                 <Link to={"/log-workout"}><button>LOG WORKOUT</button></Link>
-                <button>TAKE TEST</button>
+                
               </div>
 
               <section className="diagram-section">
