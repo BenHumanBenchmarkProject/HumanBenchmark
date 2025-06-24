@@ -72,49 +72,49 @@ const workouts = [
 ];
 
 async function main() {
-    // Seed users without stats
-    for (const user of users) {
-        const { stats, ...userData } = user; // Exclude stats for now
-        await prisma.user.create({ data: userData });
+  // Seed users without stats
+  for (const user of users) {
+    const { stats, ...userData } = user; // Exclude stats for now
+    await prisma.user.create({ data: userData });
+  }
+
+  // Seed workouts
+  for (const workout of workouts) {
+    await prisma.workout.create({ data: workout });
+  }
+
+  // Seed stats
+  for (const user of users) {
+    const createdUser = await prisma.user.findUnique({
+      where: { username: user.username },
+    });
+
+    for (const stat of user.stats) {
+      const workout = await prisma.workout.findUnique({
+        where: { name: stat.workoutName },
+      });
+
+      await prisma.stat.create({
+        data: {
+          userId: createdUser.id,
+          movementId: workout.id,
+          max: stat.max,
+          lastCompleted: stat.lastCompleted,
+          previousMax: stat.previousMax,
+        },
+      });
     }
+  }
 
-    // Seed workouts
-    for (const workout of workouts) {
-        await prisma.workout.create({ data: workout });
-    }
-
-    // Seed stats
-    for (const user of users) {
-        const createdUser = await prisma.user.findUnique({
-            where: { username: user.username },
-        });
-
-        for (const stat of user.stats) {
-            const workout = await prisma.workout.findUnique({
-                where: { name: stat.workoutName },
-            });
-
-            await prisma.stat.create({
-                data: {
-                    userId: createdUser.id,
-                    movementId: workout.id,
-                    max: stat.max,
-                    lastCompleted: stat.lastCompleted,
-                    previousMax: stat.previousMax,
-                },
-            });
-        }
-    }
-
-    console.log("Database seeded successfully!");
+  console.log("Database seeded successfully!");
 }
 
 main()
-    .then(() => prisma.$disconnect())
-    .catch((e) => {
-        console.error(e);
-        prisma.$disconnect();
-        process.exit(1);
-    });
+  .then(() => prisma.$disconnect())
+  .catch((e) => {
+    console.error(e);
+    prisma.$disconnect();
+    process.exit(1);
+  });
 
 module.exports = { users, workouts };
