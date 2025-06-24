@@ -1,0 +1,31 @@
+/* Header.css */
+.banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #e0e0e0;
+    padding: 10px 20px;
+}
+
+.logo {
+    font-weight: bold;
+}
+
+.account {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.account h3 {
+    font-weight: normal;
+}
+
+.account img {
+    border-radius: 30px;
+    border: 1px solid black;
+    height: 40px;
+    width: 40px;
+    margin-top: 10px;
+}
+
