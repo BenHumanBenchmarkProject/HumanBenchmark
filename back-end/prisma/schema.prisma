@@ -15,17 +15,17 @@ datasource db {
 
 
 model User {
-  id        Int @id @default(autoincrement())
-  username  String @unique
-  password  String
-  pfp       String?
-  height    Int?
-  weight    Int?
-  age       Int?
-  gender    String?
-  stats     Stat[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  id                Int @id @default(autoincrement())
+  username          String @unique
+  password          String
+  profilePicture    String?
+  height            Int
+  weight            Int
+  age               Int
+  gender            String
+  stats             Stat[] // This Stat array is used to store each user's workout stats
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now())
 }
 
 model Workout {
@@ -36,7 +36,7 @@ model Workout {
   equipment    String
   difficulty   String
   instructions String
-  stats        Stat[] // Add this line to create a relation back to Stat
+  stats        Stat[] // This Stat array is used to store eachworkout's user stats
 }
 
 model Stat {
@@ -50,4 +50,3 @@ model Stat {
   previousMax   Int[]
   updatedAt     DateTime @default(now())
 }
-
