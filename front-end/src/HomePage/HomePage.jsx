@@ -3,8 +3,8 @@ import React from 'react'
 import { useState } from "react"
 import bodyOutline from '../assets/body-outline.jpg'
 import { Link } from "react-router"
-import Header from "../Header-Sidebar/Header"
-import Sidebar from "../Header-Sidebar/Sidebar"
+import Header from "../Header/Header"
+import Sidebar from "../Sidebar/Sidebar"
 
 
 const HomePage = () =>{
