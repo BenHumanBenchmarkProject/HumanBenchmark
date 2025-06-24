@@ -1,14 +1,15 @@
-import "./BuildWorkoutPage.css"
-import {Link} from "react-router"
+import "./BuildWorkoutPage.css";
+import { Link } from "react-router";
 
-const BuildWorkoutPage = () =>{
-    return(
-        <div>
-            <h1>Build Workout</h1>
-            <Link to={"/"}><button>Home</button></Link>
-        </div>
+const BuildWorkoutPage = () => {
+  return (
+    <div>
+      <h1>Build Workout</h1>
+      <Link to={"/"}>
+        <button>Home</button>
+      </Link>
+    </div>
+  );
+};
 
-    )
-}
-
-export default BuildWorkoutPage
+export default BuildWorkoutPage;
