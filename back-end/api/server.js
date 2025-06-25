@@ -59,9 +59,14 @@ server.get("/api/users/:id", async (req, res, next) => {
   }
 });
 
+
 // [Get] /api/check-availability
-server.get('/api/check-availability', async (req, res, next) => { // check if username is available
-  const { username } = req.query;
+server.post('/api/check-availability', async (req, res, next) => {
+  const { username } = req.body;
+
+  if (!username) {
+    return res.status(400).json({ error: "Username is required" });
+  }
 
   try {
     const user = await prisma.user.findUnique({ where: { username } });
@@ -75,6 +80,8 @@ server.get('/api/check-availability', async (req, res, next) => { // check if us
     next(err);
   }
 });
+
+
 
 // [Post] /api/users
 server.post("/api/users", async (req, res, next) => {
