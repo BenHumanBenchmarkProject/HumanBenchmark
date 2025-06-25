@@ -1,5 +1,6 @@
 import "./LeaderboardPage.css";
 import { Link } from "react-router";
+import SignUpModal from "../SignUpModal/SignUpModal";
 
 const LeaderboardPage = () => {
   return (
@@ -8,6 +9,8 @@ const LeaderboardPage = () => {
       <Link to={"/"}>
         <button>Home</button>
       </Link>
+
+      <SignUpModal/>
     </div>
   );
 };
