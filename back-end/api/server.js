@@ -60,24 +60,19 @@ server.get("/api/users/:id", async (req, res, next) => {
 });
 
 // [Get] /api/check-availability
-server.get('/api/check-availability', async (req, res, next) => { // check if username or email is available
-  const { email, username } = req.query;
+server.get('/api/check-availability', async (req, res, next) => { // check if username is available
+  const { username } = req.query;
 
   try {
-      let user;
-      if (email) {
-          user = await prisma.user.findUnique({ where: { email } });
-      } else if (username) {
-          user = await prisma.user.findUnique({ where: { username } });
-      }
+    const user = await prisma.user.findUnique({ where: { username } });
 
-      if (user) {
-          res.json({ available: false });
-      } else {
-          res.json({ available: true });
-      }
+    if (user) {
+      res.json({ available: false });
+    } else {
+      res.json({ available: true });
+    }
   } catch (err) {
-      next(err);
+    next(err);
   }
 });
 
