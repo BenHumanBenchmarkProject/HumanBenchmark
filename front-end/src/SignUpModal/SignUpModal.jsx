@@ -173,7 +173,7 @@ const SignUpModal = () => {
   return (
     <div className="signup-container">
       <h1>Sign Up</h1>
-      <form>
+      <form className="signup-form">
         {step === STEP_ONE && (
           <>
             <label htmlFor="username">Username:</label>
