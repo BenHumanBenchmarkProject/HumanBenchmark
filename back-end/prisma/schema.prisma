@@ -15,38 +15,71 @@ datasource db {
 
 
 model User {
-  id                Int @id @default(autoincrement())
-  username          String @unique
+  id                Int              @id @default(autoincrement())
+  username          String           @unique
   password          String
-  profilePicture    String?
   height            Int
   weight            Int
   age               Int
   gender            String
-  stats             Stat[] // This Stat array is used to store each user's workout stats
+  level             Int              @default(1)
+  xp                Int              @default(0)
+  // strengthOverall will be calculated on backend
+
+  workouts          Workout[] // This Workout array is used to store each user's workouts
+  muscleStats       MuscleStat[] // This MuscleStat array is used to store each user's muscle stats
+  bodyPartStats     BodyPartStat[] // This BodyPartStat array is used to store each user's body part stats
+
   createdAt         DateTime @default(now())
   updatedAt         DateTime @default(now())
 }
 
-model Workout {
-  id           Int @id @default(autoincrement())
+model Exercise{
+  id           Int         @id @default(autoincrement())
   name         String
-  type         String
-  muscle       String
-  equipment    String
-  difficulty   String
-  instructions String
-  stats        Stat[] // This Stat array is used to store eachworkout's user stats
+  bodyParts    String[]    // API returns multiple body parts
+  targetMuscle String
+  overview     String
+  exerciseTips String
+  createdAt    DateTime    @default(now())
 }
 
-model Stat {
-  id            Int @id @default(autoincrement())
-  userId        Int
-  user          User @relation(fields: [userId], references: [id]) // Add this line to create a relation back to User
-  movementId    Int
-  movement      Workout @relation(fields: [movementId], references: [id])
-  max           Int
-  lastCompleted DateTime[]
-  previousMax   Int[]
-  updatedAt     DateTime @default(now())
+model Workout {
+  id           Int        @id @default(autoincrement())
+  name         String
+  bodyPart     String
+  reps         Int
+  weight       Int
+  max          Int
+  muscle       String
+  user         User       @relation(fields: [userId], references: [id])
+  userId       Int
+  exercise     Exercise?  @relation(fields: [exerciseId], references: [id])
+  exerciseId   Int?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now())
+}
+
+model MuscleStat{
+  id           Int         @id @default(autoincrement())
+  user         User        @relation(fields: [userId], references: [id])
+  userId       Int
+  bodyPart     String
+  muscle       String
+  exercise     Exercise?   @relation(fields: [exerciseId], references: [id])
+  exerciseId   Int?
+  max          Int
+  updatedAt    DateTime    @default(now())
+  createdAt    DateTime    @default(now())
+}
+
+model BodyPartStat{
+  id           Int           @id @default(autoincrement())
+  bodyPart     String
+  muscleStats  MuscleStat[]
+  user         User          @relation(fields: [userId], references: [id])
+  userId       Int
+  score        Int
+  updatedAt    DateTime      @default(now())
+  createdAt    DateTime      @default(now())
 }
