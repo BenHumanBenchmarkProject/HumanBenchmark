@@ -25,23 +25,23 @@ model User {
   level             Int              @default(1)
   xp                Int              @default(0)
   // strengthOverall will be calculated on backend
-
-  workouts          Workout[] // This Workout array is used to store each user's workouts
-  muscleStats       MuscleStat[] // This MuscleStat array is used to store each user's muscle stats
-  bodyPartStats     BodyPartStat[] // This BodyPartStat array is used to store each user's body part stats
-
+  workouts          Workout[]
+  muscleStats       MuscleStat[]
+  bodyPartStats     BodyPartStat[]
   createdAt         DateTime @default(now())
   updatedAt         DateTime @default(now())
 }
 
-model Exercise{
+model Exercise {
   id           Int         @id @default(autoincrement())
   name         String
-  bodyParts    String[]    // API returns multiple body parts
+  bodyParts    String[]
   targetMuscle String
   overview     String
   exerciseTips String
   createdAt    DateTime    @default(now())
+  workouts     Workout[]
+  muscleStats  MuscleStat[]
 }
 
 model Workout {
@@ -60,23 +60,25 @@ model Workout {
   updatedAt    DateTime   @default(now())
 }
 
-model MuscleStat{
-  id           Int         @id @default(autoincrement())
-  user         User        @relation(fields: [userId], references: [id])
+model MuscleStat {
+  id           Int           @id @default(autoincrement())
+  user         User          @relation(fields: [userId], references: [id])
   userId       Int
   bodyPart     String
   muscle       String
-  exercise     Exercise?   @relation(fields: [exerciseId], references: [id])
+  exercise     Exercise?     @relation(fields: [exerciseId], references: [id])
   exerciseId   Int?
   max          Int
-  updatedAt    DateTime    @default(now())
-  createdAt    DateTime    @default(now())
+  bodyPartStat BodyPartStat? @relation(fields: [bodyPartStatId], references: [id])
+  bodyPartStatId Int?
+  updatedAt    DateTime      @default(now())
+  createdAt    DateTime      @default(now())
 }
 
-model BodyPartStat{
+model BodyPartStat {
   id           Int           @id @default(autoincrement())
   bodyPart     String
-  muscleStats  MuscleStat[]
+  muscleStats  MuscleStat[]  
   user         User          @relation(fields: [userId], references: [id])
   userId       Int
   score        Int
