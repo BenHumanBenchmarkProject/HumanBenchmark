@@ -1,5 +1,7 @@
+
 import "./LogWorkoutPage.css";
 import { Link } from "react-router";
+import SignInModal from "../SignInModal/SignInModal";
 
 const LogWorkoutPage = () => {
   return (
@@ -8,6 +10,7 @@ const LogWorkoutPage = () => {
       <Link to={"/"}>
         <button>Home</button>
       </Link>
+      <SignInModal />
     </div>
   );
 };
