@@ -2,27 +2,36 @@ const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
-const users = [
+
+const usersData = [
   {
     username: "alice",
     password: "password123",
-    pfp: "https://example.com/alice.jpg",
     height: 165,
     weight: 60,
     age: 25,
     gender: "female",
-    stats: [
+    workouts: [
       {
-        workoutName: "Barbell Squat",
+        name: "Barbell Squat",
+        bodyPart: "Legs",
+        reps: 10,
+        weight: 50,
         max: 100,
-        lastCompleted: [new Date("2025-06-20"), new Date("2025-06-22")],
-        previousMax: [90, 95],
+        muscle: "Quads",
       },
+    ],
+    muscleStats: [
       {
-        workoutName: "Bench Press",
-        max: 80,
-        lastCompleted: [new Date("2025-06-18")],
-        previousMax: [70, 75],
+        bodyPart: "Legs",
+        muscle: "Quads",
+        max: 100,
+      },
+    ],
+    bodyPartStats: [
+      {
+        bodyPart: "Legs",
+        score: 100,
       },
     ],
   },
@@ -33,77 +42,80 @@ const users = [
     weight: 80,
     age: 28,
     gender: "male",
-    stats: [
+    workouts: [
       {
-        workoutName: "Barbell Squat",
-        max: 120,
-        lastCompleted: [new Date("2025-06-19")],
-        previousMax: [110],
-      },
-      {
-        workoutName: "Bench Press",
+        name: "Bench Press",
+        bodyPart: "Chest",
+        reps: 8,
+        weight: 80,
         max: 95,
-        lastCompleted: [new Date("2025-06-23")],
-        previousMax: [85, 90],
+        muscle: "Pectorals",
+      },
+    ],
+    muscleStats: [
+      {
+        bodyPart: "Chest",
+        muscle: "Pectorals",
+        max: 95,
+      },
+    ],
+    bodyPartStats: [
+      {
+        bodyPart: "Chest",
+        score: 90,
       },
     ],
   },
 ];
 
-const workouts = [
+const exercisesData = [
   {
     name: "Barbell Squat",
-    type: "Strength",
-    muscle: "Legs",
-    equipment: "Barbell",
-    difficulty: "Intermediate",
-    instructions:
-      "Place the bar on your shoulders and squat down keeping your back straight.",
+    bodyParts: ["Legs"],
+    targetMuscle: "Quadriceps",
+    overview: "A compound exercise targeting the legs.",
+    exerciseTips: "Keep your back straight and go low.",
   },
   {
     name: "Bench Press",
-    type: "Strength",
-    muscle: "Chest",
-    equipment: "Barbell",
-    difficulty: "Intermediate",
-    instructions:
-      "Lie on a bench and press the barbell upward from your chest.",
+    bodyParts: ["Chest"],
+    targetMuscle: "Pectorals",
+    overview: "A compound exercise targeting the chest.",
+    exerciseTips: "Keep your elbows at a 45-degree angle.",
   },
 ];
 
 async function main() {
-  // Seed users without stats
-  for (const user of users) {
-    const { stats, ...userData } = user; // Exclude stats for now
-    await prisma.user.create({ data: userData });
-  }
+  // seed users
+  for (const userData of usersData) {
+    const { workouts, muscleStats, bodyPartStats, ...user } = userData;
+    const createdUser = await prisma.user.create({ data: user });
 
-  // Seed workouts
-  for (const workout of workouts) {
-    await prisma.workout.create({ data: workout });
-  }
-
-  // Seed stats
-  for (const user of users) {
-    const createdUser = await prisma.user.findUnique({
-      where: { username: user.username },
-    });
-
-    for (const stat of user.stats) {
-      const workout = await prisma.workout.findUnique({
-        where: { name: stat.workoutName },
-      });
-
-      await prisma.stat.create({
-        data: {
-          userId: createdUser.id,
-          movementId: workout.id,
-          max: stat.max,
-          lastCompleted: stat.lastCompleted,
-          previousMax: stat.previousMax,
-        },
+    // seed workouts for each user
+    for (const workout of workouts) {
+      await prisma.workout.create({
+        data: { ...workout, userId: createdUser.id },
       });
     }
+
+    // seed muscle stats for each user
+    for (const muscleStat of muscleStats) {
+      await prisma.muscleStat.create({
+        data: { ...muscleStat, userId: createdUser.id },
+      });
+    }
+
+    // seed body part stats for each user
+    for (const bodyPartStat of bodyPartStats) {
+      await prisma.bodyPartStat.create({
+        data: { ...bodyPartStat, userId: createdUser.id },
+      });
+    }
+  }
+
+  // seed exercises
+  for (const exercise of exercisesData) {
+    await prisma.exercise.create({ data: exercise });
   }
 
   console.log("Database seeded successfully!");
@@ -117,4 +129,4 @@ main()
     process.exit(1);
   });
 
-module.exports = { users, workouts };
+module.exports = { usersData, exercisesData };
