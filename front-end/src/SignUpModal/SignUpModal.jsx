@@ -171,7 +171,7 @@ const SignUpModal = () => {
   };
 
   return (
-    <div className="container">
+    <div className="signup-container">
       <h1>Sign Up</h1>
       <form>
         {step === STEP_ONE && (
