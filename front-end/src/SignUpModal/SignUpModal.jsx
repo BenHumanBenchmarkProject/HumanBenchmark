@@ -1,6 +1,7 @@
 import "./SignUpModal.css";
 import { useState } from "react";
 import axios from "axios";
+import bcrypt from "bcryptjs";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const STEP_ONE = 1;
 const STEP_TWO = 2;
@@ -48,9 +49,10 @@ const SignUpModal = () => {
     gender
   ) => {
     try {
+      const hashedPassword = await bcrypt.hash(password, 10);
       const response = await axios.post(`${BASE_URL}users`, {
         username,
-        password,
+        password: hashedPassword,
         height: parseInt(height, 10), // Ensure it's an integer
         weight: parseInt(weight, 10), // Ensure it's an integer
         age: parseInt(age, 10), // Ensure it's an integer
