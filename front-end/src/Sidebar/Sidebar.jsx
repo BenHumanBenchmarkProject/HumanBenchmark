@@ -7,7 +7,8 @@ const Sidebar = () => {
   const { user } = useContext(UserContext);
   const [hasAnimated, setHasAnimated] = useState(false);
 
-  useEffect(() => { // make sure the animation only runs on page load
+  useEffect(() => {
+    // make sure the animation only runs on page load
     if (!hasAnimated) {
       setHasAnimated(true);
     }

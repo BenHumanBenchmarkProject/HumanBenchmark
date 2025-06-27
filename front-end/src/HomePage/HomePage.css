@@ -32,7 +32,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
 
 /* Main Content */
@@ -44,8 +43,6 @@ body {
   align-items: center;
   overflow: hidden;
 }
-
-
 
 /* Diagram Section (fills vertical space) */
 .diagram-section {
@@ -60,7 +57,6 @@ body {
 
 .body-img {
   width: 50%;
-
 }
 
 /* XP Labels Column */

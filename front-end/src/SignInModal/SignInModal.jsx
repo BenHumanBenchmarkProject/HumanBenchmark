@@ -15,12 +15,16 @@ const SignInModal = ({ onClose }) => {
     event.preventDefault();
 
     try {
-      const response = await axios.post(`${BASE_URL}users/login`, {
-        username,
-        password,
-      }, {
-        withCredentials: true,
-      });
+      const response = await axios.post(
+        `${BASE_URL}users/login`,
+        {
+          username,
+          password,
+        },
+        {
+          withCredentials: true,
+        }
+      );
 
       if (response.data.success) {
         console.log("Login response:", response.data);
@@ -35,7 +39,6 @@ const SignInModal = ({ onClose }) => {
       setError("An error occurred during login");
     }
   };
-
 
   return (
     <div className="modal-backdrop">
