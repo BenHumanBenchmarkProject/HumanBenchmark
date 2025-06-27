@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
+const bcrypt = require("bcryptjs");
 const { PrismaClient } = require("@prisma/client");
 const {
   findUsers,
@@ -60,7 +61,7 @@ server.get("/api/users/:id", async (req, res, next) => {
 });
 
 
-// [Get] /api/check-availability
+// [Post] /api/check-availability
 server.post('/api/check-availability', async (req, res, next) => {
   const { username } = req.body;
 
@@ -129,5 +130,25 @@ server.put("/api/users/:id", async (req, res, next) => {
     next(err);
   }
 });
+
+
+//[Post] /users/login
+server.post("/api/users/login", async (req, res, next) => {
+  // verify user details
+  const { username, password } = req.body;
+
+  try {
+    const user = await prisma.user.findUnique({ where: { username } });
+
+    if (user && await bcrypt.compare(password, user.password)) {
+      res.json({ success: true, message: "Login successful" });
+    } else {
+      res.status(401).json({ success: false, message: "Invalid credentials" });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
 
 module.exports = server;
