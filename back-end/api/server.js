@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const bcrypt = require("bcryptjs");
+const session = require("express-session");
 const { PrismaClient } = require("@prisma/client");
 const {
   findUsers,
@@ -12,9 +13,33 @@ const {
 
 const prisma = new PrismaClient();
 const server = express();
+
+server.use((req, res, next) => {
+  console.log(`Request received: ${req.method} ${req.url}`);
+  next();
+});
+
 server.use(helmet());
 server.use(express.json());
-server.use(cors());
+server.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
+
+server.use(
+  session({
+    // initialize session middleware
+    secret: process.env.SESSION_SECRET,
+    saveUninitialized: true,
+    resave: false,
+    cookie: {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
+    },
+  })
+);
 
 server.get((req, res) => {
   console.log("GET request received");
@@ -60,9 +85,8 @@ server.get("/api/users/:id", async (req, res, next) => {
   }
 });
 
-
 // [Post] /api/check-availability
-server.post('/api/check-availability', async (req, res, next) => {
+server.post("/api/check-availability", async (req, res, next) => {
   const { username } = req.body;
 
   if (!username) {
@@ -81,8 +105,6 @@ server.post('/api/check-availability', async (req, res, next) => {
     next(err);
   }
 });
-
-
 
 // [Post] /api/users
 server.post("/api/users", async (req, res, next) => {
@@ -131,7 +153,6 @@ server.put("/api/users/:id", async (req, res, next) => {
   }
 });
 
-
 //[Post] /users/login
 server.post("/api/users/login", async (req, res, next) => {
   // verify user details
@@ -140,7 +161,10 @@ server.post("/api/users/login", async (req, res, next) => {
   try {
     const user = await prisma.user.findUnique({ where: { username } });
 
-    if (user && await bcrypt.compare(password, user.password)) {
+    if (user && (await bcrypt.compare(password, user.password))) {
+      req.session.user = user; // Set session 
+      console.log("Session details:", req.session); // Log session details (Debugging)
+
       res.json({ success: true, message: "Login successful" });
     } else {
       res.status(401).json({ success: false, message: "Invalid credentials" });
@@ -149,6 +173,5 @@ server.post("/api/users/login", async (req, res, next) => {
     next(err);
   }
 });
-
 
 module.exports = server;
