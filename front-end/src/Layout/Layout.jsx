@@ -1,4 +1,5 @@
 import React from "react";
+import "./Layout.css";
 import Header from "../Header/Header";
 import Sidebar from "../Sidebar/Sidebar";
 
@@ -8,8 +9,7 @@ const Layout = ({ children }) => {
       <Header />
       <div className="content-wrapper">
         <Sidebar />
-        <main className="main-content">{children}</main>
-
+        <main className="layout-main-content">{children}</main>
       </div>
     </div>
   );

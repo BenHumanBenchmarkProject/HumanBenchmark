@@ -7,11 +7,7 @@ import NavigationButtons from "../NaviagtionButtons/NavigationButtons";
 const LogWorkoutPage = () => {
   return (
     <div>
-      <Header />
-
       <div className="container">
-        <Sidebar />
-
         <div className="main-content">
           <NavigationButtons />
           <h1>Log Workout</h1>

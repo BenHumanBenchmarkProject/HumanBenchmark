@@ -1,16 +1,17 @@
 /* Layout.css */
 .layout-container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     height: 100vh;
   }
 
   .content-wrapper {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center; /* Center children horizontally */
     align-items: flex-start;
-  }
+    width: 100%; /* Ensure it takes full width */
+}
 
 
   header {
@@ -24,14 +25,18 @@
     width: 250px;
     background-color: #e0e0e0;
     padding: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    margin-right: 0px;
   }
 
-  .main-content {
-    flex: 1;
-    flex-direction: row;
+  .layout-main-content {
+    width: 100%; /* Adjust this percentage to make it larger */
+    max-width: 1200px; /* Optional: Set a max-width to prevent it from getting too large */
+    display: flex;
+    flex-direction: column;
+    margin-right: 0px;
     padding: 20px;
-    overflow-y: auto;
-    background-color: #ffff;
-
-  }
+    align-items: center;
+    overflow: hidden;
+    margin: auto; /* Center the main content horizontally */
+}

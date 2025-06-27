@@ -10,7 +10,7 @@ const HomePage = () => {
   return (
     <>
       <div className="container">
-        <NavigationButtons />
+        <NavigationButtons className="navButtons"/>
 
         <section className="diagram-section">
           <img src={bodyOutline} alt="Body Outline" className="body-img" />

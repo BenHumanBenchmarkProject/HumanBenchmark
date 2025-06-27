@@ -37,7 +37,7 @@ body {
 
 /* Main Content */
 .main-content {
-  flex: 1;
+  flex: 3;
   display: flex;
   flex-direction: column;
   padding: 20px;
@@ -45,23 +45,7 @@ body {
   overflow: hidden;
 }
 
-/* Buttons */
-.top-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
-  justify-content: center;
-  margin-bottom: 20px;
-}
 
-.top-buttons button {
-  padding: 10px 15px;
-  background-color: #e0e0e0;
-  border: none;
-  cursor: pointer;
-  border-radius: 6px;
-}
 
 /* Diagram Section (fills vertical space) */
 .diagram-section {

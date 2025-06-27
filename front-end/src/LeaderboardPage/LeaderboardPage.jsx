@@ -7,10 +7,7 @@ import NavigationButtons from "../NaviagtionButtons/NavigationButtons";
 const LeaderboardPage = () => {
   return (
     <div>
-      <Header />
       <div className="container">
-        <Sidebar />
-
         <div className="main-content">
           <NavigationButtons />
           <h1>Leaderboard</h1>
