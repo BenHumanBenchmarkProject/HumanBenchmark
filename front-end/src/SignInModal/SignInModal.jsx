@@ -1,6 +1,7 @@
 import "./SignInModal.css";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import UserContext from "..//userContext.jsx";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -8,21 +9,24 @@ const SignInModal = ({ onClose }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const { login } = useContext(UserContext);
 
   const handleLogin = async (event) => {
     event.preventDefault();
 
     try {
-      const response = await axios.post(`${BASE_URL}/api/users/login`, {
+      const response = await axios.post(`${BASE_URL}users/login`, {
         username,
         password,
       }, {
-        withCredentials: true, // include credentials in the request
+        withCredentials: true,
       });
 
       if (response.data.success) {
+        console.log("Login response:", response.data);
+        login(response.data.user); // update context with user info
         console.log("Login successful");
-        onClose(); // Close the modal on successful login
+        onClose(); // close after login
       } else {
         setError("Invalid username or password");
       }
@@ -31,6 +35,7 @@ const SignInModal = ({ onClose }) => {
       setError("An error occurred during login");
     }
   };
+
 
   return (
     <div className="modal-backdrop">
