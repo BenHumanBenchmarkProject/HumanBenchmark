@@ -1,0 +1,41 @@
+/* Layout.css */
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center; /* Center children horizontally */
+  align-items: flex-start;
+  width: 100%; /* Ensure it takes full width */
+}
+
+header {
+  width: 100%;
+  background-color: #f8f9fa;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #e0e0e0;
+  padding: 20px;
+  height: 100%;
+  margin-right: 0px;
+}
+
+.layout-main-content {
+  width: 100%; /* Adjust this percentage to make it larger */
+  max-width: 1200px; /* Optional: Set a max-width to prevent it from getting too large */
+  display: flex;
+  flex-direction: column;
+  margin-right: 0px;
+  padding: 20px;
+  align-items: center;
+  overflow: hidden;
+  margin: auto; /* Center the main content horizontally */
+}
