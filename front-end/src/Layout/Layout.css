@@ -1,0 +1,37 @@
+/* Layout.css */
+.layout-container {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+  }
+
+  .content-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+
+  header {
+    width: 100%;
+    background-color: #f8f9fa;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .sidebar {
+    width: 250px;
+    background-color: #e0e0e0;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .main-content {
+    flex: 1;
+    flex-direction: row;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: #ffff;
+
+  }

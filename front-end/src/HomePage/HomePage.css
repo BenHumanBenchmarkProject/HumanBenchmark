@@ -1,142 +1,143 @@
 /* Full-height reset */
-html, body, #root {
-    height: 100%;
-    margin: 0;
-    padding: 0;
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 /* Body layout */
 body {
-    display: flex;
-    flex-direction: column;
-    font-family: sans-serif;
+  display: flex;
+  flex-direction: row;
+  font-family: sans-serif;
 }
-
-
 
 /* Main App Container */
 .container {
-    display: flex;
-    flex: 1;
-    min-height: 0;
-    overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
 }
 
+.diagram-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
+}
 
 /* Main Content */
 .main-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    align-items: center; /* Center items horizontally */
-    overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  align-items: center;
+  overflow: hidden;
 }
 
 /* Buttons */
 .top-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px;
-    justify-content: center; /* Center buttons horizontally */
-    margin-bottom: 20px; /* Add some space below the buttons */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
-
-
 .top-buttons button {
-    padding: 10px 15px;
-    background-color: #e0e0e0;
-    border: none;
-    cursor: pointer;
-    border-radius: 6px;
+  padding: 10px 15px;
+  background-color: #e0e0e0;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
 }
 
 /* Diagram Section (fills vertical space) */
 .diagram-section {
-    display: flex;
-    flex: 1;
-    justify-content: space-between;
-    align-items: center;
-    gap: 40px;
-    overflow: auto;
-    width: 100%;
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  align-items: center;
+  gap: 40px;
+  overflow: auto;
+  width: 100%;
 }
 
-
-
-
 .body-img {
-    width: 100%;
-    max-width: none;
+  width: 50%;
+
 }
 
 /* XP Labels Column */
 .xp-labels-column {
-    flex: 0 0 20%;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    align-items: flex-end;
-
+  flex: 0 0 20%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-end;
 }
 
-
-
-
 .xp-label {
-    background-color: #ccc;
-    padding: 10px 15px; /* Increase padding for larger labels */
-    font-weight: bold;
-    text-align: center;
-    border-radius: 5px;
-    font-size: 25px; /* Increase font size for larger text */
+  background-color: #ccc;
+  padding: 10px 15px;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 5px;
+  font-size: 25px;
 }
 
 /* Animation */
 @keyframes growBar {
-    from {
+  from {
     width: 0;
-    }
-    to {
+  }
+  to {
     width: var(--final-width);
-    }
+  }
 }
 
 /* Mobile Responsive */
-@media (max-width: 768px) {
-    .container {
+@media (max-width: 10px) {
+  .container {
     flex-direction: column;
-    }
+  }
 
-    .sidebar {
+  .sidebar {
     width: 100%;
-    }
+  }
 
-    .diagram-section {
+  .diagram-section {
     flex-direction: column;
     gap: 20px;
-    }
+  }
 
-    .body-img {
+  .body-img {
     width: 60%;
-    }
+  }
 
+  .body-img {
+    flex: 1;
+  }
 
-    .body-img {
-        flex: 1;
-    }
-
-    .xp-labels-column {
+  .xp-labels-column {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
-    }
+  }
 
-    .xp-label {
+  .xp-label {
     font-size: 12px;
     padding: 4px 8px;
-    }
+  }
 }

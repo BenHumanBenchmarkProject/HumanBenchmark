@@ -3,8 +3,8 @@
     flex-wrap: wrap;
     gap: 10px;
     margin-bottom: 20px;
-    justify-content: center; /* Center buttons horizontally */
-    margin-bottom: 20px; /* Add some space below the buttons */
+    justify-content: center;
+    margin-bottom: 20px; 
 }
 
 

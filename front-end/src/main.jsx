@@ -9,23 +9,40 @@ import { BrowserRouter } from "react-router";
 import LogWorkoutPage from "./LogWorkoutPage/LogWorkoutPage.jsx";
 import BuildWorkoutPage from "./BuildWorkoutPage/BuildWorkoutPage.jsx";
 import { UserProvider } from "./userContext.jsx";
+import Layout from "./Layout/Layout.jsx";
 
 const routes = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: (
+      <Layout>
+        <App />
+      </Layout>
+    ),
   },
   {
     path: "/leaderboard",
-    element: <LeaderboardPage />,
+    element: (
+      <Layout>
+        <LeaderboardPage />
+      </Layout>
+    ),
   },
   {
     path: "/log-workout",
-    element: <LogWorkoutPage />,
+    element: (
+      <Layout>
+        <LogWorkoutPage />
+      </Layout>
+    ),
   },
   {
     path: "/build-workout",
-    element: <BuildWorkoutPage />,
+    element: (
+      <Layout>
+        <BuildWorkoutPage />
+      </Layout>
+    ),
   },
 ]);
 
