@@ -159,12 +159,20 @@ server.post("/api/users/login", async (req, res, next) => {
   const { username, password } = req.body;
 
   try {
-    const user = await prisma.user.findUnique({ where: { username } });
+    const user = await prisma.user.findUnique({
+      where: { username },
+      include: {
+        workouts: true,
+        workouts: true,
+        muscleStats: true,
+        bodyPartStats: true,
+      },
+    });
 
     if (user && (await bcrypt.compare(password, user.password))) {
       req.session.user = user; // Set session
 
-      res.json({ success: true, user ,message: "Login successful" });
+      res.json({ success: true, user, message: "Login successful" });
     } else {
       res.status(401).json({ success: false, message: "Invalid credentials" });
     }

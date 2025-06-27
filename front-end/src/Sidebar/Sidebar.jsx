@@ -1,16 +1,39 @@
 import "./Sidebar.css";
 import React from "react";
+import { useContext } from "react";
+import UserContext from "../userContext";
 
-const Sidebar = () => (
+
+
+const Sidebar = () => {
+  const {user} = useContext(UserContext);
+
+  const neededXP = () => {
+    return user ? user.level * 100 : 0; // default to 0 if nobody logged in
+  }
+
+  const xpPercentage = () => {
+    if (!user) return 0;
+    return (user.xp / neededXP()) * 100;
+  };
+
+  const calculateOverallStrength = () => {
+    if (!user || !user.muscleStats || user.muscleStats.length === 0) return 0;
+    const totalMax = user.muscleStats.reduce((sum, stat) => sum + stat.max, 0);
+    const averageMax = totalMax / user.muscleStats.length;
+    return (averageMax / 100) * 100; // scale relative to 100
+  };
+
+return(
   <aside className="sidebar">
     <div className="level">
-      <h2>LEVEL 82</h2>
+      <h2>{`Level ${user ? user.level : 0}`}</h2>
       <div className="xp-bar">
-        <div className="xp-fill" style={{ "--final-width": "50%" }}></div>
+        <div className="xp-fill" style={{ "--final-width": `${xpPercentage()}%` }}></div>
       </div>
       <div className="xp-labels">
-        <span>300xp</span>
-        <span>600xp</span>
+        <span>{`${user ? user.xp : 0}xp`}</span>
+        <span>{`${neededXP()}xp`}</span>
       </div>
     </div>
 
@@ -19,9 +42,9 @@ const Sidebar = () => (
       <div className="stat">
         <span>Strength</span>
         <div className="bar">
-          <div style={{ "--final-width": "50%" }}></div>
+          <div style={{ "--final-width": `${calculateOverallStrength()}%` }}></div>
         </div>
-        50
+        {calculateOverallStrength()}
       </div>
       <div className="stat">
         <span>Knowledge</span>
@@ -39,6 +62,7 @@ const Sidebar = () => (
       </div>
     </div>
   </aside>
-);
+  )
+};
 
 export default Sidebar;
