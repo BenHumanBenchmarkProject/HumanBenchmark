@@ -2,9 +2,9 @@ import "./HomePage.css";
 import React from "react";
 import { useState } from "react";
 import bodyOutline from "../assets/body-outline.jpg";
-import { Link } from "react-router";
 import Header from "../Header/Header";
 import Sidebar from "../Sidebar/Sidebar";
+import NavigationButtons from "../NaviagtionButtons/NavigationButtons";
 
 const HomePage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -16,17 +16,7 @@ const HomePage = () => {
         <Sidebar />
 
         <main className="main-content">
-          <div className="top-buttons">
-            <Link to={"/leaderboard"}>
-              <button>LEADER BOARD</button>
-            </Link>
-            <Link to={"/build-workout"}>
-              <button>BUILD WORKOUT</button>
-            </Link>
-            <Link to={"/log-workout"}>
-              <button>LOG WORKOUT</button>
-            </Link>
-          </div>
+          <NavigationButtons />
 
           <section className="diagram-section">
             <img src={bodyOutline} alt="Body Outline" className="body-img" />
