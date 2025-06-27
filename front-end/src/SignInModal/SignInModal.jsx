@@ -3,31 +3,34 @@ import axios from "axios";
 import { useState } from "react";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
+
 const SignInModal = ({ onClose }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
   const handleLogin = async (event) => {
-    event.preventDefault();
+        event.preventDefault();
 
-    try {
-      const response = await axios.post(`${BASE_URL}users/login`, {
-        username,
-        password,
-      });
+        try {
+          const response = await axios.post(`${BASE_URL}users/login`, {
+            username,
+            password,
+          },{
+            withCredentials: true // include credentials in the request
+          });
 
-      if (response.data.success) {
-        console.log("Login successful");
-        onClose(); // close after login
-      } else {
-        setError("Invalid username or password");
-      }
-    } catch (err) {
-      console.error("Error logging in:", err);
-      setError("An error occurred during login");
-    }
-  };
+          if (response.data.success) {
+            console.log("Login successful");
+            onClose();
+          } else {
+            setError("Invalid username or password");
+          }
+        } catch (err) {
+          console.error("Error logging in:", err);
+          setError("An error occurred during login");
+        }
+      };
   return (
     <div className="modal-backdrop">
       <div className="signin-container">
@@ -59,7 +62,6 @@ const SignInModal = ({ onClose }) => {
           <button type="submit">Sign In</button>
         </form>
       </div>
-    </div>
   );
 };
 

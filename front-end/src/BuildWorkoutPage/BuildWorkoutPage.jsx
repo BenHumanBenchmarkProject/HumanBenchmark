@@ -1,13 +1,11 @@
 import "./BuildWorkoutPage.css";
-import { Link } from "react-router";
+import NavigationButtons from "../NaviagtionButtons/NavigationButtons";
 
 const BuildWorkoutPage = () => {
   return (
     <div>
       <h1>Build Workout</h1>
-      <Link to={"/"}>
-        <button>Home</button>
-      </Link>
+      <NavigationButtons />
     </div>
   );
 };
