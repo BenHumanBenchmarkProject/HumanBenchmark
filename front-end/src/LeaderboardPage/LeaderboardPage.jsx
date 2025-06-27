@@ -1,15 +1,21 @@
 import "./LeaderboardPage.css";
-import { Link } from "react-router";
-import SignUpModal from "../SignUpModal/SignUpModal";
+import Header from "../Header/Header";
+import Sidebar from "../Sidebar/Sidebar";
+
 import NavigationButtons from "../NaviagtionButtons/NavigationButtons";
 
 const LeaderboardPage = () => {
   return (
     <div>
-      <h1>Leaderboard</h1>
-      <NavigationButtons/>
+      <Header />
+      <div className="container">
+        <Sidebar />
 
-      <SignUpModal/>
+        <div className="main-content">
+          <NavigationButtons />
+          <h1>Leaderboard</h1>
+        </div>
+      </div>
     </div>
   );
 };

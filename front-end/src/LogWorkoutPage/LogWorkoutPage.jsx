@@ -1,15 +1,22 @@
-
 import "./LogWorkoutPage.css";
-import { Link } from "react-router";
-import SignInModal from "../SignInModal/SignInModal";
+import Sidebar from "../Sidebar/Sidebar";
+import Header from "../Header/Header";
+
 import NavigationButtons from "../NaviagtionButtons/NavigationButtons";
 
 const LogWorkoutPage = () => {
   return (
     <div>
-      <h1>Log Workout</h1>
-      <NavigationButtons/>
-      <SignInModal />
+      <Header />
+
+      <div className="container">
+        <Sidebar />
+
+        <div className="main-content">
+          <NavigationButtons />
+          <h1>Log Workout</h1>
+        </div>
+      </div>
     </div>
   );
 };
