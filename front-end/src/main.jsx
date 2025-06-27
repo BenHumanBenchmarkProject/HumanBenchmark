@@ -8,6 +8,7 @@ import LeaderboardPage from "./LeaderboardPage/LeaderboardPage.jsx";
 import { BrowserRouter } from "react-router";
 import LogWorkoutPage from "./LogWorkoutPage/LogWorkoutPage.jsx";
 import BuildWorkoutPage from "./BuildWorkoutPage/BuildWorkoutPage.jsx";
+import { UserProvider } from "./userContext.jsx";
 
 const routes = createBrowserRouter([
   {
@@ -29,7 +30,7 @@ const routes = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
+  <UserProvider>
     <RouterProvider router={routes} />
-  </StrictMode>
+  </UserProvider>
 );
