@@ -5,23 +5,22 @@ import SignInModal from "../SignInModal/SignInModal";
 import SignUpModal from "../SignUpModal/SIgnUpModal";
 import {useState} from "react";
 
+const SIGN_IN_MODAL = "SIGN_IN_MODAL";
+const SIGN_UP_MODAL = "SIGN_UP_MODAL";
+
 const Header = ({ isLoggedIn, setIsLoggedIn }) => {
-  const [showSignInModal, setShowSignInModal] = useState(false);
-  const [showSignUpModal, setShowSignUpModal] = useState(false);
+  const [activeModal, setActiveModal] = useState(null);
 
   const handleSignInClick = () => {
-    setShowSignInModal(true);
-    setShowSignUpModal(false); // only one modal can be open at a time
+    setActiveModal(SIGN_IN_MODAL);
   };
 
   const handleSignUpClick = () => {
-    setShowSignUpModal(true);
-    setShowSignInModal(false); // only one modal can be open at a time
+    setActiveModal(SIGN_UP_MODAL);
   };
 
   const handleCloseModals = () => {
-    setShowSignInModal(false);
-    setShowSignUpModal(false);
+    setActiveModal(null);
   };
 
   return (
@@ -37,9 +36,9 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
       ) : (
         <div className="account">
           <button onClick={handleSignInClick}>Log in</button>
-          {showSignInModal && <SignInModal onClose={handleCloseModals} />}
+          {activeModal ===SIGN_IN_MODAL && <SignInModal onClose={handleCloseModals} />}
           <button onClick={handleSignUpClick}>Sign up</button>
-          {showSignUpModal && <SignUpModal onClose={handleCloseModals} />}
+          {activeModal === SIGN_UP_MODAL && <SignUpModal onClose={handleCloseModals} />}
         </div>
       )}
     </header>
