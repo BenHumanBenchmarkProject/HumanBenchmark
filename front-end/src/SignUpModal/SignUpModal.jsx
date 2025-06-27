@@ -8,8 +8,7 @@ const STEP_TWO = 2;
 const GENDER_MALE = "M";
 const GENDER_FEMALE = "F";
 
-
-const SignUpModal = () => {
+const SignUpModal = ({ onClose }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -60,6 +59,7 @@ const SignUpModal = () => {
       });
 
       console.log("Account created successfully:", response.data);
+      onClose();
     } catch (error) {
       console.error(
         "Error creating account:",
@@ -89,7 +89,7 @@ const SignUpModal = () => {
       newErrors.confirmPassword = "Passwords do not match.";
       valid = false;
     }
-    if(password.length < 10) {
+    if (password.length < 10) {
       newErrors.password = "Password must be at least 10 characters long.";
       valid = false;
     }
@@ -173,127 +173,134 @@ const SignUpModal = () => {
   };
 
   return (
-    <div className="signup-container">
-      <h1>Sign Up</h1>
-      <form className="signup-form">
-        {step === STEP_ONE && (
-          <>
-            <label htmlFor="username">Username:</label>
-            <input
-              type="text"
-              id="username"
-              value={username}
-              onChange={(event) => setUsername(event.target.value)}
-              className={errors.username ? "error" : ""}
-              placeholder=""
-            />
-            {errors.username && (
-              <span className="error-message">{errors.username}</span>
-            )}
-
-            <label htmlFor="password">Password:</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              className={errors.password ? "error" : ""}
-              placeholder=""
-            />
-            {errors.password && (
-              <span className="error-message">{errors.password}</span>
-            )}
-
-            <label htmlFor="confirm-password">Confirm Password:</label>
-            <input
-              type="password"
-              id="confirm-password"
-              value={confirmPassword}
-              onChange={(event) => setConfirmPassword(event.target.value)}
-              className={errors.confirmPassword ? "error" : ""}
-              placeholder=""
-            />
-            {errors.confirmPassword && (
-              <span className="error-message">{errors.confirmPassword}</span>
-            )}
-          </>
-        )}
-
-        {step === STEP_TWO && (
-          <>
-            <label htmlFor="height">Height (in):</label>
-            <input
-              type="number"
-              id="height"
-              value={height}
-              onChange={(event) => setHeight(event.target.value)}
-              className={errors.height ? "error" : ""}
-              placeholder=""
-            />
-            {errors.height && (
-              <span className="error-message">{errors.height}</span>
-            )}
-
-            <label htmlFor="weight">Weight (lb):</label>
-            <input
-              type="number"
-              id="weight"
-              value={weight}
-              onChange={(event) => setWeight(event.target.value)}
-              className={errors.weight ? "error" : ""}
-              placeholder=""
-            />
-            {errors.weight && (
-              <span className="error-message">{errors.weight}</span>
-            )}
-
-            <label htmlFor="age">Age:</label>
-            <input
-              type="number"
-              id="age"
-              value={age}
-              onChange={(event) => setAge(event.target.value)}
-              className={errors.age ? "error" : ""}
-              placeholder=""
-            />
-            {errors.age && <span className="error-message">{errors.age}</span>}
-
-            <legend>Gender:</legend>
-            <div className="radioInputs">
-              <div className="genderOption">
-                <input
-                  type="radio"
-                  name="gender"
-                  value={GENDER_MALE}
-                  checked={gender === GENDER_MALE}
-                  onChange={(event) => setGender(event.target.value)}
-                  id="gender-m"
-                />
-                <label htmlFor="gender-m">Male</label>
-              </div>
-              <div className="genderOption">
-                <input
-                  type="radio"
-                  name="gender"
-                  value={GENDER_FEMALE}
-                  checked={gender === GENDER_FEMALE}
-                  onChange={(event) => setGender(event.target.value)}
-                  id="gender-f"
-                />
-                <label htmlFor="gender-f">Female</label>
-              </div>
-            </div>
-
-            {errors.gender && (
-              <span className="error-message">{errors.gender}</span>
-            )}
-          </>
-        )}
-
-        <button type="button" onClick={handleContinue}>
-          {step === STEP_ONE ? "Continue" : "Submit"}
+    <div className="modal-backdrop">
+      <div className="signup-container">
+        <button className="close-button" onClick={onClose}>
+          &times;
         </button>
-      </form>
+        <h1>Sign Up</h1>
+        <form className="signup-form">
+          {step === STEP_ONE && (
+            <>
+              <label htmlFor="username">Username:</label>
+              <input
+                type="text"
+                id="username"
+                value={username}
+                onChange={(event) => setUsername(event.target.value)}
+                className={errors.username ? "error" : ""}
+                placeholder=""
+              />
+              {errors.username && (
+                <span className="error-message">{errors.username}</span>
+              )}
+
+              <label htmlFor="password">Password:</label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                className={errors.password ? "error" : ""}
+                placeholder=""
+              />
+              {errors.password && (
+                <span className="error-message">{errors.password}</span>
+              )}
+
+              <label htmlFor="confirm-password">Confirm Password:</label>
+              <input
+                type="password"
+                id="confirm-password"
+                value={confirmPassword}
+                onChange={(event) => setConfirmPassword(event.target.value)}
+                className={errors.confirmPassword ? "error" : ""}
+                placeholder=""
+              />
+              {errors.confirmPassword && (
+                <span className="error-message">{errors.confirmPassword}</span>
+              )}
+            </>
+          )}
+
+          {step === STEP_TWO && (
+            <>
+              <label htmlFor="height">Height (in):</label>
+              <input
+                type="number"
+                id="height"
+                value={height}
+                onChange={(event) => setHeight(event.target.value)}
+                className={errors.height ? "error" : ""}
+                placeholder=""
+              />
+              {errors.height && (
+                <span className="error-message">{errors.height}</span>
+              )}
+
+              <label htmlFor="weight">Weight (lb):</label>
+              <input
+                type="number"
+                id="weight"
+                value={weight}
+                onChange={(event) => setWeight(event.target.value)}
+                className={errors.weight ? "error" : ""}
+                placeholder=""
+              />
+              {errors.weight && (
+                <span className="error-message">{errors.weight}</span>
+              )}
+
+              <label htmlFor="age">Age:</label>
+              <input
+                type="number"
+                id="age"
+                value={age}
+                onChange={(event) => setAge(event.target.value)}
+                className={errors.age ? "error" : ""}
+                placeholder=""
+              />
+              {errors.age && (
+                <span className="error-message">{errors.age}</span>
+              )}
+
+              <legend>Gender:</legend>
+              <div className="radioInputs">
+                <div className="genderOption">
+                  <input
+                    type="radio"
+                    name="gender"
+                    value={GENDER_MALE}
+                    checked={gender === GENDER_MALE}
+                    onChange={(event) => setGender(event.target.value)}
+                    id="gender-m"
+                  />
+                  <label htmlFor="gender-m">Male</label>
+                </div>
+                <div className="genderOption">
+                  <input
+                    type="radio"
+                    name="gender"
+                    value={GENDER_FEMALE}
+                    checked={gender === GENDER_FEMALE}
+                    onChange={(event) => setGender(event.target.value)}
+                    id="gender-f"
+                  />
+                  <label htmlFor="gender-f">Female</label>
+                </div>
+              </div>
+
+              {errors.gender && (
+                <span className="error-message">{errors.gender}</span>
+              )}
+            </>
+          )}
+
+          <button type="button" onClick={handleContinue}>
+            {step === STEP_ONE ? "Continue" : "Submit"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

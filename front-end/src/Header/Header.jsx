@@ -1,8 +1,29 @@
 import "./Header.css";
 import React from "react";
 import blankPfp from "../assets/blank-pfp.jpg";
+import SignInModal from "../SignInModal/SignInModal";
+import SignUpModal from "../SignUpModal/SIgnUpModal";
+import {useState} from "react";
 
 const Header = ({ isLoggedIn, setIsLoggedIn }) => {
+  const [showSignInModal, setShowSignInModal] = useState(false);
+  const [showSignUpModal, setShowSignUpModal] = useState(false);
+
+  const handleSignInClick = () => {
+    setShowSignInModal(true);
+    setShowSignUpModal(false); // only one modal can be open at a time
+  };
+
+  const handleSignUpClick = () => {
+    setShowSignUpModal(true);
+    setShowSignInModal(false); // only one modal can be open at a time
+  };
+
+  const handleCloseModals = () => {
+    setShowSignInModal(false);
+    setShowSignUpModal(false);
+  };
+
   return (
     <header className="banner">
       <div className="logo">HUMAN BENCHMARK (LOGO)</div>
@@ -15,8 +36,10 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
         </button>
       ) : (
         <div className="account">
-          <button>Log in</button>
-          <button>Sign up</button>
+          <button onClick={handleSignInClick}>Log in</button>
+          {showSignInModal && <SignInModal onClose={handleCloseModals} />}
+          <button onClick={handleSignUpClick}>Sign up</button>
+          {showSignUpModal && <SignUpModal onClose={handleCloseModals} />}
         </div>
       )}
     </header>
