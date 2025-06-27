@@ -15,11 +15,12 @@ const SignInModal = () => {
           const response = await axios.post(`${BASE_URL}users/login`, {
             username,
             password,
+          },{
+            withCredentials: true // include credentials in the request
           });
 
           if (response.data.success) {
             console.log("Login successful");
-            
           } else {
             setError("Invalid username or password");
           }
