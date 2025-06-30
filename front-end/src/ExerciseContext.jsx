@@ -30,13 +30,14 @@ export const ExerciseProvider = ({ children }) => {
           createdAt: new Date(),
         }));
 
-        console.log("Transformed Data:", transformedData);
+        //console.log("Transformed Data:", transformedData);
 
       for (const exercise of transformedData) {
         await axios.post("http://localhost:3000/api/exercises", [exercise]);
       }
 
-        setExercises(axios.get("http://localhost:3000/api/exercises"));
+      const exercisesResponse = await axios.get("http://localhost:3000/api/exercises");
+      setExercises(exercisesResponse.data);
       } catch (error) {
         console.error("Error fetching exercises:", error);
       }

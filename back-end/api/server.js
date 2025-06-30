@@ -216,10 +216,17 @@ server.post("/api/exercises", async (req, res, next) => {
   try {
     const createdExercises = [];
     for (const exercise of exercises) {
-      const createdExercise = await prisma.exercise.create({
-        data: exercise,
+      // Check if the exercise already exists
+      const existingExercise = await prisma.exercise.findUnique({
+        where: { name: exercise.name },
       });
-      createdExercises.push(createdExercise);
+
+      if (!existingExercise) {
+        const createdExercise = await prisma.exercise.create({
+          data: exercise,
+        });
+        createdExercises.push(createdExercise);
+      }
     }
     res.status(201).json({ message: "Exercises saved", count: createdExercises.length });
   } catch (err) {
@@ -227,6 +234,7 @@ server.post("/api/exercises", async (req, res, next) => {
     next(err);
   }
 });
+
 
 
 

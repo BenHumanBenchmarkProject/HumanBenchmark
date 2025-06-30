@@ -34,7 +34,7 @@ model User {
 
 model Exercise { // directly replects the API
   id           Int         @id @default(autoincrement())
-  name         String
+  name         String      @unique
   bodyParts    String[]
   targetMuscle String
   overview     String

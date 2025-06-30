@@ -6,9 +6,7 @@ import React, { useContext, useEffect } from "react";
 const LogWorkoutPage = () => {
   const exercises = useContext(ExerciseContext);
 
-  useEffect(() => {
-    console.log("Loaded exercises:", exercises);
-  }, [exercises]);
+  console.log("Loaded exercises:", exercises);
 
   return (
     <>
