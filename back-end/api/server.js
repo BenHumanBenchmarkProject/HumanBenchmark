@@ -9,6 +9,7 @@ const {
   findUserById,
   createUser,
   updateUser,
+  findExercises,
 } = require("./model-prisma");
 
 const prisma = new PrismaClient();
@@ -176,6 +177,51 @@ server.post("/api/users/login", async (req, res, next) => {
     } else {
       res.status(401).json({ success: false, message: "Invalid credentials" });
     }
+  } catch (err) {
+    next(err);
+  }
+});
+
+// [Get] /exercises
+server.get("/api/exercises", async (req, res, next) => {
+  // get all exercises
+  const search = req.query;
+  try {
+    const exercises = await findExercises(search);
+    console.log(`Number of exercises fetched: ${exercises.length}`);
+    if (exercises.length) {
+      //error handling
+      res.json(exercises);
+    } else if (!exercises.length) {
+      next({ status: 404, message: "No exercises in database" });
+    } else {
+      next({
+        status: 404,
+        message: "No exercises found match the search criteria",
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+// [Post] /api/exercises
+server.post("/api/exercises", async (req, res, next) => {
+  // save exercise to database
+  const exercises = req.body;
+
+  if (!Array.isArray(exercises) || exercises.length === 0) {
+    return res.status(400).json({ error: "Exercises data is required" });
+  }
+
+  try {
+    const createdExercises = await prisma.exercise.createMany({
+      data: exercises,
+      skipDuplicates: true, //skip duplicates
+    });
+    res
+      .status(201)
+      .json({ message: "Exercises saved", count: createdExercises.count });
   } catch (err) {
     next(err);
   }

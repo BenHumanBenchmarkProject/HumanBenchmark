@@ -32,7 +32,7 @@ model User {
   updatedAt         DateTime @default(now())
 }
 
-model Exercise {
+model Exercise { // directly replects the API
   id           Int         @id @default(autoincrement())
   name         String
   bodyParts    String[]
@@ -43,6 +43,7 @@ model Exercise {
   workouts     Workout[]
   muscleStats  MuscleStat[]
 }
+
 
 model Workout {
   id           Int        @id @default(autoincrement())
@@ -78,7 +79,7 @@ model MuscleStat {
 model BodyPartStat {
   id           Int           @id @default(autoincrement())
   bodyPart     String
-  muscleStats  MuscleStat[]  
+  muscleStats  MuscleStat[]
   user         User          @relation(fields: [userId], references: [id])
   userId       Int
   score        Int
