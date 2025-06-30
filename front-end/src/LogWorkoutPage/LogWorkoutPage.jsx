@@ -1,15 +1,18 @@
 import "./LogWorkoutPage.css";
-import Sidebar from "../Sidebar/Sidebar";
-import Header from "../Header/Header";
-
 import NavigationButtons from "../NaviagtionButtons/NavigationButtons";
+import ExerciseContext from "../ExerciseContext";
+import React, { useContext, useEffect } from "react";
 
 const LogWorkoutPage = () => {
+  const exercises = useContext(ExerciseContext);
+
+  console.log("Loaded exercises:", exercises);
+
   return (
-    <div>
+    <>
       <div className="container">
+        <NavigationButtons />
         <div className="main-content">
-          <NavigationButtons />
           <h1>Log Workout</h1>
           <div class="workout-builder">
             <form>
@@ -71,7 +74,7 @@ const LogWorkoutPage = () => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
