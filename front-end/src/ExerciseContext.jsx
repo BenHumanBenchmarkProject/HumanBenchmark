@@ -36,7 +36,7 @@ export const ExerciseProvider = ({ children }) => {
         await axios.post("http://localhost:3000/api/exercises", [exercise]);
       }
 
-        setExercises(transformedData);
+        setExercises(axios.get("http://localhost:3000/api/exercises"));
       } catch (error) {
         console.error("Error fetching exercises:", error);
       }
