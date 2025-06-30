@@ -236,6 +236,44 @@ server.post("/api/exercises", async (req, res, next) => {
 });
 
 
+// [Get] /api/exercises/bodyPart/:bodyPart
+server.get("/api/exercises/bodyPart/:bodyPart", async (req, res, next) => {
+  // get exercises by body part
+  const { bodyPart } = req.params;
+  try {
+    const exercises = await prisma.exercise.findMany({
+      where: { bodyParts: { has: bodyPart } },
+    });
+    if (exercises.length) {
+      res.json(exercises);
+    } else {
+      next({ status: 404, message: `No exercises found for body part: ${bodyPart}` });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+// [Get] /api/exercises/targetMuscle/:targetMuscle
+server.get("/api/exercises/targetMuscle/:targetMuscle", async (req, res, next) => {
+  // get exercises by target muscle
+  const { targetMuscle } = req.params;
+  try {
+    const exercises = await prisma.exercise.findMany({
+      where: { targetMuscle },
+    });
+    if (exercises.length) {
+      res.json(exercises);
+    } else {
+      next({ status: 404, message: `No exercises found for target muscle: ${targetMuscle}` });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+
+
 
 
 module.exports = server;

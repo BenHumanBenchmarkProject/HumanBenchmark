@@ -17,9 +17,9 @@ const LogWorkoutPage = () => {
           <div class="workout-builder">
             <form>
               <div class="form-group">
-                <label for="category">Category</label>
+                <label for="category">Body Part</label>
                 <select id="category" name="category">
-                  <option value="">Select a category</option>
+                  <option value="">Select a body part</option>
                   <option>Upper Arms</option>
                   <option>Lower Arms</option>
                   <option>Upper Legs</option>
