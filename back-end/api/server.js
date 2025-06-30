@@ -207,7 +207,6 @@ server.get("/api/exercises", async (req, res, next) => {
 
 // [Post] /api/exercises
 server.post("/api/exercises", async (req, res, next) => {
-  // save exercise to database
   const exercises = req.body;
 
   if (!Array.isArray(exercises) || exercises.length === 0) {
@@ -215,16 +214,20 @@ server.post("/api/exercises", async (req, res, next) => {
   }
 
   try {
-    const createdExercises = await prisma.exercise.createMany({
-      data: exercises,
-      skipDuplicates: true, //skip duplicates
-    });
-    res
-      .status(201)
-      .json({ message: "Exercises saved", count: createdExercises.count });
+    const createdExercises = [];
+    for (const exercise of exercises) {
+      const createdExercise = await prisma.exercise.create({
+        data: exercise,
+      });
+      createdExercises.push(createdExercise);
+    }
+    res.status(201).json({ message: "Exercises saved", count: createdExercises.length });
   } catch (err) {
+    console.error("Error saving exercises:", err);
     next(err);
   }
 });
+
+
 
 module.exports = server;

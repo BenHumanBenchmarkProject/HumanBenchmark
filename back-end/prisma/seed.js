@@ -13,6 +13,7 @@ const usersData = [
     gender: "female",
     workouts: [
       {
+
         name: "Barbell Squat",
         bodyPart: "Legs",
         reps: 10,
@@ -44,6 +45,7 @@ const usersData = [
     gender: "male",
     workouts: [
       {
+
         name: "Bench Press",
         bodyPart: "Chest",
         reps: 8,
@@ -68,22 +70,6 @@ const usersData = [
   },
 ];
 
-const exercisesData = [
-  {
-    name: "Barbell Squat",
-    bodyParts: ["Legs"],
-    targetMuscle: "Quadriceps",
-    overview: "A compound exercise targeting the legs.",
-    exerciseTips: "Keep your back straight and go low.",
-  },
-  {
-    name: "Bench Press",
-    bodyParts: ["Chest"],
-    targetMuscle: "Pectorals",
-    overview: "A compound exercise targeting the chest.",
-    exerciseTips: "Keep your elbows at a 45-degree angle.",
-  },
-];
 
 async function main() {
   // seed users
@@ -113,10 +99,6 @@ async function main() {
     }
   }
 
-  // seed exercises
-  for (const exercise of exercisesData) {
-    await prisma.exercise.create({ data: exercise });
-  }
 
   console.log("Database seeded successfully!");
 }
@@ -129,4 +111,4 @@ main()
     process.exit(1);
   });
 
-module.exports = { usersData, exercisesData };
+module.exports = { usersData };

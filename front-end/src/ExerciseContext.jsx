@@ -11,7 +11,7 @@ export const ExerciseProvider = ({ children }) => {
       const options = {
         method: "GET",
         url: "https://exercisedb.p.rapidapi.com/exercises",
-        params: { limit: "0", offset: "0" }, //limit 0 fetches all exercises
+        params: { limit: "0", offset: "0" },
         headers: {
           "x-rapidapi-key": import.meta.env.VITE_RAPIDAPI_KEY,
           "x-rapidapi-host": "exercisedb.p.rapidapi.com",
@@ -21,17 +21,20 @@ export const ExerciseProvider = ({ children }) => {
       try {
         const response = await axios.request(options);
         const transformedData = response.data.map((exercise) => ({
-          id: parseInt(exercise.id, 10),
+          //id is provided from the API, but we need to generate our own unique id
           name: exercise.name,
           bodyParts: [exercise.bodyPart],
           targetMuscle: exercise.target,
           overview: exercise.description,
-          exerciseTips: exercise.instructions.join(" "), // join instructions into a single string
+          exerciseTips: exercise.instructions.join(" "),
           createdAt: new Date(),
-          workouts: [],
-          muscleStats: [],
         }));
 
+        console.log("Transformed Data:", transformedData);
+
+      for (const exercise of transformedData) {
+        await axios.post("http://localhost:3000/api/exercises", [exercise]);
+      }
 
         setExercises(transformedData);
       } catch (error) {
