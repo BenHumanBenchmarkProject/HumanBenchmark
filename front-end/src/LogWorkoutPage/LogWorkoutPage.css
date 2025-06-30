@@ -1,10 +1,8 @@
-
 .workout-builder {
     max-width: 600px;
     margin: auto;
     font-family: Arial, sans-serif;
     padding: 20px;
-
   }
 
   .form-group {
@@ -20,11 +18,13 @@
 
   .form-group select,
   .form-group input {
-    width: 100%;
+    width: 400px;
+    max-width: 100%; 
     padding: 16px;
     font-size: 18px;
     border: 1px solid #ccc;
     border-radius: 8px;
+    box-sizing: border-box;
   }
 
   .submit-btn {
