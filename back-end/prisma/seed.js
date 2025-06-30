@@ -1,5 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
-
+const axios = require("axios");
 const prisma = new PrismaClient();
 
 
@@ -13,6 +13,7 @@ const usersData = [
     gender: "female",
     workouts: [
       {
+
         name: "Barbell Squat",
         bodyPart: "Legs",
         reps: 10,
@@ -44,6 +45,7 @@ const usersData = [
     gender: "male",
     workouts: [
       {
+
         name: "Bench Press",
         bodyPart: "Chest",
         reps: 8,
@@ -68,24 +70,43 @@ const usersData = [
   },
 ];
 
-const exercisesData = [
-  {
-    name: "Barbell Squat",
-    bodyParts: ["Legs"],
-    targetMuscle: "Quadriceps",
-    overview: "A compound exercise targeting the legs.",
-    exerciseTips: "Keep your back straight and go low.",
-  },
-  {
-    name: "Bench Press",
-    bodyParts: ["Chest"],
-    targetMuscle: "Pectorals",
-    overview: "A compound exercise targeting the chest.",
-    exerciseTips: "Keep your elbows at a 45-degree angle.",
-  },
-];
+
+async function fetchAndSeedExercises() {
+  const options = {
+    method: "GET",
+    url: "https://exercisedb.p.rapidapi.com/exercises",
+    params: { limit: "0", offset: "0" },
+    headers: {
+      "x-rapidapi-key": process.env.VITE_RAPIDAPI_KEY,
+      "x-rapidapi-host": "exercisedb.p.rapidapi.com",
+    },
+  };
+
+  try {
+    const response = await axios.request(options);
+    const transformedData = response.data.map((exercise) => ({
+      name: exercise.name,
+      bodyParts: [exercise.bodyPart],
+      targetMuscle: exercise.target,
+      overview: exercise.description,
+      exerciseTips: exercise.instructions.join(" "),
+      createdAt: new Date(),
+    }));
+
+    for (const exercise of transformedData) {
+      await prisma.exercise.create({ data: exercise });
+    }
+
+    console.log("Exercises seeded successfully!");
+  } catch (error) {
+    console.error("Error fetching and seeding exercises:", error);
+  }
+}
+
 
 async function main() {
+  await fetchAndSeedExercises();
+
   // seed users
   for (const userData of usersData) {
     const { workouts, muscleStats, bodyPartStats, ...user } = userData;
@@ -113,10 +134,6 @@ async function main() {
     }
   }
 
-  // seed exercises
-  for (const exercise of exercisesData) {
-    await prisma.exercise.create({ data: exercise });
-  }
 
   console.log("Database seeded successfully!");
 }
@@ -129,4 +146,4 @@ main()
     process.exit(1);
   });
 
-module.exports = { usersData, exercisesData };
+module.exports = { usersData };
