@@ -63,33 +63,14 @@ const Sidebar = () => {
           <div className="bar">
             <div style={{ "--final-width": "30%" }}></div>
           </div>
+          30
         </div>
-
-        <div className="stats">
-          <h3>STATS</h3>
-          <div className="stat">
-            <span>Strength</span>
-            <div className="bar">
-              <div
-                style={{ "--final-width": `${calculateOverallStrength()}%` }}
-              ></div>
-            </div>
-            {calculateOverallStrength()}
+        <div className="stat">
+          <span>Overall</span>
+          <div className="bar">
+            <div style={{ "--final-width": "40%" }}></div>
           </div>
-          <div className="stat">
-            <span>Knowledge</span>
-            <div className="bar">
-              <div style={{ "--final-width": "30%" }}></div>
-            </div>
-            30
-          </div>
-          <div className="stat">
-            <span>Overall</span>
-            <div className="bar">
-              <div style={{ "--final-width": "40%" }}></div>
-            </div>
-            40
-          </div>
+          40
         </div>
       </div>
     </aside>
