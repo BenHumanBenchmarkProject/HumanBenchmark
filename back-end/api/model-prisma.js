@@ -31,8 +31,50 @@ module.exports = {
     return exercises;
   },
 
+  async createBodyPartStat(userId, newBodyPartStat) {
+    const created = await prisma.bodyPartStat.create({ data: newBodyPartStat });
+
+    const bodyPartStats = await prisma.bodyPartStat.findMany({
+      where: { userId },
+    });
+
+    prisma.user.update({
+      where: { id: userId },
+      data: { bodyPartStats: { push: created } },
+    });
+    return created;
+  },
+
+  async createMuscleStat(userId, newMuscleStat) {
+    const createdMuscleStat = await prisma.muscleStat.create({
+      data: {
+        muscle: newMuscleStat.muscle,
+        bodyPart: newMuscleStat.bodyPart,
+        max: newMuscleStat.max,
+        user: { connect: { id: userId } }, // Correctly connect the user
+        exercise: newMuscleStat.exerciseId
+          ? { connect: { id: newMuscleStat.exerciseId } }
+          : undefined,
+        bodyPartStat: newMuscleStat.bodyPartStatId
+          ? { connect: { id: newMuscleStat.bodyPartStatId } }
+          : undefined,
+      },
+    });
+
+    return createdMuscleStat;
+  },
+
+  async getMuscleStats(userId) {
+    const muscleStats = await prisma.muscleStat.findMany({
+      where: { userId },
+    });
+    return muscleStats;
+  },
+
+
   async createWorkout(userId, exerciseId, newWorkout) {
     try {
+      // Create the workout
       const createdWorkout = await prisma.workout.create({
         data: {
           ...newWorkout,
@@ -40,7 +82,36 @@ module.exports = {
           exercise: { connect: { id: exerciseId } },
         },
       });
-      return createdWorkout;
+
+      // Calculate XP
+      const xpGained = newWorkout.reps * newWorkout.weight * 0.1;
+
+      // Fetch current user data
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+      });
+
+      // Calculate new XP and level
+      let newXP = user.xp + xpGained;
+      let newLevel = user.level;
+      const xpForNextLevel = newLevel * 100; // Example: 100 XP per level
+
+      while (newXP >= xpForNextLevel) {
+        newXP -= xpForNextLevel;
+        newLevel += 1;
+      }
+
+      // Update user's XP and level
+      console.log(`New XP: ${newXP}, New Level: ${newLevel}`);
+      const updatedUser = await prisma.user.update({
+        where: { id: userId },
+        data: {
+          xp: newXP,
+          level: newLevel,
+        },
+      });
+
+      return { createdWorkout, updatedUser };
     } catch (error) {
       console.error("Error creating workout:", error);
       throw error;

@@ -1,12 +1,13 @@
 import "./Sidebar.css";
-import React from "react";
-
+import React, { use } from "react";
+import axios from "axios";
 import { useContext, useState, useEffect } from "react";
 import UserContext from "../userContext";
 
 const Sidebar = () => {
-  const { user } = useContext(UserContext);
+  const { user, login } = useContext(UserContext);
   const [hasAnimated, setHasAnimated] = useState(false);
+  const [bodyPartStats, setBodyPartStats] = useState([]);
 
   useEffect(() => {
     // make sure the animation only runs on page load
@@ -24,12 +25,20 @@ const Sidebar = () => {
     return (user.xp / neededXP()) * 100;
   };
 
-  const calculateOverallStrength = () => {
-    if (!user || !user.muscleStats || user.muscleStats.length === 0) return 0;
-    const totalMax = user.muscleStats.reduce((sum, stat) => sum + stat.max, 0);
-    const averageMax = totalMax / user.muscleStats.length;
-    return (averageMax / 100) * 100; // scale relative to 100
+  
+
+  const calculateOverallScore = () => {
+    if (!user || !user.bodyPartStats || user.bodyPartStats.length === 0) return 0;
+
+    console.log(user.bodyPartStats);
+
+    const totalScore = user.bodyPartStats.reduce((sum, stat) => sum + stat.score, 0);
+    const averageScore = totalScore / user.bodyPartStats.length;
+
+    console.log(`TotalScore: ${totalScore}, AverageScore: ${averageScore}`);
+    return averageScore;
   };
+
 
   return (
     <aside className="sidebar">
@@ -50,27 +59,13 @@ const Sidebar = () => {
       <div className="stats">
         <h3>STATS</h3>
         <div className="stat">
-          <span>Strength</span>
-          <div className="bar">
-            <div
-              style={{ "--final-width": `${calculateOverallStrength()}%` }}
-            ></div>
-          </div>
-          {calculateOverallStrength()}
-        </div>
-        <div className="stat">
-          <span>Knowledge</span>
-          <div className="bar">
-            <div style={{ "--final-width": "30%" }}></div>
-          </div>
-          30
-        </div>
-        <div className="stat">
           <span>Overall</span>
           <div className="bar">
-            <div style={{ "--final-width": "40%" }}></div>
+            <div
+              style={{ "--final-width": `${calculateOverallScore()}%` }}
+            ></div>
           </div>
-          40
+          {calculateOverallScore()}
         </div>
       </div>
     </aside>
