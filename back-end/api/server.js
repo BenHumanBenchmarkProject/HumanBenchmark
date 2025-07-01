@@ -10,6 +10,7 @@ const {
   createUser,
   updateUser,
   findExercises,
+  createWorkout,
 } = require("./model-prisma");
 
 const prisma = new PrismaClient();
@@ -228,13 +229,14 @@ server.post("/api/exercises", async (req, res, next) => {
         createdExercises.push(createdExercise);
       }
     }
-    res.status(201).json({ message: "Exercises saved", count: createdExercises.length });
+    res
+      .status(201)
+      .json({ message: "Exercises saved", count: createdExercises.length });
   } catch (err) {
     console.error("Error saving exercises:", err);
     next(err);
   }
 });
-
 
 // [Get] /api/exercises/bodyPart/:bodyPart
 server.get("/api/exercises/bodyPart/:bodyPart", async (req, res, next) => {
@@ -247,7 +249,10 @@ server.get("/api/exercises/bodyPart/:bodyPart", async (req, res, next) => {
     if (exercises.length) {
       res.json(exercises);
     } else {
-      next({ status: 404, message: `No exercises found for body part: ${bodyPart}` });
+      next({
+        status: 404,
+        message: `No exercises found for body part: ${bodyPart}`,
+      });
     }
   } catch (err) {
     next(err);
@@ -255,25 +260,69 @@ server.get("/api/exercises/bodyPart/:bodyPart", async (req, res, next) => {
 });
 
 // [Get] /api/exercises/targetMuscle/:targetMuscle
-server.get("/api/exercises/targetMuscle/:targetMuscle", async (req, res, next) => {
-  // get exercises by target muscle
-  const { targetMuscle } = req.params;
-  try {
-    const exercises = await prisma.exercise.findMany({
-      where: { targetMuscle },
-    });
-    if (exercises.length) {
-      res.json(exercises);
-    } else {
-      next({ status: 404, message: `No exercises found for target muscle: ${targetMuscle}` });
+server.get(
+  "/api/exercises/targetMuscle/:targetMuscle",
+  async (req, res, next) => {
+    // get exercises by target muscle
+    const { targetMuscle } = req.params;
+    try {
+      const exercises = await prisma.exercise.findMany({
+        where: { targetMuscle },
+      });
+      if (exercises.length) {
+        res.json(exercises);
+      } else {
+        next({
+          status: 404,
+          message: `No exercises found for target muscle: ${targetMuscle}`,
+        });
+      }
+    } catch (err) {
+      next(err);
     }
+  }
+);
+
+//[Post] /api/users/:userId/workouts
+server.post("/api/users/:userId/workouts/:exerciseId", async (req, res, next) => {
+  const newWorkout = req.body;
+  const userId = Number(req.params.userId);
+  const exerciseId = Number(req.params.exerciseId);
+
+  if (!newWorkout){
+    return res
+      .status(400)
+      .json({ error: "Workout data and exerciseId are required" });
+  }
+
+  try {
+    const created = await createWorkout(userId,exerciseId ,newWorkout);
+    res.status(201).json(created);
   } catch (err) {
     next(err);
   }
 });
 
+//[Get] /api/users/:userId/workouts
+server.get("/api/users/:userId/workouts", async (req, res, next) => {
+  const userId = Number(req.params.userId);
+  const search = { ...req.query, userId };
 
-
-
+  try {
+    const workouts = await prisma.workout.findMany({
+      where: search,
+    });
+    if (workouts.length) {
+      res.json(workouts);
+    } else {
+      next({
+        status: 404,
+        message: `No workouts found for user ID: ${userId}`,
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
 
 module.exports = server;
