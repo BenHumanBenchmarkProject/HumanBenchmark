@@ -29,8 +29,21 @@ module.exports = {
     const exercises = await prisma.exercise.findMany();
     console.log(`Number of exercises in database: ${exercises.length}`);
     return exercises;
-  }
-  
+  },
 
-
+  async createWorkout(userId, exerciseId, newWorkout) {
+    try {
+      const createdWorkout = await prisma.workout.create({
+        data: {
+          ...newWorkout,
+          user: { connect: { id: userId } },
+          exercise: { connect: { id: exerciseId } },
+        },
+      });
+      return createdWorkout;
+    } catch (error) {
+      console.error("Error creating workout:", error);
+      throw error;
+    }
+  },
 };
