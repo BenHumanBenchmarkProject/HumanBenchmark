@@ -2,11 +2,29 @@ import "./LogWorkoutPage.css";
 import NavigationButtons from "../NaviagtionButtons/NavigationButtons";
 import ExerciseContext from "../ExerciseContext";
 import React, { useContext, useState } from "react";
+import { useUser } from "../userContext";
+import axios from "axios";
 
 const LogWorkoutPage = () => {
+  const { user } = useUser();
+  const userId = user ? user.id : null;
+
   const exercises = useContext(ExerciseContext);
   const [selectedBodyPart, setSelectedBodyPart] = useState("");
   const [selectedMuscle, setSelectedMuscle] = useState("");
+  const [selectedExercise, setSelectedExercise] = useState("");
+  const [reps, setReps] = useState(0);
+  const [weight, setWeight] = useState(0);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [buttonFlash, setButtonFlash] = useState(false); // new state for successful submission
+
+  const resetForm = () => {
+    setSelectedBodyPart("");
+    setSelectedMuscle("");
+    setSelectedExercise("");
+    setReps(0);
+    setWeight(0);
+  };
 
   const handleBodyPartChange = (event) => {
     setSelectedBodyPart(event.target.value.toLowerCase());
@@ -17,19 +35,64 @@ const LogWorkoutPage = () => {
     setSelectedMuscle(event.target.value);
   };
 
-  // filter exercises based on selected body part
+  const handleExerciseChange = (event) => {
+    setSelectedExercise(event.target.value);
+  };
+
+  const handleRepsChange = (event) => {
+    setReps(event.target.value);
+  };
+
+  const handleWeightChange = (event) => {
+    setWeight(event.target.value);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const exercise = exercises.find((ex) => ex.name === selectedExercise);
+    if (!exercise) {
+      console.error("Exercise not found");
+      return;
+    }
+
+    const newWorkout = {
+      name: selectedExercise,
+      bodyPart: selectedBodyPart,
+      reps: parseInt(reps, 10),
+      weight: parseInt(weight, 10),
+      max: parseInt(weight, 10) * (1 + parseInt(reps, 10) / 30), // Epley Formula
+      muscle: selectedMuscle,
+    };
+
+    try {
+      const response = await axios.post(
+        `http://localhost:3000/api/users/${userId}/workouts/${exercise.id}`,
+        newWorkout
+      );
+      console.log("Workout logged successfully:", response.data);
+      resetForm(); // reset form after submission
+      setSuccessMessage("Workout logged successfully!");
+      setButtonFlash(true);
+      setTimeout(() => setButtonFlash(false), 2500); // flash for 2.5 seconds
+    } catch (error) {
+      console.error("Error logging workout:", error);
+    }
+  };
+
+  // Filter exercises based on selected body part
   const exercisesByBodyPart = selectedBodyPart
     ? exercises.filter((exercise) =>
         exercise.bodyParts.includes(selectedBodyPart)
       )
     : exercises;
 
-  // extract unique muscles from filtered exercises
+  // Extract unique muscles from filtered exercises
   const filteredMuscles = exercisesByBodyPart
     .map((exercise) => exercise.targetMuscle)
     .filter((value, index, self) => self.indexOf(value) === index);
 
-  // filter exercises based on selected muscle or body part
+  // Filter exercises based on selected muscle or body part
   const filteredExercises = selectedMuscle
     ? exercisesByBodyPart.filter(
         (exercise) => exercise.targetMuscle === selectedMuscle
@@ -43,7 +106,7 @@ const LogWorkoutPage = () => {
         <div className="main-content">
           <h1>Log Workout</h1>
           <div className="workout-builder">
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label htmlFor="category">Body Part</label>
                 <select
@@ -84,7 +147,12 @@ const LogWorkoutPage = () => {
 
               <div className="form-group">
                 <label htmlFor="exercise">Exercise</label>
-                <select id="exercise" name="exercise">
+                <select
+                  id="exercise"
+                  name="exercise"
+                  onChange={handleExerciseChange}
+                  value={selectedExercise}
+                >
                   <option value="">Select an exercise</option>
                   {filteredExercises.map((exercise) => (
                     <option key={exercise.name} value={exercise.name}>
@@ -100,7 +168,8 @@ const LogWorkoutPage = () => {
                   type="number"
                   id="reps"
                   name="reps"
-                  defaultValue="0"
+                  value={reps}
+                  onChange={handleRepsChange}
                   min="0"
                 />
               </div>
@@ -111,15 +180,20 @@ const LogWorkoutPage = () => {
                   type="number"
                   id="weight"
                   name="weight"
-                  defaultValue="0"
+                  value={weight}
+                  onChange={handleWeightChange}
                   min="0"
                 />
               </div>
 
-              <button type="submit" className="submit-btn">
-                Submit
+              <button
+                type="submit"
+                className={`submit-btn ${buttonFlash ? "flash" : ""}`}
+              >
+                {buttonFlash ? "Workout Logged!" : "Submit"}
               </button>
             </form>
+            {successMessage && <p className="success-message">{successMessage}</p>}
           </div>
         </div>
       </div>
