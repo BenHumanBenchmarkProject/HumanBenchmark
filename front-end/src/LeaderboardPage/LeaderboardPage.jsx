@@ -28,11 +28,7 @@ const LeaderboardPage = () => {
     const sortedUsers = [...users].sort((a, b) => {
       let aValue, bValue;
 
-      if (
-        key === USERNAME_KEY ||
-        key === LEVEL_KEY ||
-        key === OVERALL_STAT_KEY
-      ) {
+      if ([USERNAME_KEY, LEVEL_KEY, OVERALL_STAT_KEY].includes(key)) {
         aValue = a[key];
         bValue = b[key];
       } else {
