@@ -3,6 +3,23 @@ const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
+calculateXP = (newWorkout) => {
+  return newWorkout.reps * newWorkout.weight * 0.1;
+};
+
+calculateNewXPAndLevel = (user, xpGained) => {
+  let newXP = user.xp + xpGained;
+  let newLevel = user.level;
+  const xpForNextLevel = newLevel * 100; // Example: 100 XP per level
+
+  while (newXP >= xpForNextLevel) {
+    newXP -= xpForNextLevel;
+    newLevel += 1;
+  }
+
+  return { newXP, newLevel };
+};
+
 module.exports = {
   async findUsers(where) {
     // GET http://localhost:5432/api/users?type=Recent
@@ -71,7 +88,6 @@ module.exports = {
     return muscleStats;
   },
 
-
   async createWorkout(userId, exerciseId, newWorkout) {
     try {
       // Create the workout
@@ -84,7 +100,7 @@ module.exports = {
       });
 
       // Calculate XP
-      const xpGained = newWorkout.reps * newWorkout.weight * 0.1;
+      const xpGained = calculateXP(newWorkout);
 
       // Fetch current user data
       const user = await prisma.user.findUnique({
@@ -92,14 +108,7 @@ module.exports = {
       });
 
       // Calculate new XP and level
-      let newXP = user.xp + xpGained;
-      let newLevel = user.level;
-      const xpForNextLevel = newLevel * 100; // Example: 100 XP per level
-
-      while (newXP >= xpForNextLevel) {
-        newXP -= xpForNextLevel;
-        newLevel += 1;
-      }
+      const { newXP, newLevel } = calculateNewXPAndLevel(user, xpGained);
 
       // Update user's XP and level
       console.log(`New XP: ${newXP}, New Level: ${newLevel}`);
@@ -110,6 +119,24 @@ module.exports = {
           level: newLevel,
         },
       });
+
+      // Create bodyPartStat
+      const newBodyPartStat = {
+        bodyPart: newWorkout.bodyPart,
+        score: newWorkout.max, 
+        userId: userId,
+      };
+      await prisma.bodyPartStat.create({ data: newBodyPartStat });
+
+      // Create muscleStat
+      const newMuscleStat = {
+        muscle: newWorkout.muscle,
+        bodyPart: newWorkout.bodyPart,
+        max: newWorkout.max,
+        user: { connect: { id: userId } },
+        exercise: { connect: { id: exerciseId } },
+      };
+      await prisma.muscleStat.create({ data: newMuscleStat });
 
       return { createdWorkout, updatedUser };
     } catch (error) {

@@ -72,28 +72,6 @@ const LogWorkoutPage = () => {
         newWorkout
       );
 
-      // Create bodyPartStat
-      const newBodyPartStat = {
-        bodyPart: selectedBodyPart,
-        score: newWorkout.max, // Example score calculation
-      };
-      await axios.post(
-        `http://localhost:3000/api/users/${userId}/bodyPartStats`,
-        newBodyPartStat
-      );
-
-      // Create muscleStat
-      const newMuscleStat = {
-        muscle: selectedMuscle,
-        bodyPart: selectedBodyPart,
-        max: newWorkout.max,
-        exerciseId: exercise.id,
-      };
-      await axios.post(
-        `http://localhost:3000/api/users/${userId}/muscleStats`,
-        newMuscleStat
-      );
-
       // Ftech updated user data
       const updatedUserResponse = await axios.get(
         `http://localhost:3000/api/users/${userId}`

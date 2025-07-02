@@ -25,7 +25,7 @@ const Sidebar = () => {
     return (user.xp / neededXP()) * 100;
   };
 
-  
+
 
   const calculateOverallScore = () => {
     if (!user || !user.bodyPartStats || user.bodyPartStats.length === 0) return 0;
@@ -65,7 +65,7 @@ const Sidebar = () => {
               style={{ "--final-width": `${calculateOverallScore()}%` }}
             ></div>
           </div>
-          {calculateOverallScore()}
+          {calculateOverallScore().toFixed(2)}
         </div>
       </div>
     </aside>
