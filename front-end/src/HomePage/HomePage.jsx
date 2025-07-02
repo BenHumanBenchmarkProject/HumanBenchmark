@@ -3,7 +3,7 @@ import React from "react";
 import { useState } from "react";
 import bodyOutline from "../assets/body-outline.jpg";
 
-import NavigationButtons from "../NaviagtionButtons/NavigationButtons";
+import { NavigationButtons } from "../constants";
 
 const HomePage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

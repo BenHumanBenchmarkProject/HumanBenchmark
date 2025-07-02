@@ -1,9 +1,10 @@
 import "./LogWorkoutPage.css";
-import NavigationButtons from "../NaviagtionButtons/NavigationButtons";
 import ExerciseContext from "../ExerciseContext";
 import React, { useContext, useState } from "react";
 import { useUser } from "../userContext";
 import axios from "axios";
+import { BASE_URL, NavigationButtons } from "../constants";
+
 
 const LogWorkoutPage = () => {
   const { user, login } = useUser();
@@ -68,13 +69,13 @@ const LogWorkoutPage = () => {
     try {
       // Create the workout
       await axios.post(
-        `http://localhost:3000/api/users/${userId}/workouts/${exercise.id}`,
+        `${BASE_URL}users/${userId}/workouts/${exercise.id}`,
         newWorkout
       );
 
       // Ftech updated user data
       const updatedUserResponse = await axios.get(
-        `http://localhost:3000/api/users/${userId}`
+        `${BASE_URL}users/${userId}`
       );
 
       // update user context with the latest data
