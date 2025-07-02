@@ -18,6 +18,7 @@ const BODY_PARTS = [
   "waist",
   "cardio",
 ];
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const LeaderboardPage = () => {
   const [users, setUsers] = useState([]);
@@ -29,7 +30,7 @@ const LeaderboardPage = () => {
 
   const fetchLeaderboard = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/leaderboard");
+      const response = await axios.get(`${BASE_URL}leaderboard`);
       setUsers(response.data);
     } catch (error) {
       console.error("Error fetching leaderboard data:", error);

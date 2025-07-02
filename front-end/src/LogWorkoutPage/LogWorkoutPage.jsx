@@ -5,6 +5,8 @@ import React, { useContext, useState } from "react";
 import { useUser } from "../userContext";
 import axios from "axios";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 const LogWorkoutPage = () => {
   const { user, login } = useUser();
   const userId = user ? user.id : null;
@@ -68,13 +70,13 @@ const LogWorkoutPage = () => {
     try {
       // Create the workout
       await axios.post(
-        `http://localhost:3000/api/users/${userId}/workouts/${exercise.id}`,
+        `${BASE_URL}users/${userId}/workouts/${exercise.id}`,
         newWorkout
       );
 
       // Ftech updated user data
       const updatedUserResponse = await axios.get(
-        `http://localhost:3000/api/users/${userId}`
+        `${BASE_URL}users/${userId}`
       );
 
       // update user context with the latest data
