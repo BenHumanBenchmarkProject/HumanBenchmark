@@ -1,24 +1,11 @@
 import "./LeaderboardPage.css";
 import React, { use, useEffect, useState } from "react";
 import axios from "axios";
-import { BASE_URL, NavigationButtons } from "../constants";
+import { BASE_URL, NavigationButtons, BODY_PARTS } from "../constants";
 
 const USERNAME_KEY = "username";
 const LEVEL_KEY = "level";
 const OVERALL_STAT_KEY = "overallStat";
-const BODY_PARTS = [
-  "upper arms",
-  "lower arms",
-  "upper legs",
-  "lower legs",
-  "neck",
-  "back",
-  "shoulder",
-  "chest",
-  "waist",
-  "cardio",
-];
-
 
 const LeaderboardPage = () => {
   const [users, setUsers] = useState([]);
@@ -41,7 +28,7 @@ const LeaderboardPage = () => {
     const sortedUsers = [...users].sort((a, b) => {
       let aValue, bValue;
 
-      if (key === USERNAME_KEY || key === LEVEL_KEY || key === OVERALL_STAT_KEY) {
+      if ([USERNAME_KEY, LEVEL_KEY, OVERALL_STAT_KEY].includes(key)) {
         aValue = a[key];
         bValue = b[key];
       } else {
