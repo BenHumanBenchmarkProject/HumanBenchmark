@@ -25,20 +25,21 @@ const Sidebar = () => {
     return (user.xp / neededXP()) * 100;
   };
 
-
-
   const calculateOverallScore = () => {
-    if (!user || !user.bodyPartStats || user.bodyPartStats.length === 0) return 0;
+    if (!user || !user.bodyPartStats || user.bodyPartStats.length === 0)
+      return 0;
 
     console.log(user.bodyPartStats);
 
-    const totalScore = user.bodyPartStats.reduce((sum, stat) => sum + stat.score, 0);
+    const totalScore = user.bodyPartStats.reduce(
+      (sum, stat) => sum + stat.score,
+      0
+    );
     const averageScore = totalScore / user.bodyPartStats.length;
 
     console.log(`TotalScore: ${totalScore}, AverageScore: ${averageScore}`);
     return averageScore;
   };
-
 
   return (
     <aside className="sidebar">
@@ -62,10 +63,16 @@ const Sidebar = () => {
           <span>Overall</span>
           <div className="bar">
             <div
-              style={{ "--final-width": `${calculateOverallScore()}%` }}
+              style={{
+                "--final-width": `${
+                  user && user.overallStat ? user.overallStat : 0
+                }%`,
+              }}
             ></div>
           </div>
-          {calculateOverallScore().toFixed(2)}
+          {user && user.overallStat !== undefined
+            ? user.overallStat.toFixed(2)
+            : "0.00"}
         </div>
       </div>
     </aside>

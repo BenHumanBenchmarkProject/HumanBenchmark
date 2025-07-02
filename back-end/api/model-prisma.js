@@ -20,6 +20,13 @@ calculateNewXPAndLevel = (user, xpGained) => {
   return { newXP, newLevel };
 };
 
+function calculateOverallStat(bodyPartStats) {
+  if (!bodyPartStats || bodyPartStats.length === 0) return 0;
+  const totalScore = bodyPartStats.reduce((sum, stat) => sum + stat.score, 0);
+  return totalScore / bodyPartStats.length;
+};
+
+
 module.exports = {
   async findUsers(where) {
     // GET http://localhost:5432/api/users?type=Recent
@@ -31,6 +38,18 @@ module.exports = {
     const user = await prisma.user.findUnique({ where: { id } });
     return user;
   },
+
+  async findUsersLeaderboard(where) {
+    const users = await prisma.user.findMany({
+      where,
+      include: {
+        bodyPartStats: true,
+        muscleStats: true,
+      },
+    });
+    return users;
+  },
+
 
   async createUser(data) {
     const created = await prisma.user.create({ data });
@@ -105,25 +124,32 @@ module.exports = {
       // Fetch current user data
       const user = await prisma.user.findUnique({
         where: { id: userId },
+        include: { bodyPartStats: true },
       });
 
       // Calculate new XP and level
       const { newXP, newLevel } = calculateNewXPAndLevel(user, xpGained);
 
+
+      //Calculate overallStat
+      overallStat = calculateOverallStat(user.bodyPartStats);
+
+
       // Update user's XP and level
-      console.log(`New XP: ${newXP}, New Level: ${newLevel}`);
+      console.log(`New XP: ${newXP}, New Level: ${newLevel}, Overall Stat: ${overallStat}`);
       const updatedUser = await prisma.user.update({
         where: { id: userId },
         data: {
           xp: newXP,
           level: newLevel,
+          overallStat: overallStat,
         },
       });
 
       // Create bodyPartStat
       const newBodyPartStat = {
         bodyPart: newWorkout.bodyPart,
-        score: newWorkout.max, 
+        score: newWorkout.max,
         userId: userId,
       };
       await prisma.bodyPartStat.create({ data: newBodyPartStat });

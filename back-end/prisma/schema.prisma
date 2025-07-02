@@ -24,7 +24,7 @@ model User {
   gender            String
   level             Int              @default(1)
   xp                Int              @default(0)
-  // strengthOverall will be calculated on backend
+  overallStat       Float            @default(0)
   workouts          Workout[]
   muscleStats       MuscleStat[]
   bodyPartStats     BodyPartStat[]
