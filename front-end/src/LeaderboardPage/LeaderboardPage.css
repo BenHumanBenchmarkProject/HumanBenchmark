@@ -1,0 +1,47 @@
+.container {
+  padding: 20px;
+}
+
+.sort-buttons {
+  margin-bottom: 20px;
+}
+
+.sort-buttons button {
+  margin-right: 10px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+th {
+  background-color: #f4f4f4;
+  cursor: pointer;
+  position: relative;
+}
+
+th:hover {
+  background-color: #e0e0e0;
+}
+
+.active-sort {
+  background-color: #d3d3d3; 
+}
+
+tbody tr {
+  transition: font-size 0.2s ease-in-out;
+}
+
+tbody tr:hover {
+  font-size: 1.2em;
+}

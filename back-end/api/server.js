@@ -13,7 +13,8 @@ const {
   createWorkout,
   createBodyPartStat,
   createMuscleStat,
-  getMuscleStats
+  getMuscleStats,
+  findUsersLeaderboard
 } = require("./model-prisma");
 
 const prisma = new PrismaClient();
@@ -407,6 +408,24 @@ server.post("/api/users/:userId/muscleStats", async (req, res, next) => {
     next(err);
   }
 });
+
+
+// [Get] /api/leaderboard
+server.get("/api/leaderboard", async (req, res, next) => {
+  const search = req.query; // Use query parameters if needed for filtering
+  try {
+    const users = await findUsersLeaderboard(search);
+    if (users.length) {
+      res.json(users);
+    } else {
+      next({ status: 404, message: "No users found for the leaderboard" });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+
 
 
 
