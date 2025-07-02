@@ -6,7 +6,7 @@ import { useUser } from "../userContext";
 import axios from "axios";
 
 const LogWorkoutPage = () => {
-  const { user } = useUser();
+  const { user, login } = useUser();
   const userId = user ? user.id : null;
 
   const exercises = useContext(ExerciseContext);
@@ -66,11 +66,23 @@ const LogWorkoutPage = () => {
     };
 
     try {
-      const response = await axios.post(
+      // Create the workout
+      await axios.post(
         `http://localhost:3000/api/users/${userId}/workouts/${exercise.id}`,
         newWorkout
       );
-      console.log("Workout logged successfully:", response.data);
+
+      // Ftech updated user data
+      const updatedUserResponse = await axios.get(
+        `http://localhost:3000/api/users/${userId}`
+      );
+
+      // update user context with the latest data
+      if (updatedUserResponse.data) {
+        login(updatedUserResponse.data);
+      }
+
+      console.log("Workout logged successfully");
       resetForm(); // reset form after submission
       setSuccessMessage("Workout logged successfully!");
       setButtonFlash(true);
@@ -193,7 +205,9 @@ const LogWorkoutPage = () => {
                 {buttonFlash ? "Workout Logged!" : "Submit"}
               </button>
             </form>
-            {successMessage && <p className="success-message">{successMessage}</p>}
+            {successMessage && (
+              <p className="success-message">{successMessage}</p>
+            )}
           </div>
         </div>
       </div>

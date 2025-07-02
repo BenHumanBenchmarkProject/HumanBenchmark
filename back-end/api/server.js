@@ -11,6 +11,9 @@ const {
   updateUser,
   findExercises,
   createWorkout,
+  createBodyPartStat,
+  createMuscleStat,
+  getMuscleStats
 } = require("./model-prisma");
 
 const prisma = new PrismaClient();
@@ -283,25 +286,30 @@ server.get(
   }
 );
 
-//[Post] /api/users/:userId/workouts
-server.post("/api/users/:userId/workouts/:exerciseId", async (req, res, next) => {
-  const newWorkout = req.body;
-  const userId = Number(req.params.userId);
-  const exerciseId = Number(req.params.exerciseId);
+//[Post] /api/users/:userId/workouts/:exerciseId
+server.post(
+  "/api/users/:userId/workouts/:exerciseId",
+  async (req, res, next) => {
+    const newWorkout = req.body;
+    const userId = Number(req.params.userId);
+    const exerciseId = Number(req.params.exerciseId);
 
-  if (!newWorkout){
-    return res
-      .status(400)
-      .json({ error: "Workout data and exerciseId are required" });
-  }
+    if (!newWorkout) {
+      return res
+        .status(400)
+        .json({ error: "Workout data and exerciseId are required" });
+    }
 
-  try {
-    const created = await createWorkout(userId,exerciseId ,newWorkout);
-    res.status(201).json(created);
-  } catch (err) {
-    next(err);
+    try {
+      // Create the workout
+      const createdWorkout = await createWorkout(userId, exerciseId, newWorkout);
+      res.status(201).json(createdWorkout);
+    } catch (err) {
+      next(err);
+    }
   }
-});
+);
+
 
 //[Get] /api/users/:userId/workouts
 server.get("/api/users/:userId/workouts", async (req, res, next) => {
@@ -324,5 +332,84 @@ server.get("/api/users/:userId/workouts", async (req, res, next) => {
     next(err);
   }
 });
+
+//[Get] /api/users/:userId/musclestats
+server.get("/api/users/:userId/musclestats", async (req, res, next) => {
+  const userId = Number(req.params.userId);
+  const search = { ...req.query, userId };
+
+  try {
+    const muscleStats = await prisma.muscleStat.findMany({
+      where: search,
+    });
+    if (muscleStats.length) {
+      res.json(muscleStats);
+    } else {
+      next({
+        status: 404,
+        message: `No muscle stats found for user ID: ${userId}`,
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+
+// [Post] /api/users/:userId/bodyPartStats
+server.post("/api/users/:userId/bodyPartStats", async (req, res, next) => {
+  const userId = Number(req.params.userId);
+  const newBodyPartStat = req.body;
+  newBodyPartStat.userId = userId;
+
+  try{
+    const created = await createBodyPartStat(userId, newBodyPartStat);
+    res.status(201).json(created);
+  }catch(err){
+    next(err);
+  }
+});
+
+
+// [Get] /api/users/:userId/bodyPartStats
+server.get("/api/users/:userId/bodyPartStats", async (req, res, next) => {
+  const userId = Number(req.params.userId);
+
+  try {
+    const bodyPartStats = await prisma.bodyPartStat.findMany({
+      where: { userId: userId },
+    });
+
+    if (bodyPartStats.length) {
+      res.json(bodyPartStats);
+    } else {
+      next({
+        status: 404,
+        message: `No body part stats found for user ID: ${userId}`,
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+
+// [Post] /api/users/:userId/muscleStats
+server.post("/api/users/:userId/muscleStats", async (req, res, next) => {
+  const userId = Number(req.params.userId);
+  const newMuscleStat = req.body;
+  newMuscleStat.userId = userId;
+
+  try {
+    const created = await createMuscleStat(userId, newMuscleStat);
+    res.status(201).json(created);
+  } catch (err) {
+    next(err);
+  }
+});
+
+
+
+
 
 module.exports = server;
