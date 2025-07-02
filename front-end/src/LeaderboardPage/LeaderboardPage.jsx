@@ -3,10 +3,10 @@ import React, { use, useEffect, useState } from "react";
 import axios from "axios";
 import NavigationButtons from "../NaviagtionButtons/NavigationButtons";
 
-const usernameKey = "username";
-const levelKey = "level";
-const overallStatKey = "overallStat";
-const bodyParts = [
+const USERNAME_KEY = "username";
+const LEVEL_KEY = "level";
+const OVERALL_STAT_KEY = "overallStat";
+const BODY_PARTS = [
   "upper arms",
   "lower arms",
   "upper legs",
@@ -21,7 +21,7 @@ const bodyParts = [
 
 const LeaderboardPage = () => {
   const [users, setUsers] = useState([]);
-  const [sortKey, setSortKey] = useState(overallStatKey);
+  const [sortKey, setSortKey] = useState(OVERALL_STAT_KEY);
 
   useEffect(() => {
     fetchLeaderboard();
@@ -40,7 +40,7 @@ const LeaderboardPage = () => {
     const sortedUsers = [...users].sort((a, b) => {
       let aValue, bValue;
 
-      if (key === usernameKey || key === levelKey || key === overallStatKey) {
+      if (key === USERNAME_KEY || key === LEVEL_KEY || key === OVERALL_STAT_KEY) {
         aValue = a[key];
         bValue = b[key];
       } else {
@@ -71,24 +71,24 @@ const LeaderboardPage = () => {
             <thead>
               <tr>
                 <th
-                  className={sortKey === usernameKey ? "active-sort" : ""}
-                  onClick={() => sortUsers(usernameKey)}
+                  className={sortKey === USERNAME_KEY ? "active-sort" : ""}
+                  onClick={() => sortUsers(USERNAME_KEY)}
                 >
                   Username
                 </th>
                 <th
-                  className={sortKey === levelKey ? "active-sort" : ""}
-                  onClick={() => sortUsers(levelKey)}
+                  className={sortKey === LEVEL_KEY ? "active-sort" : ""}
+                  onClick={() => sortUsers(LEVEL_KEY)}
                 >
                   Level
                 </th>
                 <th
-                  className={sortKey === overallStatKey ? "active-sort" : ""}
-                  onClick={() => sortUsers(overallStatKey)}
+                  className={sortKey === OVERALL_STAT_KEY ? "active-sort" : ""}
+                  onClick={() => sortUsers(OVERALL_STAT_KEY)}
                 >
                   Overall
                 </th>
-                {bodyParts.map((bodyPart) => (
+                {BODY_PARTS.map((bodyPart) => (
                   <th
                     key={bodyPart}
                     className={sortKey === bodyPart ? "active-sort" : ""}
@@ -109,7 +109,7 @@ const LeaderboardPage = () => {
                       ? user.overallStat.toFixed(2)
                       : "0.00"}
                   </td>
-                  {bodyParts.map((bodyPart) => {
+                  {BODY_PARTS.map((bodyPart) => {
                     const stat = user.bodyPartStats.find(
                       (stat) => stat.bodyPart.toLowerCase() === bodyPart
                     );
