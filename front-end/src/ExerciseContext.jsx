@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 
-import { BASE_URL} from "./constants";
+import { BASE_URL } from "./constants";
 
 const ExerciseContext = createContext();
 
@@ -11,9 +11,7 @@ export const ExerciseProvider = ({ children }) => {
   useEffect(() => {
     const fetchExercises = async () => {
       try {
-        const exercisesResponse = await axios.get(
-          `${BASE_URL}exercises`
-        );
+        const exercisesResponse = await axios.get(`${BASE_URL}exercises`);
         setExercises(exercisesResponse.data);
       } catch (error) {
         console.error("Error fetching exercises:", error);
