@@ -2,7 +2,7 @@ import "./SignUpModal.css";
 import { useState } from "react";
 import axios from "axios";
 import bcrypt from "bcryptjs";
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+import { BASE_URL } from "../constants";
 const STEP_ONE = 1;
 const STEP_TWO = 2;
 const GENDER_MALE = "M";

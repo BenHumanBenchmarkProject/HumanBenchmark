@@ -1,7 +1,7 @@
 import "./LeaderboardPage.css";
 import React, { use, useEffect, useState } from "react";
 import axios from "axios";
-import NavigationButtons from "../NaviagtionButtons/NavigationButtons";
+import { BASE_URL, NavigationButtons } from "../constants";
 
 const USERNAME_KEY = "username";
 const LEVEL_KEY = "level";
@@ -18,7 +18,7 @@ const BODY_PARTS = [
   "waist",
   "cardio",
 ];
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 
 const LeaderboardPage = () => {
   const [users, setUsers] = useState([]);

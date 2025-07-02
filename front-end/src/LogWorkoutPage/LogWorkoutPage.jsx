@@ -1,11 +1,10 @@
 import "./LogWorkoutPage.css";
-import NavigationButtons from "../NaviagtionButtons/NavigationButtons";
 import ExerciseContext from "../ExerciseContext";
 import React, { useContext, useState } from "react";
 import { useUser } from "../userContext";
 import axios from "axios";
+import { BASE_URL, NavigationButtons } from "../constants";
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const LogWorkoutPage = () => {
   const { user, login } = useUser();

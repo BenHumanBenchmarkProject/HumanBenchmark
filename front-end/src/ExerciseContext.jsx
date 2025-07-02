@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+import { BASE_URL} from "./constants";
 
 const ExerciseContext = createContext();
 

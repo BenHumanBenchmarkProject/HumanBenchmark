@@ -3,7 +3,7 @@ import axios from "axios";
 import { useState, useContext } from "react";
 import UserContext from "..//userContext.jsx";
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+import { BASE_URL } from "../constants";
 
 const SignInModal = ({ onClose }) => {
   const [username, setUsername] = useState("");
