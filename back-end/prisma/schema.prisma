@@ -24,7 +24,7 @@ model User {
   gender            String
   level             Int              @default(1)
   xp                Int              @default(0)
-  overallStat       Float
+  overallStat       Float            @default(0)
   workouts          Workout[]
   muscleStats       MuscleStat[]
   bodyPartStats     BodyPartStat[]
