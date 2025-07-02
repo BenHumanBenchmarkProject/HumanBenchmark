@@ -1,35 +1,46 @@
 import "./LeaderboardPage.css";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import axios from "axios";
 import NavigationButtons from "../NaviagtionButtons/NavigationButtons";
 
+const usernameKey = "username";
+const levelKey = "level";
+const overallStatKey = "overallStat";
+const bodyParts = [
+  "upper arms",
+  "lower arms",
+  "upper legs",
+  "lower legs",
+  "neck",
+  "back",
+  "shoulder",
+  "chest",
+  "waist",
+  "cardio",
+];
+
 const LeaderboardPage = () => {
   const [users, setUsers] = useState([]);
-  const [sortKey, setSortKey] = useState("overallStat");
-  const [sortDirection, setSortDirection] = useState("desc");
+  const [sortKey, setSortKey] = useState(overallStatKey);
 
   useEffect(() => {
-    const fetchLeaderboard = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:3000/api/leaderboard"
-        );
-        setUsers(response.data);
-      } catch (error) {
-        console.error("Error fetching leaderboard data:", error);
-      }
-    };
-
     fetchLeaderboard();
   }, []);
 
-  const sortUsers = (key) => {
-    const direction = "desc"; // Onlt sort descending 
+  const fetchLeaderboard = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/leaderboard");
+      setUsers(response.data);
+    } catch (error) {
+      console.error("Error fetching leaderboard data:", error);
+    }
+  };
 
+  const sortUsers = (key) => {
     const sortedUsers = [...users].sort((a, b) => {
       let aValue, bValue;
 
-      if (key === "username" || key === "level" || key === "overallStat") {
+      if (key === usernameKey || key === levelKey || key === overallStatKey) {
         aValue = a[key];
         bValue = b[key];
       } else {
@@ -43,14 +54,11 @@ const LeaderboardPage = () => {
         bValue = bStat ? bStat.score : 0;
       }
 
-      if (aValue < bValue) return direction === "asc" ? -1 : 1;
-      if (aValue > bValue) return direction === "asc" ? 1 : -1;
-      return 0;
+      return bValue - aValue; // simplified sort by score
     });
 
     setUsers(sortedUsers);
     setSortKey(key);
-    setSortDirection(direction);
   };
 
   return (
@@ -63,35 +71,24 @@ const LeaderboardPage = () => {
             <thead>
               <tr>
                 <th
-                  className={sortKey === "username" ? "active-sort" : ""}
-                  onClick={() => sortUsers("username")}
+                  className={sortKey === usernameKey ? "active-sort" : ""}
+                  onClick={() => sortUsers(usernameKey)}
                 >
                   Username
                 </th>
                 <th
-                  className={sortKey === "level" ? "active-sort" : ""}
-                  onClick={() => sortUsers("level")}
+                  className={sortKey === levelKey ? "active-sort" : ""}
+                  onClick={() => sortUsers(levelKey)}
                 >
                   Level
                 </th>
                 <th
-                  className={sortKey === "overallStat" ? "active-sort" : ""}
-                  onClick={() => sortUsers("overallStat")}
+                  className={sortKey === overallStatKey ? "active-sort" : ""}
+                  onClick={() => sortUsers(overallStatKey)}
                 >
                   Overall
                 </th>
-                {[
-                  "upper arms",
-                  "lower arms",
-                  "upper legs",
-                  "lower legs",
-                  "neck",
-                  "back",
-                  "shoulder",
-                  "chest",
-                  "waist",
-                  "cardio",
-                ].map((bodyPart) => (
+                {bodyParts.map((bodyPart) => (
                   <th
                     key={bodyPart}
                     className={sortKey === bodyPart ? "active-sort" : ""}
@@ -112,18 +109,7 @@ const LeaderboardPage = () => {
                       ? user.overallStat.toFixed(2)
                       : "0.00"}
                   </td>
-                  {[
-                    "upper arms",
-                    "lower arms",
-                    "upper legs",
-                    "lower legs",
-                    "neck",
-                    "back",
-                    "shoulder",
-                    "chest",
-                    "waist",
-                    "cardio",
-                  ].map((bodyPart) => {
+                  {bodyParts.map((bodyPart) => {
                     const stat = user.bodyPartStats.find(
                       (stat) => stat.bodyPart.toLowerCase() === bodyPart
                     );
