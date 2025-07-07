@@ -204,4 +204,50 @@ module.exports = {
       where: { id: { in: friendIds } },
     });
   },
+
+  async getRecommendedFriends(userId) {
+    const friendships = await prisma.friendship.findMany({
+      // 1st row of connections
+      where: {
+        OR: [{ userId }, { friendId: userId }],
+      },
+    });
+
+    const friendIds = friendships.map((friend) =>
+      friend.userId === userId ? friend.friendId : friend.userId
+    );
+
+    const secondDegreeFriends = await prisma.friendship.findMany({
+      // 2nd row of connections
+      where: {
+        OR: [{ userId: { in: friendIds } }, { friendId: { in: friendIds } }],
+      },
+    });
+
+    const secondDegreeFriendIds = secondDegreeFriends
+    // get second-degree friend IDs, filter out direct friends and the current user
+      .map((friend) => {
+        if (!friendIds.includes(friend.userId) && friend.userId !== userId) {
+          return friend.userId;
+        }
+        if (
+          !friendIds.includes(friend.friendId) &&
+          friend.friendId !== userId
+        ) {
+          return friend.friendId;
+        }
+        return null;
+      })
+      .filter(Boolean); // Remove null values
+
+    // Remove duplicates
+    const uniqueSuggestedIds = [...new Set(secondDegreeFriendIds)];
+
+    // fetch user data
+    const suggestedUsers = await prisma.user.findMany({
+      where: { id: { in: uniqueSuggestedIds } },
+    });
+
+    return suggestedUsers;
+  },
 };

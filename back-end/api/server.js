@@ -17,7 +17,7 @@ const {
   findUsersLeaderboard,
   addfriend,
   getFriends,
-
+  getRecommendedFriends,
 } = require("./model-prisma");
 
 const prisma = new PrismaClient();
@@ -306,14 +306,17 @@ server.post(
 
     try {
       // Create the workout
-      const createdWorkout = await createWorkout(userId, exerciseId, newWorkout);
+      const createdWorkout = await createWorkout(
+        userId,
+        exerciseId,
+        newWorkout
+      );
       res.status(201).json(createdWorkout);
     } catch (err) {
       next(err);
     }
   }
 );
-
 
 //[Get] /api/users/:userId/workouts
 server.get("/api/users/:userId/workouts", async (req, res, next) => {
@@ -359,21 +362,19 @@ server.get("/api/users/:userId/musclestats", async (req, res, next) => {
   }
 });
 
-
 // [Post] /api/users/:userId/bodyPartStats
 server.post("/api/users/:userId/bodyPartStats", async (req, res, next) => {
   const userId = Number(req.params.userId);
   const newBodyPartStat = req.body;
   newBodyPartStat.userId = userId;
 
-  try{
+  try {
     const created = await createBodyPartStat(userId, newBodyPartStat);
     res.status(201).json(created);
-  }catch(err){
+  } catch (err) {
     next(err);
   }
 });
-
 
 // [Get] /api/users/:userId/bodyPartStats
 server.get("/api/users/:userId/bodyPartStats", async (req, res, next) => {
@@ -397,7 +398,6 @@ server.get("/api/users/:userId/bodyPartStats", async (req, res, next) => {
   }
 });
 
-
 // [Post] /api/users/:userId/muscleStats
 server.post("/api/users/:userId/muscleStats", async (req, res, next) => {
   const userId = Number(req.params.userId);
@@ -411,7 +411,6 @@ server.post("/api/users/:userId/muscleStats", async (req, res, next) => {
     next(err);
   }
 });
-
 
 // [Get] /api/leaderboard
 server.get("/api/leaderboard", async (req, res, next) => {
@@ -428,38 +427,34 @@ server.get("/api/leaderboard", async (req, res, next) => {
   }
 });
 
-
 //[Get] /api/users/:userId/friends
 server.get("/api/users/:id/friends", async (req, res, next) => {
   // get friends by user ID
   const id = Number(req.params.id);
-  try{
+  try {
     const friends = await getFriends(id);
-    if(friends && friends.length){
+    if (friends && friends.length) {
       res.json(friends);
+    } else {
+      next({ status: 404, message: `No friends found for user ID: ${id}` });
     }
-    else{
-      next({status: 404, message: `No friends found for user ID: ${id}`});
-    }
-  }catch(err){
+  } catch (err) {
     next(err);
   }
 });
-
 
 //[Post] /api/users/:userId/friends
 server.post("/api/users/:userId/friends/:friendId", async (req, res, next) => {
   const userId = Number(req.params.userId);
   const friendId = Number(req.params.friendId);
 
-  try{
+  try {
     const added = await addfriend(userId, friendId);
     res.status(201).json(added);
-  }catch(err){
+  } catch (err) {
     next(err);
   }
 });
-
 
 // [Get] /api/friendships
 server.get("/api/friendships", async (req, res, next) => {
@@ -475,11 +470,22 @@ server.get("/api/friendships", async (req, res, next) => {
   }
 });
 
-
-
-
-
-
-
+//[Get] /api/users/:userId/recommendedFriends
+server.get("/api/users/:userId/recommendedFriends", async (req, res, next) => {
+  const userId = Number(req.params.userId);
+  try {
+    const recommendedFriends = await getRecommendedFriends(userId);
+    if (recommendedFriends && recommendedFriends.length) {
+      res.json(recommendedFriends);
+    } else {
+      next({
+        status: 404,
+        message: `No recommended friends found for user ID: ${userId}`,
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
 
 module.exports = server;
