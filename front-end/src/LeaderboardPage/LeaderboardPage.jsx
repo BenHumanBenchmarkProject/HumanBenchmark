@@ -25,6 +25,8 @@ const LeaderboardPage = () => {
   };
 
   const sortUsers = (key) => {
+    key = key.toLowerCase();
+
     const sortedUsers = [...users].sort((a, b) => {
       let aValue, bValue;
 
@@ -88,23 +90,26 @@ const LeaderboardPage = () => {
               </tr>
             </thead>
             <tbody>
-              {users.map((user) => (
-                <tr key={user.id}>
-                  <td>{user.username}</td>
-                  <td>{user.level}</td>
-                  <td>
-                    {user.overallStat !== undefined
-                      ? user.overallStat.toFixed(2)
-                      : "0.00"}
-                  </td>
-                  {BODY_PARTS.map((bodyPart) => {
-                    const stat = user.bodyPartStats.find(
-                      (stat) => stat.bodyPart.toLowerCase() === bodyPart
-                    );
-                    return <td key={bodyPart}>{stat ? stat.score : 0}</td>;
-                  })}
-                </tr>
-              ))}
+              {users.map((user) => {
+                return (
+                  <tr key={user.id}>
+                    <td>{user.username}</td>
+                    <td>{user.level}</td>
+                    <td>
+                      {user.overallStat !== undefined
+                        ? user.overallStat.toFixed(2)
+                        : "0.00"}
+                    </td>
+                    {BODY_PARTS.map((bodyPart) => {
+                      const stat = user.bodyPartStats.find(
+                        (stat) =>
+                          stat.bodyPart.toLowerCase() === bodyPart.toLowerCase()
+                      );
+                      return <td key={bodyPart}>{stat ? stat.score : 0}</td>;
+                    })}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
