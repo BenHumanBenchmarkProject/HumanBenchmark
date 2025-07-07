@@ -117,6 +117,12 @@
   background-color: #ccc;
 }
 
+.bodypart-item.selected {
+  background-color: #808080;
+
+}
+
+
 @media (max-width: 768px) {
   .builder-container {
     flex-direction: column;
