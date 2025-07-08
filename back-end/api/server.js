@@ -14,7 +14,7 @@ const {
   createBodyPartStat,
   createMuscleStat,
   getMuscleStats,
-  findUsersLeaderboard
+  findUsersLeaderboard,
 } = require("./model-prisma");
 
 const prisma = new PrismaClient();
@@ -303,14 +303,17 @@ server.post(
 
     try {
       // Create the workout
-      const createdWorkout = await createWorkout(userId, exerciseId, newWorkout);
+      const createdWorkout = await createWorkout(
+        userId,
+        exerciseId,
+        newWorkout
+      );
       res.status(201).json(createdWorkout);
     } catch (err) {
       next(err);
     }
   }
 );
-
 
 //[Get] /api/users/:userId/workouts
 server.get("/api/users/:userId/workouts", async (req, res, next) => {
@@ -320,6 +323,9 @@ server.get("/api/users/:userId/workouts", async (req, res, next) => {
   try {
     const workouts = await prisma.workout.findMany({
       where: search,
+      include: {
+        movements: true,
+      },
     });
     if (workouts.length) {
       res.json(workouts);
@@ -356,21 +362,19 @@ server.get("/api/users/:userId/musclestats", async (req, res, next) => {
   }
 });
 
-
 // [Post] /api/users/:userId/bodyPartStats
 server.post("/api/users/:userId/bodyPartStats", async (req, res, next) => {
   const userId = Number(req.params.userId);
   const newBodyPartStat = req.body;
   newBodyPartStat.userId = userId;
 
-  try{
+  try {
     const created = await createBodyPartStat(userId, newBodyPartStat);
     res.status(201).json(created);
-  }catch(err){
+  } catch (err) {
     next(err);
   }
 });
-
 
 // [Get] /api/users/:userId/bodyPartStats
 server.get("/api/users/:userId/bodyPartStats", async (req, res, next) => {
@@ -394,7 +398,6 @@ server.get("/api/users/:userId/bodyPartStats", async (req, res, next) => {
   }
 });
 
-
 // [Post] /api/users/:userId/muscleStats
 server.post("/api/users/:userId/muscleStats", async (req, res, next) => {
   const userId = Number(req.params.userId);
@@ -408,7 +411,6 @@ server.post("/api/users/:userId/muscleStats", async (req, res, next) => {
     next(err);
   }
 });
-
 
 // [Get] /api/leaderboard
 server.get("/api/leaderboard", async (req, res, next) => {
@@ -424,10 +426,6 @@ server.get("/api/leaderboard", async (req, res, next) => {
     next(err);
   }
 });
-
-
-
-
 
 
 

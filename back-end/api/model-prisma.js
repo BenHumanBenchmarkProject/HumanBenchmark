@@ -24,8 +24,7 @@ function calculateOverallStat(bodyPartStats) {
   if (!bodyPartStats || bodyPartStats.length === 0) return 0;
   const totalScore = bodyPartStats.reduce((sum, stat) => sum + stat.score, 0);
   return totalScore / bodyPartStats.length;
-};
-
+}
 
 module.exports = {
   async findUsers(where) {
@@ -49,7 +48,6 @@ module.exports = {
     });
     return users;
   },
-
 
   async createUser(data) {
     const created = await prisma.user.create({ data });
@@ -130,13 +128,13 @@ module.exports = {
       // Calculate new XP and level
       const { newXP, newLevel } = calculateNewXPAndLevel(user, xpGained);
 
-
       //Calculate overallStat
       overallStat = calculateOverallStat(user.bodyPartStats);
 
-
       // Update user's XP and level
-      console.log(`New XP: ${newXP}, New Level: ${newLevel}, Overall Stat: ${overallStat}`);
+      console.log(
+        `New XP: ${newXP}, New Level: ${newLevel}, Overall Stat: ${overallStat}`
+      );
       const updatedUser = await prisma.user.update({
         where: { id: userId },
         data: {
