@@ -76,7 +76,6 @@ const LogWorkoutPage = () => {
     };
 
     setPlan([...plan, newExercise]);
-    //resetForm();
   };
 
   const handleSubmit = async (event) => {
