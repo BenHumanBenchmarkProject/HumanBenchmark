@@ -287,27 +287,43 @@ server.get(
   }
 );
 
-//[Post] /api/users/:userId/workouts/:exerciseId
+//[Post] /api/users/:userId/workouts
 server.post(
-  "/api/users/:userId/workouts/:exerciseId",
+  //create Workout
+  "/api/users/:userId/workouts",
   async (req, res, next) => {
-    const newWorkout = req.body;
+    const { name, movements } = req.body;
     const userId = Number(req.params.userId);
-    const exerciseId = Number(req.params.exerciseId);
 
-    if (!newWorkout) {
+    if (!name || !Array.isArray(movements) || movements.length === 0) {
       return res
         .status(400)
-        .json({ error: "Workout data and exerciseId are required" });
+        .json({ error: "Workout name and movements are required" });
     }
 
     try {
       // Create the workout
-      const createdWorkout = await createWorkout(
-        userId,
-        exerciseId,
-        newWorkout
-      );
+      const createdWorkout = await prisma.workout.create({
+        data: {
+          name,
+          userId,
+          movements: {
+            create: movements.map((movement) => ({
+              name: movement.name,
+              bodyPart: movement.bodyPart,
+              reps: movement.reps,
+              sets: movement.sets,
+              weight: movement.weight,
+              max: movement.max,
+              muscle: movement.muscle,
+              userId: userId,
+            })),
+          },
+        },
+        include: {
+          movements: true,
+        },
+      });
       res.status(201).json(createdWorkout);
     } catch (err) {
       next(err);
@@ -426,7 +442,5 @@ server.get("/api/leaderboard", async (req, res, next) => {
     next(err);
   }
 });
-
-
 
 module.exports = server;
