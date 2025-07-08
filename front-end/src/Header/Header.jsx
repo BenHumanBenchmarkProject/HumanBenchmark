@@ -29,8 +29,8 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
     <header className="banner">
       <div className="logo">HUMAN BENCHMARK (LOGO)</div>
       {user ? (
-        <button onClick={logout}>
-          <div className="account">
+        <button>
+          <div className="account" onClick={logout}>
             <h3>{user.username}</h3>
             <img src={blankPfp} alt="profile picture" width="40px" />
           </div>
