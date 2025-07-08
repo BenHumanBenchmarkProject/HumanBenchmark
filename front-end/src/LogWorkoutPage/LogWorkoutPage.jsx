@@ -19,6 +19,7 @@ const LogWorkoutPage = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [buttonFlash, setButtonFlash] = useState(false); // new state for successful submission
   const [plan, setPlan] = useState([]);
+  const [workoutName, setWorkoutName] = useState("");
 
   const resetForm = () => {
     setSelectedBodyPart("");
@@ -30,6 +31,7 @@ const LogWorkoutPage = () => {
 
   const handleClearPlan = () => {
     setPlan([]);
+    setWorkoutName("");
   };
 
   const handleSetsChange = (event) => {
@@ -57,6 +59,10 @@ const LogWorkoutPage = () => {
     setWeight(event.target.value);
   };
 
+  const handleWorkoutNameChange = (event) => {
+    setWorkoutName(event.target.value);
+  };
+
   const handleAdd = (event) => {
     event.preventDefault();
 
@@ -81,28 +87,27 @@ const LogWorkoutPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const exercise = exercises.find((ex) => ex.name === selectedExercise);
-    if (!exercise) {
-      console.error("Exercise not found");
+    if (!plan.length) {
+      console.error("No exercises in plan");
       return;
     }
 
-    const newWorkout = {
-      name: selectedExercise,
-      bodyPart: selectedBodyPart,
-      reps: parseInt(reps, 10),
-      weight: parseInt(weight, 10),
-      max: parseInt(weight, 10) * (1 + parseInt(reps, 10) / 30), // Epley Formula
-      muscle: selectedMuscle,
-    };
+
 
     try {
       // Create the workout
-      await axios.post(
-        `${BASE_URL}users/${userId}/workouts/${exercise.id}`,
-        newWorkout
-      );
-
+      const response = await axios.post(`${BASE_URL}users/${userId}/workouts`, {
+        name: workoutName,
+        movements: plan.map((exercise) => ({
+          name: exercise.name,
+          bodyPart: exercise.bodyPart,
+          reps: exercise.reps,
+          sets: exercise.sets,
+          weight: exercise.weight,
+          max: exercise.weight * (1 + exercise.reps / 30), // Epley Formula
+          muscle: exercise.muscle,
+        })),
+      });
       // Ftech updated user data
       const updatedUserResponse = await axios.get(`${BASE_URL}users/${userId}`);
 
@@ -116,6 +121,7 @@ const LogWorkoutPage = () => {
       setSuccessMessage("Workout logged successfully!");
       setButtonFlash(true);
       setTimeout(() => setButtonFlash(false), 2500); // flash for 2.5 seconds
+      handleClearPlan(); // clear plan after submission
     } catch (error) {
       console.error("Error logging workout:", error);
     }
@@ -267,6 +273,16 @@ const LogWorkoutPage = () => {
                 <button className="plan-btn" onClick={handleClearPlan}>
                   Clear
                 </button>
+              </div>
+              <div className="form-group">
+                <input
+                  type="text"
+                  id="workout-name"
+                  name="workout-name"
+                  value={workoutName}
+                  onChange={handleWorkoutNameChange}
+                  placeholder="Workout Name"
+                />
               </div>
             </div>
           </div>
