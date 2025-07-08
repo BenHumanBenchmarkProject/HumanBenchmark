@@ -303,20 +303,20 @@ async function main() {
     });
 
     // creater bodyPartStats and link to user
-    for (const bps of bodyPartStats.create) {
+    for (const bodyPartStat of bodyPartStats.create) {
       await prisma.bodyPartStat.create({
         data: {
-          ...bps,
+          ...bodyPartStat,
           user: { connect: { id: user.id } },
         },
       });
     }
 
     // create muscleStats and link to user
-    for (const ms of muscleStats.create) {
+    for (const muscleStat of muscleStats.create) {
       await prisma.muscleStat.create({
         data: {
-          ...ms,
+          ...muscleStat,
           user: { connect: { id: user.id } },
         },
       });
