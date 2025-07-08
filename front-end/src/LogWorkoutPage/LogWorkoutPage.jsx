@@ -5,7 +5,6 @@ import { useUser } from "../userContext";
 import axios from "axios";
 import { BASE_URL, NavigationButtons } from "../constants";
 
-
 const LogWorkoutPage = () => {
   const { user, login } = useUser();
   const userId = user ? user.id : null;
@@ -15,9 +14,11 @@ const LogWorkoutPage = () => {
   const [selectedMuscle, setSelectedMuscle] = useState("");
   const [selectedExercise, setSelectedExercise] = useState("");
   const [reps, setReps] = useState(0);
+  const [sets, setSets] = useState(0);
   const [weight, setWeight] = useState(0);
   const [successMessage, setSuccessMessage] = useState("");
   const [buttonFlash, setButtonFlash] = useState(false); // new state for successful submission
+  const [plan, setPlan] = useState([]);
 
   const resetForm = () => {
     setSelectedBodyPart("");
@@ -25,6 +26,14 @@ const LogWorkoutPage = () => {
     setSelectedExercise("");
     setReps(0);
     setWeight(0);
+  };
+
+  const handleClearPlan = () => {
+    setPlan([]);
+  };
+
+  const handleSetsChange = (event) => {
+    setSets(event.target.value);
   };
 
   const handleBodyPartChange = (event) => {
@@ -46,6 +55,27 @@ const LogWorkoutPage = () => {
 
   const handleWeightChange = (event) => {
     setWeight(event.target.value);
+  };
+
+  const handleAdd = (event) => {
+    event.preventDefault();
+
+    const exercise = exercises.find((ex) => ex.name === selectedExercise);
+    if (!exercise) {
+      console.error("Exercise not found");
+      return;
+    }
+
+    const newExercise = {
+      name: selectedExercise,
+      bodyPart: selectedBodyPart,
+      reps: parseInt(reps, 10),
+      sets: parseInt(sets, 10),
+      weight: parseInt(weight, 10),
+      muscle: selectedMuscle,
+    };
+
+    setPlan([...plan, newExercise]);
   };
 
   const handleSubmit = async (event) => {
@@ -74,9 +104,7 @@ const LogWorkoutPage = () => {
       );
 
       // Ftech updated user data
-      const updatedUserResponse = await axios.get(
-        `${BASE_URL}users/${userId}`
-      );
+      const updatedUserResponse = await axios.get(`${BASE_URL}users/${userId}`);
 
       // update user context with the latest data
       if (updatedUserResponse.data) {
@@ -118,97 +146,129 @@ const LogWorkoutPage = () => {
         <NavigationButtons />
         <div className="main-content">
           <h1>Log Workout</h1>
-          <div className="workout-builder">
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label htmlFor="category">Body Part</label>
-                <select
-                  id="category"
-                  name="category"
-                  onChange={handleBodyPartChange}
+          <div className="boxes">
+            <div className="workout-builder">
+              <form onSubmit={handleAdd}>
+                <div className="form-group">
+                  <label htmlFor="category">Body Part</label>
+                  <select
+                    id="category"
+                    name="category"
+                    onChange={handleBodyPartChange}
+                  >
+                    <option value="">Select a body part</option>
+                    <option value="Upper Arms">Upper Arms</option>
+                    <option value="Lower Arms">Lower Arms</option>
+                    <option value="Upper Legs">Upper Legs</option>
+                    <option value="Lower Legs">Lower Legs</option>
+                    <option value="Neck">Neck</option>
+                    <option value="Back">Back</option>
+                    <option value="Shoulders">Shoulders</option>
+                    <option value="Chest">Chest</option>
+                    <option value="Waist">Waist</option>
+                    <option value="Cardio">Cardio</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="muscle">Muscle</label>
+                  <select
+                    id="muscle"
+                    name="muscle"
+                    onChange={handleMuscleChange}
+                    value={selectedMuscle}
+                  >
+                    <option value="">Select a muscle</option>
+                    {filteredMuscles.map((muscle) => (
+                      <option key={muscle} value={muscle}>
+                        {muscle}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="exercise">Exercise</label>
+                  <select
+                    id="exercise"
+                    name="exercise"
+                    onChange={handleExerciseChange}
+                    value={selectedExercise}
+                  >
+                    <option value="">Select an exercise</option>
+                    {filteredExercises.map((exercise) => (
+                      <option key={exercise.name} value={exercise.name}>
+                        {exercise.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="reps">Reps</label>
+                  <input
+                    type="number"
+                    id="reps"
+                    name="reps"
+                    value={reps}
+                    onChange={handleRepsChange}
+                    min="0"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="sets">Sets</label>
+                  <input
+                    type="number"
+                    id="sets"
+                    name="sets"
+                    value={sets}
+                    onChange={handleSetsChange}
+                    min="0"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="weight">Weight</label>
+                  <input
+                    type="number"
+                    id="weight"
+                    name="weight"
+                    value={weight}
+                    onChange={handleWeightChange}
+                    min="0"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className={`submit-btn ${buttonFlash ? "flash" : ""}`}
                 >
-                  <option value="">Select a body part</option>
-                  <option value="Upper Arms">Upper Arms</option>
-                  <option value="Lower Arms">Lower Arms</option>
-                  <option value="Upper Legs">Upper Legs</option>
-                  <option value="Lower Legs">Lower Legs</option>
-                  <option value="Neck">Neck</option>
-                  <option value="Back">Back</option>
-                  <option value="Shoulders">Shoulders</option>
-                  <option value="Chest">Chest</option>
-                  <option value="Waist">Waist</option>
-                  <option value="Cardio">Cardio</option>
-                </select>
-              </div>
+                  Add
+                </button>
+              </form>
+              {successMessage && (
+                <p className="success-message">{successMessage}</p>
+              )}
+            </div>
+            <div className="log-plan-box">
+              <div className="plan-header">Plan</div>
+              {plan.map((exercise, index) => (
+                <div key={index} className="plan-item">
+                  {exercise.name} {exercise.sets}x{exercise.reps} @
+                  {exercise.weight}lb
+                </div>
+              ))}
 
-              <div className="form-group">
-                <label htmlFor="muscle">Muscle</label>
-                <select
-                  id="muscle"
-                  name="muscle"
-                  onChange={handleMuscleChange}
-                  value={selectedMuscle}
-                >
-                  <option value="">Select a muscle</option>
-                  {filteredMuscles.map((muscle) => (
-                    <option key={muscle} value={muscle}>
-                      {muscle}
-                    </option>
-                  ))}
-                </select>
+              <div className="plan-buttons">
+                <button className="plan-btn" onClick={handleSubmit}>
+                  {buttonFlash ? "Workout Logged!" : "Save"}
+                </button>
+                <button className="plan-btn" onClick={handleClearPlan}>
+                  Clear
+                </button>
               </div>
-
-              <div className="form-group">
-                <label htmlFor="exercise">Exercise</label>
-                <select
-                  id="exercise"
-                  name="exercise"
-                  onChange={handleExerciseChange}
-                  value={selectedExercise}
-                >
-                  <option value="">Select an exercise</option>
-                  {filteredExercises.map((exercise) => (
-                    <option key={exercise.name} value={exercise.name}>
-                      {exercise.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="reps">Reps</label>
-                <input
-                  type="number"
-                  id="reps"
-                  name="reps"
-                  value={reps}
-                  onChange={handleRepsChange}
-                  min="0"
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="weight">Weight</label>
-                <input
-                  type="number"
-                  id="weight"
-                  name="weight"
-                  value={weight}
-                  onChange={handleWeightChange}
-                  min="0"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className={`submit-btn ${buttonFlash ? "flash" : ""}`}
-              >
-                {buttonFlash ? "Workout Logged!" : "Submit"}
-              </button>
-            </form>
-            {successMessage && (
-              <p className="success-message">{successMessage}</p>
-            )}
+            </div>
           </div>
         </div>
       </div>
