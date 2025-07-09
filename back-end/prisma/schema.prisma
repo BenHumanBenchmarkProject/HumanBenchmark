@@ -89,6 +89,8 @@ model MuscleStat {
   bodyPartStatId Int?
   updatedAt    DateTime      @default(now())
   createdAt    DateTime      @default(now())
+
+  @@unique([userId, muscle])
 }
 
 model BodyPartStat {
@@ -100,4 +102,6 @@ model BodyPartStat {
   score        Int
   updatedAt    DateTime      @default(now())
   createdAt    DateTime      @default(now())
+
+  @@unique([userId, bodyPart])
 }
