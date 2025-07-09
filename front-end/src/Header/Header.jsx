@@ -5,13 +5,15 @@ import SignInModal from "../SignInModal/SignInModal";
 import SignUpModal from "../SignUpModal/SIgnUpModal";
 import { useState } from "react";
 import UserContext from "../userContext.jsx";
+import AccountModal from "../AccountModal/AccountModal.jsx";
 
 const SIGN_IN_MODAL = "SIGN_IN_MODAL";
 const SIGN_UP_MODAL = "SIGN_UP_MODAL";
+const ACCOUNT_MODAL = "ACCOUNT_MODAL";
 
 const Header = ({ isLoggedIn, setIsLoggedIn }) => {
   const [activeModal, setActiveModal] = useState(null);
-  const { user, logout } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   const handleSignInClick = () => {
     setActiveModal(SIGN_IN_MODAL);
@@ -25,16 +27,27 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
     setActiveModal(null);
   };
 
+  const handleCursorEnter = () => {
+    setActiveModal(ACCOUNT_MODAL);
+  };
+
   return (
     <header className="banner">
       <div className="logo">HUMAN BENCHMARK (LOGO)</div>
       {user ? (
-        <button>
-          <div className="account" onClick={logout}>
-            <h3>{user.username}</h3>
-            <img src={blankPfp} alt="profile picture" width="40px" />
-          </div>
-        </button>
+        <div
+          className="account-signed-in"
+          onMouseEnter={handleCursorEnter}
+          onMouseLeave={handleCloseModals}
+        >
+          <button>
+            <div className="account">
+              <h3>{user.username}</h3>
+              <img src={blankPfp} alt="profile picture" width="40px" />
+            </div>
+          </button>
+          {activeModal === ACCOUNT_MODAL && <AccountModal />}
+        </div>
       ) : (
         <div className="account">
           <button onClick={handleSignInClick}>Log in</button>
