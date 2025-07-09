@@ -1,5 +1,5 @@
 import "./BuildWorkoutPage.css";
-import React, { use } from "react";
+import React from "react";
 import axios from "axios";
 import { useState } from "react";
 import { BODY_PARTS, BASE_URL, NavigationButtons } from "../constants";

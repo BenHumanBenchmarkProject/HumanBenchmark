@@ -292,7 +292,7 @@ server.post(
   //create Workout
   "/api/users/:userId/workouts",
   async (req, res, next) => {
-    const { name,isComplete, movements } = req.body;
+    const { name, isComplete, movements } = req.body;
     const userId = Number(req.params.userId);
 
     if (!name || !Array.isArray(movements) || movements.length === 0) {
