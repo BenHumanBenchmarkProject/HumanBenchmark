@@ -2,6 +2,7 @@ import "./AccountModal.css";
 import UserContext from "../userContext";
 import blankProfile from "../assets/blank-pfp.jpg";
 import { useContext } from "react";
+import { Link } from "react-router";
 
 const AccountModal = () => {
   const { user, logout } = useContext(UserContext);
@@ -17,7 +18,10 @@ const AccountModal = () => {
         <div className="modal-right">
           <h2>{user.username}</h2>
           <div className="modal-btns">
-            <button id="my-account-btn">My Account</button>
+            <Link to={"/myAccount"}>
+              <button id="my-account-btn">My Account</button>{" "}
+            </Link>
+
             <button id="logout-btn" onClick={logout}>
               Log Out
             </button>

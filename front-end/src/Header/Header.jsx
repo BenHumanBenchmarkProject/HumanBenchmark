@@ -1,11 +1,11 @@
 import "./Header.css";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import blankPfp from "../assets/blank-pfp.jpg";
 import SignInModal from "../SignInModal/SignInModal";
 import SignUpModal from "../SignUpModal/SIgnUpModal";
-import { useState } from "react";
 import UserContext from "../userContext.jsx";
 import AccountModal from "../AccountModal/AccountModal.jsx";
+
 
 const SIGN_IN_MODAL = "SIGN_IN_MODAL";
 const SIGN_UP_MODAL = "SIGN_UP_MODAL";
