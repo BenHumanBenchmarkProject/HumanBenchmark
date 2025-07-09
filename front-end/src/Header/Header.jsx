@@ -9,20 +9,18 @@ import AccountModal from "../AccountModal/AccountModal.jsx";
 
 const SIGN_IN_MODAL = "SIGN_IN_MODAL";
 const SIGN_UP_MODAL = "SIGN_UP_MODAL";
+const ACCOUNT_MODAL = "ACCOUNT_MODAL";
 
 const Header = ({ isLoggedIn, setIsLoggedIn }) => {
   const [activeModal, setActiveModal] = useState(null);
-  const [isAccountModalVisible, setIsAccountModalVisible] = useState(false);
   const { user } = useContext(UserContext);
 
   const handleSignInClick = () => {
     setActiveModal(SIGN_IN_MODAL);
-    setIsAccountModalVisible(false); // without this line in the AccountModal appears after log in
   };
 
   const handleSignUpClick = () => {
     setActiveModal(SIGN_UP_MODAL);
-    setIsAccountModalVisible(false); // without this line in the AccountModal appears after log in
   };
 
   const handleCloseModals = () => {
@@ -30,11 +28,7 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
   };
 
   const handleCursorEnter = () => {
-    setIsAccountModalVisible(true);
-  };
-
-  const handleCursorLeave = () => {
-    setIsAccountModalVisible(false);
+    setActiveModal(ACCOUNT_MODAL);
   };
 
   return (
@@ -44,7 +38,7 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
         <div
           className="account-signed-in"
           onMouseEnter={handleCursorEnter}
-          onMouseLeave={handleCursorLeave}
+          onMouseLeave={handleCloseModals}
         >
           <button>
             <div className="account">
@@ -52,7 +46,7 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
               <img src={blankPfp} alt="profile picture" width="40px" />
             </div>
           </button>
-          {isAccountModalVisible && <AccountModal />}
+          {activeModal === ACCOUNT_MODAL && <AccountModal />}
         </div>
       ) : (
         <div className="account">
