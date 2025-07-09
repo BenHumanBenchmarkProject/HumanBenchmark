@@ -122,6 +122,29 @@
 
 }
 
+.build-form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.build-form-group select{
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.build-form-group input{
+  width: 85%;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-bottom: 5px;
+}
+
 
 @media (max-width: 768px) {
   .builder-container {

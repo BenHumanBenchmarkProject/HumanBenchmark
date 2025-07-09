@@ -292,7 +292,7 @@ server.post(
   //create Workout
   "/api/users/:userId/workouts",
   async (req, res, next) => {
-    const { name, movements } = req.body;
+    const { name,isComplete, movements } = req.body;
     const userId = Number(req.params.userId);
 
     if (!name || !Array.isArray(movements) || movements.length === 0) {
@@ -306,6 +306,7 @@ server.post(
       const createdWorkout = await prisma.workout.create({
         data: {
           name,
+          isComplete,
           userId,
           movements: {
             create: movements.map((movement) => ({

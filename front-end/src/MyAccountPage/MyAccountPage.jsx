@@ -80,17 +80,19 @@ const MyAccountPage = () => {
         <div className="completed-workouts-box">
           <div className="completed-workout-header">Completed Workouts</div>
           <div className="completed-workout-list">
-            {user.workouts.map((workout, index) => (
-              <div key={index} className="completed-workout-item">
-                <span>{workout.name}</span>
-                <button
-                  className="details-button"
-                  onClick={() => handleDetailsClick(workout)}
-                >
-                  Details
-                </button>
-              </div>
-            ))}
+            {user.workouts
+              .filter((workout) => workout.isComplete) // only show completed workouts
+              .map((workout, index) => (
+                <div key={index} className="completed-workout-item">
+                  <span>{workout.name}</span>
+                  <button
+                    className="details-button"
+                    onClick={() => handleDetailsClick(workout)}
+                  >
+                    Details
+                  </button>
+                </div>
+              ))}
           </div>
         </div>
       </div>
