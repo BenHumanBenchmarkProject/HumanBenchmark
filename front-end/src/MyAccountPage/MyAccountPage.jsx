@@ -4,11 +4,15 @@ import { useContext } from "react";
 import UserContext from "../userContext";
 import blankProfilePic from "../assets/blank-pfp.jpg";
 
+const GENDER_FEMALE = "F";
+const GENDER_MALE = "M";
+
 const MyAccountPage = () => {
   const { user } = useContext(UserContext);
 
   const formattedDate = new Date(user.createdAt).toLocaleDateString("en-US", {
     // make the user.createdAt date more readable
+    // month day, year  (ex. July 8, 2025)
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -22,17 +26,16 @@ const MyAccountPage = () => {
   };
 
   const formattedGender = () => {
-    if (user.gender === "M") {
+    if (user.gender === GENDER_MALE) {
       return "Male";
     }
-    if (user.gender === "F") {
+    if (user.gender === GENDER_FEMALE) {
       return "Female";
     }
   };
 
   const handleDetailsClick = (workout) => {
     console.log("Workout details:", workout);
-    // Need to add logic to handle workout details click
   };
 
   return (
@@ -70,18 +73,7 @@ const MyAccountPage = () => {
 
           <div className="friend-request-box">
             <div className="friend-request-header">Friend Requests</div>
-            <div className="friend-request-list">
-              {/*
-
-            Will be implemented later
-
-            {user.friendRequests.map((friendRequest, index) => (
-                  <button key={index} className="friend-request-item">
-                    {friendRequest.name}
-                  </button>
-                ))}
-            */}
-            </div>
+            <div className="friend-request-list"></div>
           </div>
         </div>
 
