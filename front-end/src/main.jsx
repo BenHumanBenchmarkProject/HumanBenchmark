@@ -10,6 +10,7 @@ import LogWorkoutPage from "./LogWorkoutPage/LogWorkoutPage.jsx";
 import BuildWorkoutPage from "./BuildWorkoutPage/BuildWorkoutPage.jsx";
 import { UserProvider } from "./userContext.jsx";
 import { ExerciseProvider } from "./ExerciseContext";
+import MyAccountPage from "./MyAccountPage/MyAccountPage.jsx";
 import Layout from "./Layout/Layout.jsx";
 
 const routes = createBrowserRouter([
@@ -42,6 +43,14 @@ const routes = createBrowserRouter([
     element: (
       <Layout>
         <BuildWorkoutPage />
+      </Layout>
+    ),
+  },
+  {
+    path: "/myAccount",
+    element: (
+      <Layout>
+        <MyAccountPage />
       </Layout>
     ),
   },
