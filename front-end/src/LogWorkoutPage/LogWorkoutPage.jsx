@@ -92,12 +92,11 @@ const LogWorkoutPage = () => {
       return;
     }
 
-
-
     try {
       // Create the workout
       const response = await axios.post(`${BASE_URL}users/${userId}/workouts`, {
         name: workoutName,
+        isComplete: true,
         movements: plan.map((exercise) => ({
           name: exercise.name,
           bodyPart: exercise.bodyPart,

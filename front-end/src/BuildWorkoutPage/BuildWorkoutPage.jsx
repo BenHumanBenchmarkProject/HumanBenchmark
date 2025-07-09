@@ -1,14 +1,18 @@
 import "./BuildWorkoutPage.css";
 import React from "react";
-import NavigationButtons from "../NaviagtionButtons/NavigationButtons";
 import axios from "axios";
 import { useState } from "react";
-import { BODY_PARTS, BASE_URL } from "../constants";
+import { BODY_PARTS, BASE_URL, NavigationButtons } from "../constants";
+import { useUser } from "../userContext";
 
 const BuildWorkoutPage = () => {
+  const { login, user } = useUser();
+  const userId = user ? user.id : null;
+
   const [selectedBodyPart, setSelectedBodyPart] = useState("");
   const [exercises, setExercises] = useState([]);
   const [plan, setPlan] = useState([]);
+  const [workoutName, setWorkoutName] = useState("");
 
   const handleBodyPartChange = async (event) => {
     const bodyPart = event.target.value.toLowerCase();
@@ -37,6 +41,11 @@ const BuildWorkoutPage = () => {
 
   const handleClearPlan = () => {
     setPlan([]);
+    setWorkoutName("");
+  };
+
+  const handleWorkoutNameChange = (event) => {
+    setWorkoutName(event.target.value);
   };
 
   return (
@@ -93,6 +102,16 @@ const BuildWorkoutPage = () => {
                 <button className="plan-btn" onClick={handleClearPlan}>
                   Clear
                 </button>
+              </div>
+              <div className="build-form-group">
+                <input
+                  type="text"
+                  id="workout-name"
+                  name="workout-name"
+                  value={workoutName}
+                  onChange={handleWorkoutNameChange}
+                  placeholder="Workout Name"
+                />
               </div>
             </div>
           </div>
