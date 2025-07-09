@@ -48,59 +48,6 @@ const BuildWorkoutPage = () => {
     setWorkoutName(event.target.value);
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    if (!plan.length) {
-      console.error("No exercises in plan");
-      return;
-    }
-
-    try {
-      // Create the workout
-      console.log("Logging workout...");
-      console.log(
-        workoutName,
-
-        plan.map((exercise) => ({
-          name: exercise.name,
-          bodyPart: exercise.bodyPart,
-          reps: exercise.reps,
-          sets: exercise.sets,
-          weight: exercise.weight,
-          max: exercise.weight * (1 + exercise.reps / 30), // Epley Formula
-          muscle: exercise.muscle,
-        }))
-      );
-      const response = await axios.post(`${BASE_URL}users/${userId}/workouts`, {
-        name: workoutName,
-        isComplete: false, // workouts are initially incomplete
-        movements: plan.map((exercise) => ({
-          name: exercise.name,
-          bodyPart: exercise.bodyPart,
-          reps: exercise.reps,
-          sets: exercise.sets,
-          weight: exercise.weight,
-          max: exercise.weight * (1 + exercise.reps / 30), // Epley Formula
-          muscle: exercise.muscle,
-        })),
-      });
-      // Ftech updated user data
-      const updatedUserResponse = await axios.get(`${BASE_URL}users/${userId}`);
-
-      // update user context with the latest data
-      if (updatedUserResponse.data) {
-        login(updatedUserResponse.data);
-      }
-
-      console.log("Workout logged successfully");
-      setPlan([]);
-      setWorkoutName("");
-    } catch (error) {
-      console.error("Error logging workout:", error);
-    }
-  };
-
   return (
     <div>
       <div className="container">
@@ -151,9 +98,7 @@ const BuildWorkoutPage = () => {
               </div>
 
               <div className="plan-buttons">
-                <button className="plan-btn" onClick={handleSubmit}>
-                  Save
-                </button>
+                <button className="plan-btn">Save</button>
                 <button className="plan-btn" onClick={handleClearPlan}>
                   Clear
                 </button>
