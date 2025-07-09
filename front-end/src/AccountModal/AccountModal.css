@@ -1,0 +1,54 @@
+.modal-btns{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;;
+}
+
+
+#logout-btn{
+    background-color: rgb(249, 184, 184);
+    border: solid 1px rgb(248, 126, 126);
+}
+
+#my-account-btn{
+    background-color: rgb(184, 249, 247);
+    border: solid 1px rgb(117, 241, 252);
+}
+
+#my-account-btn, #logout-btn{
+    width: 100px;
+    height: 30px;
+    font-size: 12px;
+}
+
+.modal-right{
+    display: flex;
+    flex-direction: column;
+}
+
+
+.modal-all{
+    display: flex;
+    flex-direction: row;
+}
+
+
+#modal-profile-picture{
+    width: 100px;
+    height: 100px;
+    border-radius: 80px;
+    border: 1px solid black;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+.account-modal-container {
+    position: absolute;
+    top: 123px;
+    right: 1.5% ;
+    background-color: white;
+    border: 1px solid black;
+    padding: 20px;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}

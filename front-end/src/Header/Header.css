@@ -17,6 +17,12 @@
     gap: 10px;
 }
 
+.account-signed-in {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .account h3 {
     font-weight: normal;
 }
@@ -28,4 +34,3 @@
     width: 40px;
     margin-top: 10px;
 }
-
