@@ -310,10 +310,8 @@ module.exports = {
       },
     });
 
-    const friendIds = getFriendIds(friends, userId);
-
     return await prisma.user.findMany({
-      where: { id: { in: friendIds } },
+      where: { id: { in: getFriendIds(friends, userId) } },
     });
   },
 
@@ -325,10 +323,8 @@ module.exports = {
       },
     });
 
-    const friendIds = getFriendIds(friends, userId);
-
     return await prisma.user.findMany({
-      where: { id: { in: friendIds } },
+      where: { id: { in: getFriendIds(friends, userId) } },
     });
   },
 
