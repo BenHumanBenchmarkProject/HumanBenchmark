@@ -239,7 +239,7 @@ module.exports = {
     }
   },
 
-  async addfriend(userA, userB) {
+  async addFriend(userA, userB) {
     const [userId, friendId] = userA < userB ? [userA, userB] : [userB, userA];
 
     try {

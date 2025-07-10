@@ -15,7 +15,7 @@ const {
   createMuscleStat,
   getMuscleStats,
   findUsersLeaderboard,
-  addfriend,
+  addFriend,
   getFriends,
   getRecommendedFriends,
   acceptFriendRequest,
@@ -472,7 +472,7 @@ server.post("/api/users/:userId/friends/:friendId", async (req, res, next) => {
   const friendId = Number(req.params.friendId);
 
   try {
-    const request = await addfriend(userId, friendId);
+    const request = await addFriend(userId, friendId);
     res.status(201).json(request);
   } catch (err) {
     next(err);
