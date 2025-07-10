@@ -4,6 +4,7 @@ import { useContext, useState, useEffect } from "react";
 import UserContext from "../userContext";
 import blankProfilePic from "../assets/blank-pfp.jpg";
 import axios from "axios";
+import WorkoutModal from "../WorkoutModal/WorkoutModal";
 
 const GENDER_FEMALE = "F";
 const GENDER_MALE = "M";
@@ -11,6 +12,21 @@ const GENDER_MALE = "M";
 const MyAccountPage = () => {
   const { user } = useContext(UserContext);
   const [friendRequests, setFriendRequests] = useState([]);
+  const [workouts, setWorkouts] = useState([]);
+  const [selectedWorkout, setSelectedWorkout] = useState(null);
+
+  const fetchCompleteWorkouts = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}users/${user.id}/workouts`);
+      const CompleteWorkouts = response.data.filter(
+        (workout) => workout.isComplete
+      );
+      setWorkouts(CompleteWorkouts);
+      return CompleteWorkouts;
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const formattedDate = new Date(user.createdAt).toLocaleDateString("en-US", {
     // make the user.createdAt date more readable
@@ -34,6 +50,7 @@ const MyAccountPage = () => {
 
   useEffect(() => {
     fetchFriendRequests();
+    fetchCompleteWorkouts();
   }, []);
 
   const formattedHeight = () => {
@@ -79,9 +96,12 @@ const MyAccountPage = () => {
   };
 
   const handleDetailsClick = (workout) => {
-    console.log("Workout details:", workout);
+    setSelectedWorkout(workout);
   };
 
+  const closeModal = () => {
+    setSelectedWorkout(null);
+  };
   return (
     <div>
       <NavigationButtons />
@@ -145,22 +165,23 @@ const MyAccountPage = () => {
         <div className="completed-workouts-box">
           <div className="completed-workout-header">Completed Workouts</div>
           <div className="completed-workout-list">
-            {user.workouts
-              .filter((workout) => workout.isComplete) // only show completed workouts
-              .map((workout, index) => (
-                <div key={index} className="completed-workout-item">
-                  <span>{workout.name}</span>
-                  <button
-                    className="details-button"
-                    onClick={() => handleDetailsClick(workout)}
-                  >
-                    Details
-                  </button>
-                </div>
-              ))}
+            {workouts.map((workout, index) => (
+              <div key={index} className="completed-workout-item">
+                <span>{workout.name}</span>
+                <button
+                  className="details-button"
+                  onClick={() => handleDetailsClick(workout)}
+                >
+                  Details
+                </button>
+              </div>
+            ))}
           </div>
         </div>
       </div>
+      {selectedWorkout && (
+        <WorkoutModal workout={selectedWorkout} onClose={closeModal} />
+      )}
     </div>
   );
 };
