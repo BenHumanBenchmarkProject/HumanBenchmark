@@ -2,6 +2,9 @@
 const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
+const ERROR_RELATION_ALREADY_EXISTS = "P2002";
+const ACCEPTED_STATUS = "accepted";
+const PENDING_STATUS = "pending";
 
 function calculateXP(movement) {
   // Should take user roughly 3 workouts to level up
@@ -27,6 +30,12 @@ function calculateNewXPAndLevel(user, xpGained) {
   }
 
   return { newXP, newLevel };
+}
+
+function getFriendIds(friends, userId) {
+  return friends.map((friend) =>
+    friend.userId === userId ? friend.friendId : friend.userId
+  );
 }
 
 function calculateOverallStat(bodyPartStats) {
@@ -237,5 +246,163 @@ module.exports = {
       console.error("Error creating workout:", error);
       throw error;
     }
+  },
+
+  async addFriend(userA, userB) {
+    const [userId, friendId] = userA < userB ? [userA, userB] : [userB, userA]; // Prevents duplicate friendships. Ensures order is always the same
+
+    try {
+      friend = await prisma.friendship.create({
+        data: { userId, friendId, status: PENDING_STATUS },
+      });
+      console.log(`Friendship created between ${userId} and ${friendId}`);
+      return friend;
+    } catch (error) {
+      if (error.code === ERROR_RELATION_ALREADY_EXISTS) {
+        console.log(
+          `Friendship already exists between ${userId} and ${friendId}`
+        );
+      } else {
+        console.error("Error creating friendship:", error);
+      }
+    }
+  },
+
+  async acceptFriendRequest(userA, userB) {
+    const [userId, friendId] = userA < userB ? [userA, userB] : [userB, userA]; // Prevents duplicate friendships. Ensures order is always the same
+
+    try {
+      const updatedFriendship = await prisma.friendship.update({
+        where: { userId_friendId: { userId, friendId } },
+        data: { status: ACCEPTED_STATUS },
+      });
+      console.log(`Friendship accepted between ${userId} and ${friendId}`);
+      return updatedFriendship;
+    } catch (error) {
+      console.error("Error accepting friendship:", error);
+    }
+  },
+
+  async deleteFriend(userA, userB) {
+    const [userId, friendId] = userA < userB ? [userA, userB] : [userB, userA]; // Prevents duplicate friendships. Ensures order is always the same
+
+    try {
+      const deletedFriendship = await prisma.friendship.delete({
+        where: {
+          userId_friendId: {
+            userId,
+            friendId,
+          },
+        },
+      });
+      console.log(`Friendship deleted between ${userId} and ${friendId}`);
+      return deletedFriendship;
+    } catch (error) {
+      console.error("Error deleting friendship:", error);
+    }
+  },
+
+  async getFriends(userId) {
+    const friends = await prisma.friendship.findMany({
+      where: {
+        OR: [{ userId }, { friendId: userId }],
+        status: ACCEPTED_STATUS,
+      },
+    });
+
+    return await prisma.user.findMany({
+      where: { id: { in: getFriendIds(friends, userId) } },
+    });
+  },
+
+  async getFriendRequests(userId) {
+    const friends = await prisma.friendship.findMany({
+      where: {
+        OR: [{ userId }, { friendId: userId }],
+        status: PENDING_STATUS,
+      },
+    });
+
+    return await prisma.user.findMany({
+      where: { id: { in: getFriendIds(friends, userId) } },
+    });
+  },
+
+  async getMutualFriends(userA, userB) {
+    try {
+      const friendsOfA = await prisma.friendship.findMany({
+        where: {
+          OR: [{ userId: userA }, { friendId: userA }],
+          status: ACCEPTED_STATUS,
+        },
+      });
+
+      const friendsOfB = await prisma.friendship.findMany({
+        where: {
+          OR: [{ userId: userB }, { friendId: userB }],
+          status: ACCEPTED_STATUS,
+        },
+      });
+
+      const friendIdsOfA = await getFriendIds(friendsOfA, userA);
+      const friendIdsOfB = await getFriendIds(friendsOfB, userB);
+
+      const mutualFriendIds = friendIdsOfA.filter((id) =>
+        friendIdsOfB.includes(id)
+      );
+
+      const mutualFriends = await prisma.user.findMany({
+        where: { id: { in: mutualFriendIds } },
+      });
+
+      return mutualFriends;
+    } catch (error) {
+      console.error("Error fetching mutual friends:", error);
+      throw error;
+    }
+  },
+
+  async getRecommendedFriends(userId) {
+    const friendships = await prisma.friendship.findMany({
+      // 1st row of connections
+      where: {
+        OR: [{ userId }, { friendId: userId }],
+      },
+    });
+
+    const friendIds = getFriendIds(friendships, userId);
+
+    const secondDegreeFriends = await prisma.friendship.findMany({
+      // 2nd row of connections
+      where: {
+        OR: [{ userId: { in: friendIds } }, { friendId: { in: friendIds } }],
+      },
+    });
+
+    const secondDegreeFriendIds = secondDegreeFriends
+      // get second-degree friend IDs, filter out direct friends and the current user
+      .map((friend) => {
+        if (!friendIds.includes(friend.userId) && friend.userId !== userId) {
+          return friend.userId;
+        }
+        if (
+          !friendIds.includes(friend.friendId) &&
+          friend.friendId !== userId
+        ) {
+          return friend.friendId;
+        }
+        return null;
+      })
+      .filter(Boolean); // Remove null values
+
+    // Remove duplicates
+    const uniqueSuggestedIds = [...new Set(secondDegreeFriendIds)];
+
+    // fetch user data
+    const suggestedUsers = await prisma.user.findMany({
+      where: { id: { in: uniqueSuggestedIds } },
+    });
+
+    return suggestedUsers;
   },
 };
