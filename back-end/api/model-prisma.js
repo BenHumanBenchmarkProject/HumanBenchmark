@@ -244,7 +244,7 @@ module.exports = {
 
     try {
       friend = await prisma.friendship.create({
-        data: { userId, friendId },
+        data: { userId, friendId, status: "pending" },
       });
       console.log(`Friendship created between ${userId} and ${friendId}`);
       return friend;
@@ -259,10 +259,45 @@ module.exports = {
     }
   },
 
+  async acceptFriendRequest(userA, userB) {
+    const [userId, friendId] = userA < userB ? [userA, userB] : [userB, userA];
+
+    try {
+      const updatedFriendship = await prisma.friendship.update({
+        where: { userId_friendId: { userId, friendId } },
+        data: { status: "accepted" },
+      });
+      console.log(`Friendship accepted between ${userId} and ${friendId}`);
+      return updatedFriendship;
+    } catch (error) {
+      console.error("Error accepting friendship:", error);
+    }
+  },
+
+  async deleteFriend(userA, userB) {
+    const [userId, friendId] = userA < userB ? [userA, userB] : [userB, userA];
+
+    try {
+      const deletedFriendship = await prisma.friendship.delete({
+        where: {
+          userId_friendId: {
+            userId,
+            friendId,
+          },
+        },
+      });
+      console.log(`Friendship deleted between ${userId} and ${friendId}`);
+      return deletedFriendship;
+    } catch (error) {
+      console.error("Error deleting friendship:", error);
+    }
+  },
+
   async getFriends(userId) {
     const friends = await prisma.friendship.findMany({
       where: {
         OR: [{ userId }, { friendId: userId }],
+        status: "accepted",
       },
     });
 
@@ -274,6 +309,24 @@ module.exports = {
       where: { id: { in: friendIds } },
     });
   },
+
+  async getFriendRequests(userId) {
+    const friends = await prisma.friendship.findMany({
+      where: {
+        OR: [{ userId }, { friendId: userId }],
+        status: "pending",
+      },
+    });
+
+    const friendIds = friends.map((friend) =>
+      friend.userId === userId ? friend.friendId : friend.userId
+    );
+
+    return await prisma.user.findMany({
+      where: { id: { in: friendIds } },
+    });
+  },
+
 
   async getRecommendedFriends(userId) {
     const friendships = await prisma.friendship.findMany({
@@ -295,7 +348,7 @@ module.exports = {
     });
 
     const secondDegreeFriendIds = secondDegreeFriends
-    // get second-degree friend IDs, filter out direct friends and the current user
+      // get second-degree friend IDs, filter out direct friends and the current user
       .map((friend) => {
         if (!friendIds.includes(friend.userId) && friend.userId !== userId) {
           return friend.userId;

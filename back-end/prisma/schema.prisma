@@ -41,6 +41,7 @@ model User {
 model Friendship{
   userId      Int
   friendId    Int
+  status      String @default("pending")
 
   user        User @relation("UserAsInitiator", fields: [userId], references: [id])
   friend      User @relation("UserAsReceiver", fields: [friendId], references: [id])

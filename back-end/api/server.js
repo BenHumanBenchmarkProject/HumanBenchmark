@@ -18,6 +18,9 @@ const {
   addfriend,
   getFriends,
   getRecommendedFriends,
+  acceptFriendRequest,
+  deleteFriend,
+  getFriendRequests,
 } = require("./model-prisma");
 
 const prisma = new PrismaClient();
@@ -444,18 +447,71 @@ server.get("/api/users/:id/friends", async (req, res, next) => {
   }
 });
 
-//[Post] /api/users/:userId/friends
-server.post("/api/users/:userId/friends/:friendId", async (req, res, next) => {
-  const userId = Number(req.params.userId);
-  const friendId = Number(req.params.friendId);
-
+//[Get] /api/users/:userId/friendRequests
+server.get("/api/users/:id/friendRequests", async (req, res, next) => {
+  const id = Number(req.params.id);
   try {
-    const added = await addfriend(userId, friendId);
-    res.status(201).json(added);
+    const friendRequests = await getFriendRequests(id);
+    if (friendRequests && friendRequests.length) {
+      res.json(friendRequests);
+    } else {
+      next({
+        status: 404,
+        message: `No friend requests found for user ID: ${id}`,
+      });
+    }
   } catch (err) {
     next(err);
   }
 });
+
+//[Post] /api/users/:userId/friends/:friendId
+server.post("/api/users/:userId/friends/:friendId", async (req, res, next) => {
+  //send friend request
+  const userId = Number(req.params.userId);
+  const friendId = Number(req.params.friendId);
+
+  try {
+    const request = await addfriend(userId, friendId);
+    res.status(201).json(request);
+  } catch (err) {
+    next(err);
+  }
+});
+
+//[Post] /api/users/:userId/friends/:friendId/accept
+server.post(
+  "/api/users/:userId/friends/:friendId/accept",
+  async (req, res, next) => {
+    //accept friend request
+
+    const userId = Number(req.params.userId);
+    const friendId = Number(req.params.friendId);
+
+    try {
+      const accepted = await acceptFriendRequest(userId, friendId);
+      res.status(201).json(accepted);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+//[Delete] /api/users/:userId/friends/:friendId/delete
+server.delete(
+  "/api/users/:userId/friends/:friendId/delete",
+  async (req, res, next) => {
+    //delete friend/ decline friend request
+    const userId = Number(req.params.userId);
+    const friendId = Number(req.params.friendId);
+    try {
+      const deleted = await deleteFriend(userId, friendId);
+      res.status(201).json(deleted);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 // [Get] /api/friendships
 server.get("/api/friendships", async (req, res, next) => {
