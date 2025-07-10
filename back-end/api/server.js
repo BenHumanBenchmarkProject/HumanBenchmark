@@ -21,6 +21,7 @@ const {
   acceptFriendRequest,
   deleteFriend,
   getFriendRequests,
+  getMutualFriends,
 } = require("./model-prisma");
 
 const prisma = new PrismaClient();
@@ -538,6 +539,26 @@ server.get("/api/users/:userId/recommendedFriends", async (req, res, next) => {
       next({
         status: 404,
         message: `No recommended friends found for user ID: ${userId}`,
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+//[Get] /api/users/:userA/mutaualFriends/:userB
+server.get("/api/users/:userA/mutualFriends/:userB", async (req, res, next) => {
+  const userA = Number(req.params.userA);
+  const userB = Number(req.params.userB);
+
+  try {
+    const mutualFriends = await getMutualFriends(userA, userB);
+    if (mutualFriends && mutualFriends.length) {
+      res.json(mutualFriends);
+    } else {
+      next({
+        status: 404,
+        message: `No mutual friends found for userA ID: ${userA} and userB ID: ${userB}`,
       });
     }
   } catch (err) {
