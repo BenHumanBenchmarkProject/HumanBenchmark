@@ -15,6 +15,9 @@ const {
   createMuscleStat,
   getMuscleStats,
   findUsersLeaderboard,
+  addfriend,
+  getFriends,
+  getRecommendedFriends,
 } = require("./model-prisma");
 
 const prisma = new PrismaClient();
@@ -419,6 +422,67 @@ server.get("/api/leaderboard", async (req, res, next) => {
       res.json(users);
     } else {
       next({ status: 404, message: "No users found for the leaderboard" });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+//[Get] /api/users/:userId/friends
+server.get("/api/users/:id/friends", async (req, res, next) => {
+  // get friends by user ID
+  const id = Number(req.params.id);
+  try {
+    const friends = await getFriends(id);
+    if (friends && friends.length) {
+      res.json(friends);
+    } else {
+      next({ status: 404, message: `No friends found for user ID: ${id}` });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+//[Post] /api/users/:userId/friends
+server.post("/api/users/:userId/friends/:friendId", async (req, res, next) => {
+  const userId = Number(req.params.userId);
+  const friendId = Number(req.params.friendId);
+
+  try {
+    const added = await addfriend(userId, friendId);
+    res.status(201).json(added);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// [Get] /api/friendships
+server.get("/api/friendships", async (req, res, next) => {
+  try {
+    const friendships = await prisma.friendship.findMany();
+    if (friendships.length) {
+      res.json(friendships);
+    } else {
+      next({ status: 404, message: "No friendships found in the database" });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+//[Get] /api/users/:userId/recommendedFriends
+server.get("/api/users/:userId/recommendedFriends", async (req, res, next) => {
+  const userId = Number(req.params.userId);
+  try {
+    const recommendedFriends = await getRecommendedFriends(userId);
+    if (recommendedFriends && recommendedFriends.length) {
+      res.json(recommendedFriends);
+    } else {
+      next({
+        status: 404,
+        message: `No recommended friends found for user ID: ${userId}`,
+      });
     }
   } catch (err) {
     next(err);

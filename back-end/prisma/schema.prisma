@@ -31,6 +31,21 @@ model User {
   movements         Movement[]
   createdAt         DateTime @default(now())
   updatedAt         DateTime @default(now())
+
+
+  //prisma requires these
+  friendshipsInitiated Friendship[] @relation("UserAsInitiator")
+  friendshipsReceived Friendship[] @relation("UserAsReceiver")
+}
+
+model Friendship{
+  userId      Int
+  friendId    Int
+
+  user        User @relation("UserAsInitiator", fields: [userId], references: [id])
+  friend      User @relation("UserAsReceiver", fields: [friendId], references: [id])
+
+  @@id([userId, friendId]) //enforces uniqueness
 }
 
 model Exercise { // directly replects the API
