@@ -446,7 +446,7 @@ server.get("/api/users/:id/friends", async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-});
+}); 
 
 //[Get] /api/users/:userId/friendRequests
 server.get("/api/users/:id/friendRequests", async (req, res, next) => {

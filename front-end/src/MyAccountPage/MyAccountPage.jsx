@@ -1,14 +1,16 @@
 import "./MyAccountPage.css";
-import { NavigationButtons } from "../constants";
-import { useContext } from "react";
+import { NavigationButtons, BASE_URL } from "../constants";
+import { useContext, useState, useEffect } from "react";
 import UserContext from "../userContext";
 import blankProfilePic from "../assets/blank-pfp.jpg";
+import axios from "axios";
 
 const GENDER_FEMALE = "F";
 const GENDER_MALE = "M";
 
 const MyAccountPage = () => {
   const { user } = useContext(UserContext);
+  const [friendRequests, setFriendRequests] = useState([]);
 
   const formattedDate = new Date(user.createdAt).toLocaleDateString("en-US", {
     // make the user.createdAt date more readable
@@ -17,6 +19,26 @@ const MyAccountPage = () => {
     month: "long",
     day: "numeric",
   });
+
+  const fetchFriendRequests = async () => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}users/${user.id}/friendRequests`
+      );
+      setFriendRequests(response.data);
+      return response.data;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchFriendRequests();
+  }, []);
+
+  useEffect(() => {
+    console.log(friendRequests);
+  }, [friendRequests]);
 
   const formattedHeight = () => {
     let feet = Math.floor(user.height / 12);
@@ -31,6 +53,32 @@ const MyAccountPage = () => {
     }
     if (user.gender === GENDER_FEMALE) {
       return "Female";
+    }
+  };
+
+  const handleAccept = async (friendId) => {
+    try {
+      await axios.post(
+        `${BASE_URL}users/${user.id}/friends/${friendId}/accept`
+      );
+      setFriendRequests((prevRequests) =>
+        prevRequests.filter((request) => request.id !== friendId)
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleDecline = async (friendId) => {
+    try {
+      await axios.delete(
+        `${BASE_URL}users/${user.id}/friends/${friendId}/delete`
+      );
+      setFriendRequests((prevRequests) =>
+        prevRequests.filter((request) => request.id !== friendId)
+      );
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -73,7 +121,28 @@ const MyAccountPage = () => {
 
           <div className="friend-request-box">
             <div className="friend-request-header">Friend Requests</div>
-            <div className="friend-request-list"></div>
+            <div className="friend-request-list">
+              {friendRequests.map((request) => (
+                <div key={request.id} className="friend-request-item">
+                  <span>{request.username}</span>
+
+                  <div className="friend-request-buttons">
+                    <button
+                      className="friend-request-button"
+                      onClick={() => handleAccept(request.id)}
+                    >
+                      ✓
+                    </button>
+                    <button
+                      className="friend-request-button"
+                      onClick={() => handleDecline(request.id)}
+                    >
+                      x
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
