@@ -44,37 +44,92 @@ body {
   overflow: hidden;
 }
 
-/* Diagram Section (fills vertical space) */
-.diagram-section {
+.central-content {
   display: flex;
-  flex: 1;
-  justify-content: space-between;
+  flex-direction: row;
+  gap: 50px;
   align-items: center;
-  gap: 40px;
-  overflow: auto;
-  width: 100%;
 }
 
-.body-img {
-  width: 50%;
+.calendar {
+  height: 400px;
+  width: 400px;
+  background-color: #f0f0f0;
+  border-radius: 20px;
+  border: 1px solid black;
 }
 
-/* XP Labels Column */
-.xp-labels-column {
-  flex: 0 0 20%;
+.home-workouts-box {
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  align-items: flex-end;
+  overflow-y: auto;
 }
 
-.xp-label {
+.home-workouts-box {
+  width: 250px;
+  height: 500px;
+  background-color: #f0f0f0;
+  border: 1px solid #999;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex-shrink: 0;
+  margin-top: 20px;
+}
+
+.home-workout-item {
+  background-color: #dcdbdb;
+  margin: 10px;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.home-workout-item:hover {
   background-color: #ccc;
-  padding: 10px 15px;
+}
+
+.home-workouts-header {
+  background-color: #ddd;
   font-weight: bold;
   text-align: center;
-  border-radius: 5px;
-  font-size: 25px;
+  padding: 10px;
+  border-bottom: 1px solid #333;
+  flex-shrink: 0;
+}
+
+.home-friends-box {
+  width: 250px;
+  height: 500px;
+  background-color: #f0f0f0;
+  border: 1px solid #999;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex-shrink: 0;
+  margin-top: 20px;
+}
+
+.home-friend-item {
+  background-color: #dcdbdb;
+  margin: 10px;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.home-friend-item:hover {
+  background-color: #ccc;
+}
+
+.home-friends-header {
+  background-color: #ddd;
+  font-weight: bold;
+  text-align: center;
+  padding: 10px;
+  border-bottom: 1px solid #333;
+  flex-shrink: 0;
 }
 
 /* Animation */
