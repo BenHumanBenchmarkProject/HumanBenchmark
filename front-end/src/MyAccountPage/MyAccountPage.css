@@ -131,6 +131,23 @@
   margin: 5px 0;
   padding: 8px;
   border-radius: 4px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.friend-request-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.friend-request-button {
+  width: 10px;
+  height: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .account-top {
