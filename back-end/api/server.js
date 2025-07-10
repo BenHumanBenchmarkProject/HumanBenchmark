@@ -288,49 +288,30 @@ server.get(
 );
 
 //[Post] /api/users/:userId/workouts
-server.post(
-  //create Workout
-  "/api/users/:userId/workouts",
-  async (req, res, next) => {
-    const { name, isComplete, movements } = req.body;
-    const userId = Number(req.params.userId);
+server.post("/api/users/:userId/workouts", async (req, res, next) => {
+  const { name, isComplete, movements } = req.body;
+  const userId = Number(req.params.userId);
 
-    if (!name || !Array.isArray(movements) || movements.length === 0) {
-      return res
-        .status(400)
-        .json({ error: "Workout name and movements are required" });
-    }
-
-    try {
-      // Create the workout
-      const createdWorkout = await prisma.workout.create({
-        data: {
-          name,
-          isComplete,
-          userId,
-          movements: {
-            create: movements.map((movement) => ({
-              name: movement.name,
-              bodyPart: movement.bodyPart,
-              reps: movement.reps,
-              sets: movement.sets,
-              weight: movement.weight,
-              max: movement.max,
-              muscle: movement.muscle,
-              userId: userId,
-            })),
-          },
-        },
-        include: {
-          movements: true,
-        },
-      });
-      res.status(201).json(createdWorkout);
-    } catch (err) {
-      next(err);
-    }
+  if (!name || !Array.isArray(movements) || movements.length === 0) {
+    return res
+      .status(400)
+      .json({ error: "Workout name and movements are required" });
   }
-);
+
+  try {
+    const { createdWorkout, updatedUser } = await createWorkout(userId, {
+      name,
+      isComplete,
+      movements,
+    });
+
+    res
+      .status(201)
+      .json({ message: "Workouts created", createdWorkout, updatedUser });
+  } catch (err) {
+    next(err);
+  }
+});
 
 //[Get] /api/users/:userId/workouts
 server.get("/api/users/:userId/workouts", async (req, res, next) => {
