@@ -36,10 +36,6 @@ const MyAccountPage = () => {
     fetchFriendRequests();
   }, []);
 
-  useEffect(() => {
-    console.log(friendRequests);
-  }, [friendRequests]);
-
   const formattedHeight = () => {
     let feet = Math.floor(user.height / 12);
     let inches = user.height % 12;
