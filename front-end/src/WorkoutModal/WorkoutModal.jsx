@@ -1,6 +1,5 @@
-import "./WorkoutModal.css"
-import React from 'react';
-
+import "./WorkoutModal.css";
+import React from "react";
 
 const WorkoutModal = ({ workout, onClose }) => {
   if (!workout) return null;
@@ -12,11 +11,19 @@ const WorkoutModal = ({ workout, onClose }) => {
           &times;
         </button>
         <h2 className="workout-name">{workout.name}</h2>
-        <p>Completed on: {new Date(workout.completedAt).toLocaleDateString()}</p>
+        <p>
+          {" "}
+          {workout.completedAt
+            ? `Completed on: ${new Date(
+                workout.completedAt
+              ).toLocaleDateString()}`
+            : "Incomplete"}
+        </p>
         <ul>
           {workout.movements.map((movement, index) => (
             <li key={index}>
-              <strong>{movement.name}</strong>: {movement.reps} reps, {movement.sets} sets, {movement.weight} lbs
+              <strong>{movement.name}</strong>: {movement.reps} reps,{" "}
+              {movement.sets} sets, {movement.weight} lbs
             </li>
           ))}
         </ul>

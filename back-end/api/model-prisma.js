@@ -140,6 +140,7 @@ module.exports = {
         data: {
           name: newWorkout.name,
           isComplete: newWorkout.isComplete ?? false,
+          completedAt: newWorkout.completedAt,
           user: { connect: { id: userId } },
           movements: {
             create: newWorkout.movements.map((movement) => ({
