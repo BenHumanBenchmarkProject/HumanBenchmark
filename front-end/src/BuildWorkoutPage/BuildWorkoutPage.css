@@ -144,6 +144,24 @@
   margin-bottom: 5px;
 }
 
+.plan-item {
+  margin-bottom: 10px;
+}
+
+.input-row {
+  display: flex;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.plan-input {
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
 @media (max-width: 768px) {
   .builder-container {
     flex-direction: column;

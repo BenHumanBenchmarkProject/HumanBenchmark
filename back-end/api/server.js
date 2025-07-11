@@ -296,7 +296,7 @@ server.get(
 
 //[Post] /api/users/:userId/workouts
 server.post("/api/users/:userId/workouts", async (req, res, next) => {
-  const { name, isComplete, movements } = req.body;
+  const { name, isComplete, completedAt, movements } = req.body;
   const userId = Number(req.params.userId);
 
   if (!name || !Array.isArray(movements) || movements.length === 0) {
@@ -309,6 +309,7 @@ server.post("/api/users/:userId/workouts", async (req, res, next) => {
     const { createdWorkout, updatedUser } = await createWorkout(userId, {
       name,
       isComplete,
+      completedAt,
       movements,
     });
 
@@ -446,7 +447,7 @@ server.get("/api/users/:id/friends", async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-}); 
+});
 
 //[Get] /api/users/:userId/friendRequests
 server.get("/api/users/:id/friendRequests", async (req, res, next) => {
