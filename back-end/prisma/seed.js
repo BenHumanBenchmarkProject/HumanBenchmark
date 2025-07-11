@@ -4,259 +4,1808 @@ const prisma = new PrismaClient();
 
 const usersData = [
   {
-    username: "alice",
-    password: "password123",
-    height: 165,
-    weight: 60,
-    age: 25,
-    gender: "female",
-    level: 5,
-    xp: 450,
-    overallStat: 75.5,
-    bodyPartStats: {
-      create: [
-        { bodyPart: "upper arms", score: 40 },
-        { bodyPart: "lower arms", score: 30 },
-        { bodyPart: "upper legs", score: 50 },
-        { bodyPart: "lower legs", score: 45 },
-        { bodyPart: "neck", score: 20 },
-        { bodyPart: "back", score: 35 },
-        { bodyPart: "shoulder", score: 25 },
-        { bodyPart: "chest", score: 30 },
-        { bodyPart: "waist", score: 40 },
-        { bodyPart: "cardio", score: 50 },
-      ],
-    },
-    muscleStats: {
-      create: [
-        { muscle: "biceps", bodyPart: "upper arms", max: 100 },
-        { muscle: "triceps", bodyPart: "upper arms", max: 90 },
-      ],
-    },
-    workouts: {
-      create: [
+    "username": "user1",
+    "password": "password123",
+    "height": 165,
+    "weight": 60,
+    "age": 25,
+    "gender": "female",
+    "level": 5,
+    "xp": 450,
+    "overallStat": 75.5,
+    "bodyPartStats": {
+      "create": [
         {
-          name: "Morning Routine",
-          isComplete: false,
-          movements: {
-            create: [
-              {
-                name: "Push-up",
-                bodyPart: "upper arms",
-                reps: 10,
-                sets: 3,
-                weight: 0,
-                max: 0,
-                muscle: "biceps",
-              },
-            ],
-          },
+          "bodyPart": "upper arms",
+          "score": 40
         },
-      ],
+        {
+          "bodyPart": "lower arms",
+          "score": 30
+        },
+        {
+          "bodyPart": "upper legs",
+          "score": 50
+        },
+        {
+          "bodyPart": "lower legs",
+          "score": 45
+        },
+        {
+          "bodyPart": "neck",
+          "score": 20
+        },
+        {
+          "bodyPart": "back",
+          "score": 35
+        },
+        {
+          "bodyPart": "shoulder",
+          "score": 25
+        },
+        {
+          "bodyPart": "chest",
+          "score": 30
+        },
+        {
+          "bodyPart": "waist",
+          "score": 40
+        },
+        {
+          "bodyPart": "cardio",
+          "score": 50
+        }
+      ]
     },
+    "muscleStats": {
+      "create": [
+        {
+          "muscle": "biceps",
+          "bodyPart": "upper arms",
+          "max": 100
+        },
+        {
+          "muscle": "triceps",
+          "bodyPart": "upper arms",
+          "max": 90
+        }
+      ]
+    },
+    "workouts": {
+      "create": [
+        {
+          "name": "Morning Routine",
+          "isComplete": false,
+          "movements": {
+            "create": [
+              {
+                "name": "Push-up",
+                "bodyPart": "upper arms",
+                "reps": 10,
+                "sets": 3,
+                "weight": 0,
+                "max": 0,
+                "muscle": "biceps"
+              }
+            ]
+          }
+        }
+      ]
+    }
   },
   {
-    username: "bob",
-    password: "password456",
-    height: 180,
-    weight: 75,
-    age: 28,
-    gender: "male",
-    level: 4,
-    xp: 380,
-    overallStat: 68.2,
-    bodyPartStats: {
-      create: [
-        { bodyPart: "chest", score: 50 },
-        { bodyPart: "back", score: 60 },
-        { bodyPart: "shoulder", score: 55 },
-      ],
-    },
-    muscleStats: {
-      create: [
-        { muscle: "pectorals", bodyPart: "chest", max: 120 },
-        { muscle: "deltoids", bodyPart: "shoulder", max: 95 },
-      ],
-    },
-    workouts: {
-      create: [
+    "username": "user2",
+    "password": "password123",
+    "height": 165,
+    "weight": 60,
+    "age": 25,
+    "gender": "female",
+    "level": 5,
+    "xp": 450,
+    "overallStat": 75.5,
+    "bodyPartStats": {
+      "create": [
         {
-          name: "Chest Blast",
-          isComplete: false,
-          movements: {
-            create: [
-              {
-                name: "Bench Press",
-                bodyPart: "chest",
-                reps: 8,
-                sets: 4,
-                weight: 135,
-                max: 165,
-                muscle: "pectorals",
-              },
-            ],
-          },
+          "bodyPart": "upper arms",
+          "score": 40
         },
-      ],
+        {
+          "bodyPart": "lower arms",
+          "score": 30
+        },
+        {
+          "bodyPart": "upper legs",
+          "score": 50
+        },
+        {
+          "bodyPart": "lower legs",
+          "score": 45
+        },
+        {
+          "bodyPart": "neck",
+          "score": 20
+        },
+        {
+          "bodyPart": "back",
+          "score": 35
+        },
+        {
+          "bodyPart": "shoulder",
+          "score": 25
+        },
+        {
+          "bodyPart": "chest",
+          "score": 30
+        },
+        {
+          "bodyPart": "waist",
+          "score": 40
+        },
+        {
+          "bodyPart": "cardio",
+          "score": 50
+        }
+      ]
     },
+    "muscleStats": {
+      "create": [
+        {
+          "muscle": "biceps",
+          "bodyPart": "upper arms",
+          "max": 100
+        },
+        {
+          "muscle": "triceps",
+          "bodyPart": "upper arms",
+          "max": 90
+        }
+      ]
+    },
+    "workouts": {
+      "create": [
+        {
+          "name": "Morning Routine",
+          "isComplete": false,
+          "movements": {
+            "create": [
+              {
+                "name": "Push-up",
+                "bodyPart": "upper arms",
+                "reps": 10,
+                "sets": 3,
+                "weight": 0,
+                "max": 0,
+                "muscle": "biceps"
+              }
+            ]
+          }
+        }
+      ]
+    }
   },
   {
-    username: "carla",
-    password: "password789",
-    height: 170,
-    weight: 65,
-    age: 24,
-    gender: "female",
-    level: 3,
-    xp: 290,
-    overallStat: 60.0,
-    bodyPartStats: {
-      create: [
-        { bodyPart: "waist", score: 35 },
-        { bodyPart: "cardio", score: 70 },
-      ],
-    },
-    muscleStats: {
-      create: [{ muscle: "abs", bodyPart: "waist", max: 85 }],
-    },
-    workouts: {
-      create: [
+    "username": "user3",
+    "password": "password123",
+    "height": 165,
+    "weight": 60,
+    "age": 25,
+    "gender": "female",
+    "level": 5,
+    "xp": 450,
+    "overallStat": 75.5,
+    "bodyPartStats": {
+      "create": [
         {
-          name: "Core + Cardio",
-          isComplete: false,
-          movements: {
-            create: [
-              {
-                name: "Sit-up",
-                bodyPart: "waist",
-                reps: 15,
-                sets: 3,
-                weight: 0,
-                max: 0,
-                muscle: "abs",
-              },
-              {
-                name: "Running",
-                bodyPart: "cardio",
-                reps: 1,
-                sets: 1,
-                weight: 0,
-                max: 0,
-                muscle: "heart",
-              },
-            ],
-          },
+          "bodyPart": "upper arms",
+          "score": 40
         },
-      ],
+        {
+          "bodyPart": "lower arms",
+          "score": 30
+        },
+        {
+          "bodyPart": "upper legs",
+          "score": 50
+        },
+        {
+          "bodyPart": "lower legs",
+          "score": 45
+        },
+        {
+          "bodyPart": "neck",
+          "score": 20
+        },
+        {
+          "bodyPart": "back",
+          "score": 35
+        },
+        {
+          "bodyPart": "shoulder",
+          "score": 25
+        },
+        {
+          "bodyPart": "chest",
+          "score": 30
+        },
+        {
+          "bodyPart": "waist",
+          "score": 40
+        },
+        {
+          "bodyPart": "cardio",
+          "score": 50
+        }
+      ]
     },
+    "muscleStats": {
+      "create": [
+        {
+          "muscle": "biceps",
+          "bodyPart": "upper arms",
+          "max": 100
+        },
+        {
+          "muscle": "triceps",
+          "bodyPart": "upper arms",
+          "max": 90
+        }
+      ]
+    },
+    "workouts": {
+      "create": [
+        {
+          "name": "Morning Routine",
+          "isComplete": false,
+          "movements": {
+            "create": [
+              {
+                "name": "Push-up",
+                "bodyPart": "upper arms",
+                "reps": 10,
+                "sets": 3,
+                "weight": 0,
+                "max": 0,
+                "muscle": "biceps"
+              }
+            ]
+          }
+        }
+      ]
+    }
   },
   {
-    username: "dave",
-    password: "securepass",
-    height: 175,
-    weight: 80,
-    age: 30,
-    gender: "male",
-    level: 6,
-    xp: 520,
-    overallStat: 82.9,
-    bodyPartStats: {
-      create: [
-        { bodyPart: "back", score: 65 },
-        { bodyPart: "legs", score: 70 },
-      ],
-    },
-    muscleStats: {
-      create: [
-        { muscle: "lats", bodyPart: "back", max: 140 },
-        { muscle: "quads", bodyPart: "legs", max: 160 },
-      ],
-    },
-    workouts: {
-      create: [
+    "username": "user4",
+    "password": "password123",
+    "height": 165,
+    "weight": 60,
+    "age": 25,
+    "gender": "female",
+    "level": 5,
+    "xp": 450,
+    "overallStat": 75.5,
+    "bodyPartStats": {
+      "create": [
         {
-          name: "Back & Legs Day",
-          isComplete: false,
-          movements: {
-            create: [
-              {
-                name: "Deadlift",
-                bodyPart: "back",
-                reps: 5,
-                sets: 5,
-                weight: 185,
-                max: 225,
-                muscle: "lats",
-              },
-              {
-                name: "Squat",
-                bodyPart: "legs",
-                reps: 6,
-                sets: 4,
-                weight: 155,
-                max: 200,
-                muscle: "quads",
-              },
-            ],
-          },
+          "bodyPart": "upper arms",
+          "score": 40
         },
-      ],
+        {
+          "bodyPart": "lower arms",
+          "score": 30
+        },
+        {
+          "bodyPart": "upper legs",
+          "score": 50
+        },
+        {
+          "bodyPart": "lower legs",
+          "score": 45
+        },
+        {
+          "bodyPart": "neck",
+          "score": 20
+        },
+        {
+          "bodyPart": "back",
+          "score": 35
+        },
+        {
+          "bodyPart": "shoulder",
+          "score": 25
+        },
+        {
+          "bodyPart": "chest",
+          "score": 30
+        },
+        {
+          "bodyPart": "waist",
+          "score": 40
+        },
+        {
+          "bodyPart": "cardio",
+          "score": 50
+        }
+      ]
     },
+    "muscleStats": {
+      "create": [
+        {
+          "muscle": "biceps",
+          "bodyPart": "upper arms",
+          "max": 100
+        },
+        {
+          "muscle": "triceps",
+          "bodyPart": "upper arms",
+          "max": 90
+        }
+      ]
+    },
+    "workouts": {
+      "create": [
+        {
+          "name": "Morning Routine",
+          "isComplete": false,
+          "movements": {
+            "create": [
+              {
+                "name": "Push-up",
+                "bodyPart": "upper arms",
+                "reps": 10,
+                "sets": 3,
+                "weight": 0,
+                "max": 0,
+                "muscle": "biceps"
+              }
+            ]
+          }
+        }
+      ]
+    }
   },
   {
-    username: "emma",
-    password: "mypassword",
-    height: 160,
-    weight: 55,
-    age: 22,
-    gender: "female",
-    level: 2,
-    xp: 150,
-    overallStat: 50.3,
-    bodyPartStats: {
-      create: [
-        { bodyPart: "shoulder", score: 40 },
-        { bodyPart: "arms", score: 45 },
-      ],
-    },
-    muscleStats: {
-      create: [
-        { muscle: "deltoids", bodyPart: "shoulder", max: 80 },
-        { muscle: "triceps", bodyPart: "arms", max: 75 },
-      ],
-    },
-    workouts: {
-      create: [
+    "username": "user5",
+    "password": "password123",
+    "height": 165,
+    "weight": 60,
+    "age": 25,
+    "gender": "female",
+    "level": 5,
+    "xp": 450,
+    "overallStat": 75.5,
+    "bodyPartStats": {
+      "create": [
         {
-          name: "Arm Circuit",
-          isComplete: false,
-          movements: {
-            create: [
-              {
-                name: "Overhead Press",
-                bodyPart: "shoulder",
-                reps: 10,
-                sets: 3,
-                weight: 40,
-                max: 60,
-                muscle: "deltoids",
-              },
-              {
-                name: "Tricep Dips",
-                bodyPart: "arms",
-                reps: 12,
-                sets: 3,
-                weight: 0,
-                max: 0,
-                muscle: "triceps",
-              },
-            ],
-          },
+          "bodyPart": "upper arms",
+          "score": 40
         },
-      ],
+        {
+          "bodyPart": "lower arms",
+          "score": 30
+        },
+        {
+          "bodyPart": "upper legs",
+          "score": 50
+        },
+        {
+          "bodyPart": "lower legs",
+          "score": 45
+        },
+        {
+          "bodyPart": "neck",
+          "score": 20
+        },
+        {
+          "bodyPart": "back",
+          "score": 35
+        },
+        {
+          "bodyPart": "shoulder",
+          "score": 25
+        },
+        {
+          "bodyPart": "chest",
+          "score": 30
+        },
+        {
+          "bodyPart": "waist",
+          "score": 40
+        },
+        {
+          "bodyPart": "cardio",
+          "score": 50
+        }
+      ]
     },
+    "muscleStats": {
+      "create": [
+        {
+          "muscle": "biceps",
+          "bodyPart": "upper arms",
+          "max": 100
+        },
+        {
+          "muscle": "triceps",
+          "bodyPart": "upper arms",
+          "max": 90
+        }
+      ]
+    },
+    "workouts": {
+      "create": [
+        {
+          "name": "Morning Routine",
+          "isComplete": false,
+          "movements": {
+            "create": [
+              {
+                "name": "Push-up",
+                "bodyPart": "upper arms",
+                "reps": 10,
+                "sets": 3,
+                "weight": 0,
+                "max": 0,
+                "muscle": "biceps"
+              }
+            ]
+          }
+        }
+      ]
+    }
   },
+  {
+    "username": "user6",
+    "password": "password123",
+    "height": 165,
+    "weight": 60,
+    "age": 25,
+    "gender": "female",
+    "level": 5,
+    "xp": 450,
+    "overallStat": 75.5,
+    "bodyPartStats": {
+      "create": [
+        {
+          "bodyPart": "upper arms",
+          "score": 40
+        },
+        {
+          "bodyPart": "lower arms",
+          "score": 30
+        },
+        {
+          "bodyPart": "upper legs",
+          "score": 50
+        },
+        {
+          "bodyPart": "lower legs",
+          "score": 45
+        },
+        {
+          "bodyPart": "neck",
+          "score": 20
+        },
+        {
+          "bodyPart": "back",
+          "score": 35
+        },
+        {
+          "bodyPart": "shoulder",
+          "score": 25
+        },
+        {
+          "bodyPart": "chest",
+          "score": 30
+        },
+        {
+          "bodyPart": "waist",
+          "score": 40
+        },
+        {
+          "bodyPart": "cardio",
+          "score": 50
+        }
+      ]
+    },
+    "muscleStats": {
+      "create": [
+        {
+          "muscle": "biceps",
+          "bodyPart": "upper arms",
+          "max": 100
+        },
+        {
+          "muscle": "triceps",
+          "bodyPart": "upper arms",
+          "max": 90
+        }
+      ]
+    },
+    "workouts": {
+      "create": [
+        {
+          "name": "Morning Routine",
+          "isComplete": false,
+          "movements": {
+            "create": [
+              {
+                "name": "Push-up",
+                "bodyPart": "upper arms",
+                "reps": 10,
+                "sets": 3,
+                "weight": 0,
+                "max": 0,
+                "muscle": "biceps"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "username": "user7",
+    "password": "password123",
+    "height": 165,
+    "weight": 60,
+    "age": 25,
+    "gender": "female",
+    "level": 5,
+    "xp": 450,
+    "overallStat": 75.5,
+    "bodyPartStats": {
+      "create": [
+        {
+          "bodyPart": "upper arms",
+          "score": 40
+        },
+        {
+          "bodyPart": "lower arms",
+          "score": 30
+        },
+        {
+          "bodyPart": "upper legs",
+          "score": 50
+        },
+        {
+          "bodyPart": "lower legs",
+          "score": 45
+        },
+        {
+          "bodyPart": "neck",
+          "score": 20
+        },
+        {
+          "bodyPart": "back",
+          "score": 35
+        },
+        {
+          "bodyPart": "shoulder",
+          "score": 25
+        },
+        {
+          "bodyPart": "chest",
+          "score": 30
+        },
+        {
+          "bodyPart": "waist",
+          "score": 40
+        },
+        {
+          "bodyPart": "cardio",
+          "score": 50
+        }
+      ]
+    },
+    "muscleStats": {
+      "create": [
+        {
+          "muscle": "biceps",
+          "bodyPart": "upper arms",
+          "max": 100
+        },
+        {
+          "muscle": "triceps",
+          "bodyPart": "upper arms",
+          "max": 90
+        }
+      ]
+    },
+    "workouts": {
+      "create": [
+        {
+          "name": "Morning Routine",
+          "isComplete": false,
+          "movements": {
+            "create": [
+              {
+                "name": "Push-up",
+                "bodyPart": "upper arms",
+                "reps": 10,
+                "sets": 3,
+                "weight": 0,
+                "max": 0,
+                "muscle": "biceps"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "username": "user8",
+    "password": "password123",
+    "height": 165,
+    "weight": 60,
+    "age": 25,
+    "gender": "female",
+    "level": 5,
+    "xp": 450,
+    "overallStat": 75.5,
+    "bodyPartStats": {
+      "create": [
+        {
+          "bodyPart": "upper arms",
+          "score": 40
+        },
+        {
+          "bodyPart": "lower arms",
+          "score": 30
+        },
+        {
+          "bodyPart": "upper legs",
+          "score": 50
+        },
+        {
+          "bodyPart": "lower legs",
+          "score": 45
+        },
+        {
+          "bodyPart": "neck",
+          "score": 20
+        },
+        {
+          "bodyPart": "back",
+          "score": 35
+        },
+        {
+          "bodyPart": "shoulder",
+          "score": 25
+        },
+        {
+          "bodyPart": "chest",
+          "score": 30
+        },
+        {
+          "bodyPart": "waist",
+          "score": 40
+        },
+        {
+          "bodyPart": "cardio",
+          "score": 50
+        }
+      ]
+    },
+    "muscleStats": {
+      "create": [
+        {
+          "muscle": "biceps",
+          "bodyPart": "upper arms",
+          "max": 100
+        },
+        {
+          "muscle": "triceps",
+          "bodyPart": "upper arms",
+          "max": 90
+        }
+      ]
+    },
+    "workouts": {
+      "create": [
+        {
+          "name": "Morning Routine",
+          "isComplete": false,
+          "movements": {
+            "create": [
+              {
+                "name": "Push-up",
+                "bodyPart": "upper arms",
+                "reps": 10,
+                "sets": 3,
+                "weight": 0,
+                "max": 0,
+                "muscle": "biceps"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "username": "user9",
+    "password": "password123",
+    "height": 165,
+    "weight": 60,
+    "age": 25,
+    "gender": "female",
+    "level": 5,
+    "xp": 450,
+    "overallStat": 75.5,
+    "bodyPartStats": {
+      "create": [
+        {
+          "bodyPart": "upper arms",
+          "score": 40
+        },
+        {
+          "bodyPart": "lower arms",
+          "score": 30
+        },
+        {
+          "bodyPart": "upper legs",
+          "score": 50
+        },
+        {
+          "bodyPart": "lower legs",
+          "score": 45
+        },
+        {
+          "bodyPart": "neck",
+          "score": 20
+        },
+        {
+          "bodyPart": "back",
+          "score": 35
+        },
+        {
+          "bodyPart": "shoulder",
+          "score": 25
+        },
+        {
+          "bodyPart": "chest",
+          "score": 30
+        },
+        {
+          "bodyPart": "waist",
+          "score": 40
+        },
+        {
+          "bodyPart": "cardio",
+          "score": 50
+        }
+      ]
+    },
+    "muscleStats": {
+      "create": [
+        {
+          "muscle": "biceps",
+          "bodyPart": "upper arms",
+          "max": 100
+        },
+        {
+          "muscle": "triceps",
+          "bodyPart": "upper arms",
+          "max": 90
+        }
+      ]
+    },
+    "workouts": {
+      "create": [
+        {
+          "name": "Morning Routine",
+          "isComplete": false,
+          "movements": {
+            "create": [
+              {
+                "name": "Push-up",
+                "bodyPart": "upper arms",
+                "reps": 10,
+                "sets": 3,
+                "weight": 0,
+                "max": 0,
+                "muscle": "biceps"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "username": "user10",
+    "password": "password123",
+    "height": 165,
+    "weight": 60,
+    "age": 25,
+    "gender": "female",
+    "level": 5,
+    "xp": 450,
+    "overallStat": 75.5,
+    "bodyPartStats": {
+      "create": [
+        {
+          "bodyPart": "upper arms",
+          "score": 40
+        },
+        {
+          "bodyPart": "lower arms",
+          "score": 30
+        },
+        {
+          "bodyPart": "upper legs",
+          "score": 50
+        },
+        {
+          "bodyPart": "lower legs",
+          "score": 45
+        },
+        {
+          "bodyPart": "neck",
+          "score": 20
+        },
+        {
+          "bodyPart": "back",
+          "score": 35
+        },
+        {
+          "bodyPart": "shoulder",
+          "score": 25
+        },
+        {
+          "bodyPart": "chest",
+          "score": 30
+        },
+        {
+          "bodyPart": "waist",
+          "score": 40
+        },
+        {
+          "bodyPart": "cardio",
+          "score": 50
+        }
+      ]
+    },
+    "muscleStats": {
+      "create": [
+        {
+          "muscle": "biceps",
+          "bodyPart": "upper arms",
+          "max": 100
+        },
+        {
+          "muscle": "triceps",
+          "bodyPart": "upper arms",
+          "max": 90
+        }
+      ]
+    },
+    "workouts": {
+      "create": [
+        {
+          "name": "Morning Routine",
+          "isComplete": false,
+          "movements": {
+            "create": [
+              {
+                "name": "Push-up",
+                "bodyPart": "upper arms",
+                "reps": 10,
+                "sets": 3,
+                "weight": 0,
+                "max": 0,
+                "muscle": "biceps"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "username": "user11",
+    "password": "password123",
+    "height": 165,
+    "weight": 60,
+    "age": 25,
+    "gender": "female",
+    "level": 5,
+    "xp": 450,
+    "overallStat": 75.5,
+    "bodyPartStats": {
+      "create": [
+        {
+          "bodyPart": "upper arms",
+          "score": 40
+        },
+        {
+          "bodyPart": "lower arms",
+          "score": 30
+        },
+        {
+          "bodyPart": "upper legs",
+          "score": 50
+        },
+        {
+          "bodyPart": "lower legs",
+          "score": 45
+        },
+        {
+          "bodyPart": "neck",
+          "score": 20
+        },
+        {
+          "bodyPart": "back",
+          "score": 35
+        },
+        {
+          "bodyPart": "shoulder",
+          "score": 25
+        },
+        {
+          "bodyPart": "chest",
+          "score": 30
+        },
+        {
+          "bodyPart": "waist",
+          "score": 40
+        },
+        {
+          "bodyPart": "cardio",
+          "score": 50
+        }
+      ]
+    },
+    "muscleStats": {
+      "create": [
+        {
+          "muscle": "biceps",
+          "bodyPart": "upper arms",
+          "max": 100
+        },
+        {
+          "muscle": "triceps",
+          "bodyPart": "upper arms",
+          "max": 90
+        }
+      ]
+    },
+    "workouts": {
+      "create": [
+        {
+          "name": "Morning Routine",
+          "isComplete": false,
+          "movements": {
+            "create": [
+              {
+                "name": "Push-up",
+                "bodyPart": "upper arms",
+                "reps": 10,
+                "sets": 3,
+                "weight": 0,
+                "max": 0,
+                "muscle": "biceps"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "username": "user12",
+    "password": "password123",
+    "height": 165,
+    "weight": 60,
+    "age": 25,
+    "gender": "female",
+    "level": 5,
+    "xp": 450,
+    "overallStat": 75.5,
+    "bodyPartStats": {
+      "create": [
+        {
+          "bodyPart": "upper arms",
+          "score": 40
+        },
+        {
+          "bodyPart": "lower arms",
+          "score": 30
+        },
+        {
+          "bodyPart": "upper legs",
+          "score": 50
+        },
+        {
+          "bodyPart": "lower legs",
+          "score": 45
+        },
+        {
+          "bodyPart": "neck",
+          "score": 20
+        },
+        {
+          "bodyPart": "back",
+          "score": 35
+        },
+        {
+          "bodyPart": "shoulder",
+          "score": 25
+        },
+        {
+          "bodyPart": "chest",
+          "score": 30
+        },
+        {
+          "bodyPart": "waist",
+          "score": 40
+        },
+        {
+          "bodyPart": "cardio",
+          "score": 50
+        }
+      ]
+    },
+    "muscleStats": {
+      "create": [
+        {
+          "muscle": "biceps",
+          "bodyPart": "upper arms",
+          "max": 100
+        },
+        {
+          "muscle": "triceps",
+          "bodyPart": "upper arms",
+          "max": 90
+        }
+      ]
+    },
+    "workouts": {
+      "create": [
+        {
+          "name": "Morning Routine",
+          "isComplete": false,
+          "movements": {
+            "create": [
+              {
+                "name": "Push-up",
+                "bodyPart": "upper arms",
+                "reps": 10,
+                "sets": 3,
+                "weight": 0,
+                "max": 0,
+                "muscle": "biceps"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "username": "user13",
+    "password": "password123",
+    "height": 165,
+    "weight": 60,
+    "age": 25,
+    "gender": "female",
+    "level": 5,
+    "xp": 450,
+    "overallStat": 75.5,
+    "bodyPartStats": {
+      "create": [
+        {
+          "bodyPart": "upper arms",
+          "score": 40
+        },
+        {
+          "bodyPart": "lower arms",
+          "score": 30
+        },
+        {
+          "bodyPart": "upper legs",
+          "score": 50
+        },
+        {
+          "bodyPart": "lower legs",
+          "score": 45
+        },
+        {
+          "bodyPart": "neck",
+          "score": 20
+        },
+        {
+          "bodyPart": "back",
+          "score": 35
+        },
+        {
+          "bodyPart": "shoulder",
+          "score": 25
+        },
+        {
+          "bodyPart": "chest",
+          "score": 30
+        },
+        {
+          "bodyPart": "waist",
+          "score": 40
+        },
+        {
+          "bodyPart": "cardio",
+          "score": 50
+        }
+      ]
+    },
+    "muscleStats": {
+      "create": [
+        {
+          "muscle": "biceps",
+          "bodyPart": "upper arms",
+          "max": 100
+        },
+        {
+          "muscle": "triceps",
+          "bodyPart": "upper arms",
+          "max": 90
+        }
+      ]
+    },
+    "workouts": {
+      "create": [
+        {
+          "name": "Morning Routine",
+          "isComplete": false,
+          "movements": {
+            "create": [
+              {
+                "name": "Push-up",
+                "bodyPart": "upper arms",
+                "reps": 10,
+                "sets": 3,
+                "weight": 0,
+                "max": 0,
+                "muscle": "biceps"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "username": "user14",
+    "password": "password123",
+    "height": 165,
+    "weight": 60,
+    "age": 25,
+    "gender": "female",
+    "level": 5,
+    "xp": 450,
+    "overallStat": 75.5,
+    "bodyPartStats": {
+      "create": [
+        {
+          "bodyPart": "upper arms",
+          "score": 40
+        },
+        {
+          "bodyPart": "lower arms",
+          "score": 30
+        },
+        {
+          "bodyPart": "upper legs",
+          "score": 50
+        },
+        {
+          "bodyPart": "lower legs",
+          "score": 45
+        },
+        {
+          "bodyPart": "neck",
+          "score": 20
+        },
+        {
+          "bodyPart": "back",
+          "score": 35
+        },
+        {
+          "bodyPart": "shoulder",
+          "score": 25
+        },
+        {
+          "bodyPart": "chest",
+          "score": 30
+        },
+        {
+          "bodyPart": "waist",
+          "score": 40
+        },
+        {
+          "bodyPart": "cardio",
+          "score": 50
+        }
+      ]
+    },
+    "muscleStats": {
+      "create": [
+        {
+          "muscle": "biceps",
+          "bodyPart": "upper arms",
+          "max": 100
+        },
+        {
+          "muscle": "triceps",
+          "bodyPart": "upper arms",
+          "max": 90
+        }
+      ]
+    },
+    "workouts": {
+      "create": [
+        {
+          "name": "Morning Routine",
+          "isComplete": false,
+          "movements": {
+            "create": [
+              {
+                "name": "Push-up",
+                "bodyPart": "upper arms",
+                "reps": 10,
+                "sets": 3,
+                "weight": 0,
+                "max": 0,
+                "muscle": "biceps"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "username": "user15",
+    "password": "password123",
+    "height": 165,
+    "weight": 60,
+    "age": 25,
+    "gender": "female",
+    "level": 5,
+    "xp": 450,
+    "overallStat": 75.5,
+    "bodyPartStats": {
+      "create": [
+        {
+          "bodyPart": "upper arms",
+          "score": 40
+        },
+        {
+          "bodyPart": "lower arms",
+          "score": 30
+        },
+        {
+          "bodyPart": "upper legs",
+          "score": 50
+        },
+        {
+          "bodyPart": "lower legs",
+          "score": 45
+        },
+        {
+          "bodyPart": "neck",
+          "score": 20
+        },
+        {
+          "bodyPart": "back",
+          "score": 35
+        },
+        {
+          "bodyPart": "shoulder",
+          "score": 25
+        },
+        {
+          "bodyPart": "chest",
+          "score": 30
+        },
+        {
+          "bodyPart": "waist",
+          "score": 40
+        },
+        {
+          "bodyPart": "cardio",
+          "score": 50
+        }
+      ]
+    },
+    "muscleStats": {
+      "create": [
+        {
+          "muscle": "biceps",
+          "bodyPart": "upper arms",
+          "max": 100
+        },
+        {
+          "muscle": "triceps",
+          "bodyPart": "upper arms",
+          "max": 90
+        }
+      ]
+    },
+    "workouts": {
+      "create": [
+        {
+          "name": "Morning Routine",
+          "isComplete": false,
+          "movements": {
+            "create": [
+              {
+                "name": "Push-up",
+                "bodyPart": "upper arms",
+                "reps": 10,
+                "sets": 3,
+                "weight": 0,
+                "max": 0,
+                "muscle": "biceps"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "username": "user16",
+    "password": "password123",
+    "height": 165,
+    "weight": 60,
+    "age": 25,
+    "gender": "female",
+    "level": 5,
+    "xp": 450,
+    "overallStat": 75.5,
+    "bodyPartStats": {
+      "create": [
+        {
+          "bodyPart": "upper arms",
+          "score": 40
+        },
+        {
+          "bodyPart": "lower arms",
+          "score": 30
+        },
+        {
+          "bodyPart": "upper legs",
+          "score": 50
+        },
+        {
+          "bodyPart": "lower legs",
+          "score": 45
+        },
+        {
+          "bodyPart": "neck",
+          "score": 20
+        },
+        {
+          "bodyPart": "back",
+          "score": 35
+        },
+        {
+          "bodyPart": "shoulder",
+          "score": 25
+        },
+        {
+          "bodyPart": "chest",
+          "score": 30
+        },
+        {
+          "bodyPart": "waist",
+          "score": 40
+        },
+        {
+          "bodyPart": "cardio",
+          "score": 50
+        }
+      ]
+    },
+    "muscleStats": {
+      "create": [
+        {
+          "muscle": "biceps",
+          "bodyPart": "upper arms",
+          "max": 100
+        },
+        {
+          "muscle": "triceps",
+          "bodyPart": "upper arms",
+          "max": 90
+        }
+      ]
+    },
+    "workouts": {
+      "create": [
+        {
+          "name": "Morning Routine",
+          "isComplete": false,
+          "movements": {
+            "create": [
+              {
+                "name": "Push-up",
+                "bodyPart": "upper arms",
+                "reps": 10,
+                "sets": 3,
+                "weight": 0,
+                "max": 0,
+                "muscle": "biceps"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "username": "user17",
+    "password": "password123",
+    "height": 165,
+    "weight": 60,
+    "age": 25,
+    "gender": "female",
+    "level": 5,
+    "xp": 450,
+    "overallStat": 75.5,
+    "bodyPartStats": {
+      "create": [
+        {
+          "bodyPart": "upper arms",
+          "score": 40
+        },
+        {
+          "bodyPart": "lower arms",
+          "score": 30
+        },
+        {
+          "bodyPart": "upper legs",
+          "score": 50
+        },
+        {
+          "bodyPart": "lower legs",
+          "score": 45
+        },
+        {
+          "bodyPart": "neck",
+          "score": 20
+        },
+        {
+          "bodyPart": "back",
+          "score": 35
+        },
+        {
+          "bodyPart": "shoulder",
+          "score": 25
+        },
+        {
+          "bodyPart": "chest",
+          "score": 30
+        },
+        {
+          "bodyPart": "waist",
+          "score": 40
+        },
+        {
+          "bodyPart": "cardio",
+          "score": 50
+        }
+      ]
+    },
+    "muscleStats": {
+      "create": [
+        {
+          "muscle": "biceps",
+          "bodyPart": "upper arms",
+          "max": 100
+        },
+        {
+          "muscle": "triceps",
+          "bodyPart": "upper arms",
+          "max": 90
+        }
+      ]
+    },
+    "workouts": {
+      "create": [
+        {
+          "name": "Morning Routine",
+          "isComplete": false,
+          "movements": {
+            "create": [
+              {
+                "name": "Push-up",
+                "bodyPart": "upper arms",
+                "reps": 10,
+                "sets": 3,
+                "weight": 0,
+                "max": 0,
+                "muscle": "biceps"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "username": "user18",
+    "password": "password123",
+    "height": 165,
+    "weight": 60,
+    "age": 25,
+    "gender": "female",
+    "level": 5,
+    "xp": 450,
+    "overallStat": 75.5,
+    "bodyPartStats": {
+      "create": [
+        {
+          "bodyPart": "upper arms",
+          "score": 40
+        },
+        {
+          "bodyPart": "lower arms",
+          "score": 30
+        },
+        {
+          "bodyPart": "upper legs",
+          "score": 50
+        },
+        {
+          "bodyPart": "lower legs",
+          "score": 45
+        },
+        {
+          "bodyPart": "neck",
+          "score": 20
+        },
+        {
+          "bodyPart": "back",
+          "score": 35
+        },
+        {
+          "bodyPart": "shoulder",
+          "score": 25
+        },
+        {
+          "bodyPart": "chest",
+          "score": 30
+        },
+        {
+          "bodyPart": "waist",
+          "score": 40
+        },
+        {
+          "bodyPart": "cardio",
+          "score": 50
+        }
+      ]
+    },
+    "muscleStats": {
+      "create": [
+        {
+          "muscle": "biceps",
+          "bodyPart": "upper arms",
+          "max": 100
+        },
+        {
+          "muscle": "triceps",
+          "bodyPart": "upper arms",
+          "max": 90
+        }
+      ]
+    },
+    "workouts": {
+      "create": [
+        {
+          "name": "Morning Routine",
+          "isComplete": false,
+          "movements": {
+            "create": [
+              {
+                "name": "Push-up",
+                "bodyPart": "upper arms",
+                "reps": 10,
+                "sets": 3,
+                "weight": 0,
+                "max": 0,
+                "muscle": "biceps"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "username": "user19",
+    "password": "password123",
+    "height": 165,
+    "weight": 60,
+    "age": 25,
+    "gender": "female",
+    "level": 5,
+    "xp": 450,
+    "overallStat": 75.5,
+    "bodyPartStats": {
+      "create": [
+        {
+          "bodyPart": "upper arms",
+          "score": 40
+        },
+        {
+          "bodyPart": "lower arms",
+          "score": 30
+        },
+        {
+          "bodyPart": "upper legs",
+          "score": 50
+        },
+        {
+          "bodyPart": "lower legs",
+          "score": 45
+        },
+        {
+          "bodyPart": "neck",
+          "score": 20
+        },
+        {
+          "bodyPart": "back",
+          "score": 35
+        },
+        {
+          "bodyPart": "shoulder",
+          "score": 25
+        },
+        {
+          "bodyPart": "chest",
+          "score": 30
+        },
+        {
+          "bodyPart": "waist",
+          "score": 40
+        },
+        {
+          "bodyPart": "cardio",
+          "score": 50
+        }
+      ]
+    },
+    "muscleStats": {
+      "create": [
+        {
+          "muscle": "biceps",
+          "bodyPart": "upper arms",
+          "max": 100
+        },
+        {
+          "muscle": "triceps",
+          "bodyPart": "upper arms",
+          "max": 90
+        }
+      ]
+    },
+    "workouts": {
+      "create": [
+        {
+          "name": "Morning Routine",
+          "isComplete": false,
+          "movements": {
+            "create": [
+              {
+                "name": "Push-up",
+                "bodyPart": "upper arms",
+                "reps": 10,
+                "sets": 3,
+                "weight": 0,
+                "max": 0,
+                "muscle": "biceps"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "username": "user20",
+    "password": "password123",
+    "height": 165,
+    "weight": 60,
+    "age": 25,
+    "gender": "female",
+    "level": 5,
+    "xp": 450,
+    "overallStat": 75.5,
+    "bodyPartStats": {
+      "create": [
+        {
+          "bodyPart": "upper arms",
+          "score": 40
+        },
+        {
+          "bodyPart": "lower arms",
+          "score": 30
+        },
+        {
+          "bodyPart": "upper legs",
+          "score": 50
+        },
+        {
+          "bodyPart": "lower legs",
+          "score": 45
+        },
+        {
+          "bodyPart": "neck",
+          "score": 20
+        },
+        {
+          "bodyPart": "back",
+          "score": 35
+        },
+        {
+          "bodyPart": "shoulder",
+          "score": 25
+        },
+        {
+          "bodyPart": "chest",
+          "score": 30
+        },
+        {
+          "bodyPart": "waist",
+          "score": 40
+        },
+        {
+          "bodyPart": "cardio",
+          "score": 50
+        }
+      ]
+    },
+    "muscleStats": {
+      "create": [
+        {
+          "muscle": "biceps",
+          "bodyPart": "upper arms",
+          "max": 100
+        },
+        {
+          "muscle": "triceps",
+          "bodyPart": "upper arms",
+          "max": 90
+        }
+      ]
+    },
+    "workouts": {
+      "create": [
+        {
+          "name": "Morning Routine",
+          "isComplete": false,
+          "movements": {
+            "create": [
+              {
+                "name": "Push-up",
+                "bodyPart": "upper arms",
+                "reps": 10,
+                "sets": 3,
+                "weight": 0,
+                "max": 0,
+                "muscle": "biceps"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
 ];
+
+
 
 async function fetchAndSeedExercises() {
   const options = {
