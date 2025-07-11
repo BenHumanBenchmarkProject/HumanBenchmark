@@ -12,7 +12,6 @@ const WorkoutModal = ({ workout, onClose }) => {
         </button>
         <h2 className="workout-name">{workout.name}</h2>
         <p>
-          {" "}
           {workout.completedAt
             ? `Completed on: ${new Date(
                 workout.completedAt
