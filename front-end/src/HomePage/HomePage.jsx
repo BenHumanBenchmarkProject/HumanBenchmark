@@ -4,6 +4,7 @@ import bodyOutline from "../assets/body-outline.jpg";
 import axios from "axios";
 import { BASE_URL } from "../constants";
 import UserContext from "../userContext";
+import WorkoutModal from "../WorkoutModal/WorkoutModal";
 
 import { NavigationButtons } from "../constants";
 
@@ -12,6 +13,7 @@ const HomePage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [workouts, setWorkouts] = useState([]);
   const [friends, setFriends] = useState([]);
+  const [selectedWorkout, setSelectedWorkout] = useState(null);
 
   const fetchIncompleteWorkouts = async () => {
     try {
@@ -40,6 +42,14 @@ const HomePage = () => {
     fetchFriends();
   }, []);
 
+  const handleWorkoutClick = (workout) => {
+    setSelectedWorkout(workout);
+  };
+
+  const closeModal = () => {
+    setSelectedWorkout(null);
+  };
+
   return (
     <>
       <div className="container">
@@ -49,8 +59,12 @@ const HomePage = () => {
           <div className="home-workouts-box">
             <div className="home-workouts-header">Your Workouts</div>
             {workouts.map((workout, index) => (
-              <div key={index} className="home-workout-item">
-                <span>{workout.name}</span>{" "}
+              <div
+                key={index}
+                className="home-workout-item"
+                onClick={() => handleWorkoutClick(workout)}
+              >
+                <span>{workout.name}</span>
               </div>
             ))}
           </div>
@@ -67,6 +81,9 @@ const HomePage = () => {
               </div>
             ))}
           </div>
+          {selectedWorkout && (
+            <WorkoutModal workout={selectedWorkout} onClose={closeModal} />
+          )}
         </div>
       </div>
     </>
