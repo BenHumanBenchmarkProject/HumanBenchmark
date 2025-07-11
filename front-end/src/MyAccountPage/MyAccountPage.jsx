@@ -18,11 +18,11 @@ const MyAccountPage = () => {
   const fetchCompleteWorkouts = async () => {
     try {
       const response = await axios.get(`${BASE_URL}users/${user.id}/workouts`);
-      const CompleteWorkouts = response.data.filter(
+      const completeWorkouts = response.data.filter(
         (workout) => workout.isComplete
       );
-      setWorkouts(CompleteWorkouts);
-      return CompleteWorkouts;
+      setWorkouts(completeWorkouts);
+      return completeWorkouts;
     } catch (err) {
       console.log(err);
     }
