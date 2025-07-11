@@ -1,18 +1,24 @@
 import "./LeaderboardPage.css";
-import React, { use, useEffect, useState } from "react";
+import React, { use, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL, NavigationButtons, BODY_PARTS } from "../constants";
+import UserContext from "../userContext";
+import pendingIcon from "../assets/pending-icon.png";
 
 const USERNAME_KEY = "username";
 const LEVEL_KEY = "level";
 const OVERALL_STAT_KEY = "overallStat";
 
 const LeaderboardPage = () => {
+  const { user } = useContext(UserContext);
   const [users, setUsers] = useState([]);
+  const [friends, setFriends] = useState([]); // pending friend requests wont have an add button
+  const [pendingRequests, setPendingRequests] = useState([]); // pending friend requests wont have an add button
   const [sortKey, setSortKey] = useState(OVERALL_STAT_KEY);
 
   useEffect(() => {
     fetchLeaderboard();
+    fetchFriends();
   }, []);
 
   const fetchLeaderboard = async () => {
@@ -21,6 +27,32 @@ const LeaderboardPage = () => {
       setUsers(response.data);
     } catch (error) {
       console.error("Error fetching leaderboard data:", error);
+    }
+  };
+
+  const fetchFriends = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}users/${user.id}/friends`);
+      setFriends(response.data.map((friend) => friend.id));
+
+      const pendingResponse = await axios.get(
+        `${BASE_URL}users/${user.id}/friendRequests`
+      );
+      setPendingRequests(pendingResponse.data.map((request) => request.id));
+    } catch (error) {
+      console.error("Error fetching friends:", error);
+    }
+  };
+
+  const sendFriendRequest = async (friendId) => {
+    try {
+      const response = await axios.post(
+        `${BASE_URL}users/${user.id}/friends/${friendId}`
+      );
+      console.log("Friend request sent:", response.data);
+      fetchFriends(); // get new friends list after sending request
+    } catch (error) {
+      console.error("Error sending friend request:", error);
     }
   };
 
@@ -90,18 +122,41 @@ const LeaderboardPage = () => {
               </tr>
             </thead>
             <tbody>
-              {users.map((user) => {
+              {users.map((leaderboardUser) => {
+                const isFriend = friends.includes(leaderboardUser.id);
+                const isPending = pendingRequests.includes(leaderboardUser.id);
+                const isCurrentUser = user.id === leaderboardUser.id;
+
                 return (
-                  <tr key={user.id}>
-                    <td>{user.username}</td>
-                    <td>{user.level}</td>
+                  <tr key={leaderboardUser.id}>
                     <td>
-                      {user.overallStat !== undefined
-                        ? user.overallStat.toFixed(2)
+                      {leaderboardUser.username}
+                      {!isFriend && !isPending && !isCurrentUser && (
+                        <button
+                          className="leaderboard-friend-request-button"
+                          onClick={() => sendFriendRequest(leaderboardUser.id)}
+                        >
+                          Add
+                        </button>
+                      )}
+                      {isPending && (
+                        <span className="pending-icon-container">
+                          <img
+                            src={pendingIcon}
+                            alt="friend request pending icon"
+                            width="20px"
+                          />
+                        </span>
+                      )}
+                    </td>
+                    <td>{leaderboardUser.level}</td>
+                    <td>
+                      {leaderboardUser.overallStat !== undefined
+                        ? leaderboardUser.overallStat.toFixed(2)
                         : "0.00"}
                     </td>
                     {BODY_PARTS.map((bodyPart) => {
-                      const stat = user.bodyPartStats.find(
+                      const stat = leaderboardUser.bodyPartStats.find(
                         (stat) =>
                           stat.bodyPart.toLowerCase() === bodyPart.toLowerCase()
                       );
