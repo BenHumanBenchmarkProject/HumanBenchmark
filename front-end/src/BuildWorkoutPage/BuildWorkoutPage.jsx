@@ -5,6 +5,8 @@ import { useState } from "react";
 import { BODY_PARTS, BASE_URL, NavigationButtons } from "../constants";
 import { useUser } from "../userContext";
 
+const MINIMUM_MOVEMENT_VARIABLE_NUMBER = 1;
+
 const BuildWorkoutPage = () => {
   const { login, user } = useUser();
   const userId = user ? user.id : null;
@@ -16,7 +18,7 @@ const BuildWorkoutPage = () => {
 
   const handleBodyPartChange = async (event) => {
     const bodyPart = event.target.value.toLowerCase();
-    setSelectedBodyPart(event.target.value.toLowerCase());
+    setSelectedBodyPart(bodyPart);
     setExercises([]); // reset exercises when body part changes
 
     try {
@@ -136,7 +138,7 @@ const BuildWorkoutPage = () => {
                         }
                         placeholder="S"
                         className="plan-input"
-                        min="1"
+                        min={MINIMUM_MOVEMENT_VARIABLE_NUMBER}
                       />
                       <input
                         type="number"
@@ -146,7 +148,7 @@ const BuildWorkoutPage = () => {
                         }
                         placeholder="R"
                         className="plan-input"
-                        min="1"
+                        min={MINIMUM_MOVEMENT_VARIABLE_NUMBER}
                       />
                       <input
                         type="number"
@@ -156,7 +158,7 @@ const BuildWorkoutPage = () => {
                         }
                         placeholder="W"
                         className="plan-input"
-                        min="1"
+                        min={MINIMUM_MOVEMENT_VARIABLE_NUMBER}
                       />
                     </div>
                   </div>
