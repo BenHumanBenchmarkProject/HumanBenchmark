@@ -102,7 +102,7 @@ body {
 .home-workouts-box,
 .home-friends-box {
   width: 250px;
-  height: 500px; /* Ensure both boxes have the same height */
+  height: 500px;
   background-color: #f0f0f0;
   border: 1px solid #999;
   border-radius: 6px;
@@ -118,9 +118,6 @@ body {
   flex: 1;
   overflow-y: auto;
 }
-
-
-
 
 .home-friend-item {
   background-color: #dcdbdb;
@@ -147,9 +144,8 @@ body {
   border-top: 1px solid #333;
 }
 
-
-
-.friends-list, .recommended-friends-list {
+.friends-list,
+.recommended-friends-list {
   flex: 1;
   overflow-y: auto;
 }
@@ -184,8 +180,6 @@ body {
   width: 20px;
   height: 20px;
 }
-
-
 
 /* Animation */
 @keyframes growBar {
