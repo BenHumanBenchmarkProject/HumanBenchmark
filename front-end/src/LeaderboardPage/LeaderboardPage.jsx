@@ -12,7 +12,7 @@ const OVERALL_STAT_KEY = "overallStat";
 const LeaderboardPage = () => {
   const { user } = useContext(UserContext);
   const [users, setUsers] = useState([]);
-  const [friends, setFriends] = useState([]); // pending friend requests wont have an add button
+  const [friends, setFriends] = useState([]); // friends wont have an add button
   const [pendingRequests, setPendingRequests] = useState([]); // pending friend requests wont have an add button
   const [sortKey, setSortKey] = useState(OVERALL_STAT_KEY);
 
