@@ -97,6 +97,7 @@ const LogWorkoutPage = () => {
       const response = await axios.post(`${BASE_URL}users/${userId}/workouts`, {
         name: workoutName,
         isComplete: true,
+        completedAt: new Date().toISOString(),
         movements: plan.map((exercise) => ({
           name: exercise.name,
           bodyPart: exercise.bodyPart,
