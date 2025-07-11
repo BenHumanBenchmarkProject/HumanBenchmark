@@ -35,7 +35,7 @@ th:hover {
 }
 
 .active-sort {
-  background-color: #d3d3d3; 
+  background-color: #d3d3d3;
 }
 
 tbody tr {
@@ -44,4 +44,30 @@ tbody tr {
 
 tbody tr:hover {
   font-size: 1.2em;
+}
+
+.leaderboard-friend-request-button {
+  margin-left: 10px;
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+}
+
+.leaderboard-friend-request-button:hover {
+  background-color: #0056b3;
+}
+
+.pending-icon-container {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 8px;
+}
+
+.pending-icon {
+  width: 20px;
+  height: 20px;
 }
