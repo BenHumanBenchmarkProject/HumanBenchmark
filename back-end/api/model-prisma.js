@@ -44,6 +44,69 @@ function calculateOverallStat(bodyPartStats) {
   return totalScore / bodyPartStats.length;
 }
 
+function getAgeDifference(user, friend) {
+  dif = Math.abs(user.age - friend.age);
+  return 1 - Math.min(dif / 20, 1); // 20 is the max age difference
+}
+
+function getWorkoutFrequency(user, friend) {
+  let userVector = getMuscleVector(user);
+  let friendVector = getMuscleVector(friend);
+
+  return getCosineSimilarity(userVector, friendVector);
+}
+
+function getMuscleVector(user) {
+  const muscleVector = {};
+
+  if (!user.workouts || user.workouts.length === 0) return muscleVector;
+
+  // Iterate through each workout
+  user.workouts.forEach((workout) => {
+    // Iterate through each movement in the workout
+    workout.movements.forEach((movement) => {
+      const muscle = movement.muscle;
+      // Increment the count for the muscle in the vector
+      if (muscle) {
+        muscleVector[muscle] = (muscleVector[muscle] || 0) + 1;
+      }
+    });
+  });
+
+  return muscleVector;
+}
+
+function getCosineSimilarity(userVector, friendVector) {
+  const allMuscles = new Set([
+    ...Object.keys(userVector),
+    ...Object.keys(friendVector),
+  ]);
+
+  // dot product and magnitudes
+  let dotProduct = 0;
+  let userMagnitude = 0;
+  let friendMagnitude = 0;
+
+  allMuscles.forEach((muscle) => {
+    const userValue = userVector[muscle] || 0;
+    const friendValue = friendVector[muscle] || 0;
+
+    dotProduct += userValue * friendValue;
+    userMagnitude += userValue * userValue;
+    friendMagnitude += friendValue * friendValue;
+  });
+
+  // calculate magnitudes
+  userMagnitude = Math.sqrt(userMagnitude);
+  friendMagnitude = Math.sqrt(friendMagnitude);
+
+  if (userMagnitude === 0 || friendMagnitude === 0) {
+    return 0; // Avoid division by zero
+  }
+
+  return dotProduct / (userMagnitude * friendMagnitude); //cosine similarity
+}
+
 module.exports = {
   async findUsers(where) {
     // GET http://localhost:5432/api/users?type=Recent
@@ -405,5 +468,23 @@ module.exports = {
     });
 
     return suggestedUsers;
+  },
+
+  async getRecommendationScore(userId, friendId) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const friend = await prisma.user.findUnique({ where: { id: friendId } });
+
+    // weight
+    // mutual friends: 0.4
+    // age similarity: 0.15
+    // geographic similarity: 0.225
+    // workout frequency similarity: 0.225
+
+    const mutualFriends = await this.getMutualFriends(userId, friendId);
+
+    let score = 0;
+    score += 0.4 * mutualFriends.length; // mutual friends
+    score += 0.15 * getAgeDifference(user, friend); // age similarity
+    score += 0.225 * getWorkoutFrequency(user, friend); // workout frequency similarity
   },
 };
