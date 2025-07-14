@@ -69,7 +69,7 @@ const SignUpModal = ({ onClose }) => {
     zipcode
   ) => {
     try {
-      getCoordinates(zipcode);
+      await getCoordinates(zipcode);
       const hashedPassword = await bcrypt.hash(password, 10);
       const response = await axios.post(`${BASE_URL}users`, {
         username,
