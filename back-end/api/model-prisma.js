@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 const ERROR_RELATION_ALREADY_EXISTS = "P2002";
 const ACCEPTED_STATUS = "accepted";
 const PENDING_STATUS = "pending";
+const MAX_AGE_DIFFERENCE = 20;
 
 function calculateXP(movement) {
   // Should take user roughly 3 workouts to level up
@@ -46,7 +47,7 @@ function calculateOverallStat(bodyPartStats) {
 
 function getAgeDifference(user, friend) {
   dif = Math.abs(user.age - friend.age);
-  return 1 - Math.min(dif / 20, 1); // 20 is the max age difference
+  return 1 - Math.min(dif / MAX_AGE_DIFFERENCE, 1); // 20 is the max age difference
 }
 
 function getWorkoutFrequency(user, friend) {
@@ -527,7 +528,8 @@ module.exports = {
     return score;
   },
 
-  async getTopFriendRecommendations(userId) { // Stretch Formula
+  async getTopFriendRecommendations(userId) {
+    // Stretch Formula
     try {
       // Fetch all users except the current user
       const allUsers = await prisma.user.findMany({

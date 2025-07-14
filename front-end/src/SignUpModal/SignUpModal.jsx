@@ -7,7 +7,7 @@ const STEP_ONE = 1;
 const STEP_TWO = 2;
 const GENDER_MALE = "M";
 const GENDER_FEMALE = "F";
-const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API_KEY
+const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 
 const SignUpModal = ({ onClose }) => {
   const [username, setUsername] = useState("");
@@ -31,20 +31,21 @@ const SignUpModal = ({ onClose }) => {
     gender: "",
   });
 
-
-
   const getCoordinates = async (zipcode) => {
     try {
-      axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${zipcode}&key=${GOOGLE_API_KEY}`)
-      .then(response => {
-        console.log(response.data.results[0].geometry.location);
-        setLatitude(response.data.results[0].geometry.location.lat);
-        setLongitude(response.data.results[0].geometry.location.lng);
-      })
-    }catch(error){
+      axios
+        .get(
+          `https://maps.googleapis.com/maps/api/geocode/json?address=${zipcode}&key=${GOOGLE_API_KEY}`
+        )
+        .then((response) => {
+          console.log(response.data.results[0].geometry.location);
+          setLatitude(response.data.results[0].geometry.location.lat);
+          setLongitude(response.data.results[0].geometry.location.lng);
+        });
+    } catch (error) {
       console.error("Error getting coordinates:", error);
     }
-  }
+  };
 
   const checkAvailability = async (username) => {
     try {
@@ -167,7 +168,6 @@ const SignUpModal = ({ onClose }) => {
 
   const handleContinue = async (event) => {
     event.preventDefault();
-    console.log(getCoordinates("80016"));
 
     if (step === STEP_ONE) {
       if (!validateStep1()) return;
