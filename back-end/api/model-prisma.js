@@ -5,6 +5,11 @@ const prisma = new PrismaClient();
 const ERROR_RELATION_ALREADY_EXISTS = "P2002";
 const ACCEPTED_STATUS = "accepted";
 const PENDING_STATUS = "pending";
+const MAX_AGE_DIFFERENCE = 20;
+const MUTUAL_FRIENDS_WEIGHT = 0.4;
+const WORKOUT_FREQUENCY_WEIGHT = 0.225;
+const AGE_DIFFERENCE_WEIGHT = 0.15;
+const GEO_DISTANCE_WEIGHT = 0.225;
 
 function calculateXP(movement) {
   // Should take user roughly 3 workouts to level up
@@ -38,10 +43,158 @@ function getFriendIds(friends, userId) {
   );
 }
 
+async function getMutualFriends(userA, userB) {
+  try {
+    const friendsOfA = await prisma.friendship.findMany({
+      where: {
+        OR: [{ userId: userA }, { friendId: userA }],
+        status: ACCEPTED_STATUS,
+      },
+    });
+
+    const friendsOfB = await prisma.friendship.findMany({
+      where: {
+        OR: [{ userId: userB }, { friendId: userB }],
+        status: ACCEPTED_STATUS,
+      },
+    });
+
+    const friendIdsOfA = await getFriendIds(friendsOfA, userA);
+    const friendIdsOfB = await getFriendIds(friendsOfB, userB);
+
+    const mutualFriendIds = friendIdsOfA.filter((id) =>
+      friendIdsOfB.includes(id)
+    );
+
+    const mutualFriends = await prisma.user.findMany({
+      where: { id: { in: mutualFriendIds } },
+    });
+
+    return mutualFriends;
+  } catch (error) {
+    console.error("Error fetching mutual friends:", error);
+    throw error;
+  }
+}
+
 function calculateOverallStat(bodyPartStats) {
   if (!bodyPartStats || bodyPartStats.length === 0) return 0;
   const totalScore = bodyPartStats.reduce((sum, stat) => sum + stat.score, 0);
   return totalScore / bodyPartStats.length;
+}
+
+function getAgeDifference(user, friend) {
+  dif = Math.abs(user.age - friend.age);
+  return 1 - Math.min(dif / MAX_AGE_DIFFERENCE, 1); // 20 is the max age difference
+}
+
+function getWorkoutFrequency(user, friend) {
+  let userVector = getMuscleVector(user);
+  let friendVector = getMuscleVector(friend);
+
+  return getCosineSimilarity(userVector, friendVector);
+}
+
+function getMuscleVector(user) {
+  const muscleVector = {};
+
+  if (!user.workouts || user.workouts.length === 0) return muscleVector;
+
+  // Iterate through each workout
+  user.workouts.forEach((workout) => {
+    // Iterate through each movement in the workout
+    workout.movements.forEach((movement) => {
+      const muscle = movement.muscle;
+      // Increment the count for the muscle in the vector
+      if (muscle) {
+        muscleVector[muscle] = (muscleVector[muscle] || 0) + 1;
+      }
+    });
+  });
+
+  return muscleVector;
+}
+
+function getCosineSimilarity(userVector, friendVector) {
+  const allMuscles = new Set([
+    ...Object.keys(userVector),
+    ...Object.keys(friendVector),
+  ]);
+
+  // dot product and magnitudes
+  let dotProduct = 0;
+  let userMagnitude = 0;
+  let friendMagnitude = 0;
+
+  allMuscles.forEach((muscle) => {
+    const userValue = userVector[muscle] || 0;
+    const friendValue = friendVector[muscle] || 0;
+
+    dotProduct += userValue * friendValue;
+    userMagnitude += userValue * userValue;
+    friendMagnitude += friendValue * friendValue;
+  });
+
+  // calculate magnitudes
+  userMagnitude = Math.sqrt(userMagnitude);
+  friendMagnitude = Math.sqrt(friendMagnitude);
+
+  if (userMagnitude === 0 || friendMagnitude === 0) {
+    return 0; // Avoid division by zero
+  }
+
+  return dotProduct / (userMagnitude * friendMagnitude); //cosine similarity
+}
+
+function getGeoDistanceScore(user, friend) {
+  let userLat = user.latitude;
+  let userLong = user.longitude;
+  let friendLat = friend.latitude;
+  let friendLong = friend.longitude;
+
+  if (
+    userLat == null ||
+    userLong == null ||
+    friendLat == null ||
+    friendLong == null
+  ) {
+    return 0;
+  }
+
+  // Calculate the distance between the two points in kilometers
+  let latitudeDistance = ((userLat - friendLat) * Math.PI) / 180.0;
+  let longitudeDistance = ((userLong - friendLong) * Math.PI) / 180.0;
+
+  // Convert to radians
+  userLat = (userLat * Math.PI) / 180.0;
+  friendLat = (friendLat * Math.PI) / 180.0;
+
+  // Calculate the Haversine formula
+  let a =
+    Math.pow(Math.sin(latitudeDistance / 2.0), 2) +
+    Math.pow(Math.sin(longitudeDistance / 2.0), 2) *
+      Math.cos(userLat) *
+      Math.cos(friendLat);
+
+  let earthRadius = 6371.0; // km
+  let c = 2.0 * Math.asin(Math.sqrt(a));
+
+  return earthRadius * c; // Distance in kilometers
+}
+
+async function getRecommendationScore(userId, friendId) {
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  const friend = await prisma.user.findUnique({ where: { id: friendId } });
+
+  const mutualFriends = await getMutualFriends(userId, friendId);
+
+  let score = 0;
+  score += MUTUAL_FRIENDS_WEIGHT * mutualFriends.length; // mutual friends
+  score += AGE_DIFFERENCE_WEIGHT * getAgeDifference(user, friend); // age similarity
+  score += WORKOUT_FREQUENCY_WEIGHT * getWorkoutFrequency(user, friend); // workout frequency similarity
+  score += GEO_DISTANCE_WEIGHT * getGeoDistanceScore(user, friend); // geographic similarity
+
+  return score;
 }
 
 module.exports = {
@@ -329,40 +482,6 @@ module.exports = {
     });
   },
 
-  async getMutualFriends(userA, userB) {
-    try {
-      const friendsOfA = await prisma.friendship.findMany({
-        where: {
-          OR: [{ userId: userA }, { friendId: userA }],
-          status: ACCEPTED_STATUS,
-        },
-      });
-
-      const friendsOfB = await prisma.friendship.findMany({
-        where: {
-          OR: [{ userId: userB }, { friendId: userB }],
-          status: ACCEPTED_STATUS,
-        },
-      });
-
-      const friendIdsOfA = await getFriendIds(friendsOfA, userA);
-      const friendIdsOfB = await getFriendIds(friendsOfB, userB);
-
-      const mutualFriendIds = friendIdsOfA.filter((id) =>
-        friendIdsOfB.includes(id)
-      );
-
-      const mutualFriends = await prisma.user.findMany({
-        where: { id: { in: mutualFriendIds } },
-      });
-
-      return mutualFriends;
-    } catch (error) {
-      console.error("Error fetching mutual friends:", error);
-      throw error;
-    }
-  },
-
   async getRecommendedFriends(userId) {
     const friendships = await prisma.friendship.findMany({
       // 1st row of connections
@@ -405,5 +524,32 @@ module.exports = {
     });
 
     return suggestedUsers;
+  },
+
+  async getTopFriendRecommendations(userId) {
+    // Stretch Formula
+    try {
+      // Fetch all users except the current user
+      const allUsers = await prisma.user.findMany({
+        where: { id: { not: userId } },
+      });
+
+      // Calculate recommendation scores for each user
+      const recommendations = await Promise.all(
+        allUsers.map(async (friend) => {
+          const score = await getRecommendationScore(userId, friend.id);
+          return { friend, score };
+        })
+      );
+
+      // Sort by score in descending order
+      recommendations.sort((a, b) => b.score - a.score);
+
+      // Return the top 50 recommendations
+      return recommendations.slice(0, 50).map((rec) => rec.friend);
+    } catch (error) {
+      console.error("Error getting top friend recommendations:", error);
+      throw error;
+    }
   },
 };

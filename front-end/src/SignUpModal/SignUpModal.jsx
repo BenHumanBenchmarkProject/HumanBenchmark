@@ -7,6 +7,7 @@ const STEP_ONE = 1;
 const STEP_TWO = 2;
 const GENDER_MALE = "M";
 const GENDER_FEMALE = "F";
+const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 
 const SignUpModal = ({ onClose }) => {
   const [username, setUsername] = useState("");
@@ -16,6 +17,9 @@ const SignUpModal = ({ onClose }) => {
   const [weight, setWeight] = useState("");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
+  const [zipcode, setZipcode] = useState("");
   const [step, setStep] = useState(STEP_ONE);
   const [errors, setErrors] = useState({
     username: "",
@@ -26,6 +30,22 @@ const SignUpModal = ({ onClose }) => {
     age: "",
     gender: "",
   });
+
+  const getCoordinates = async (zipcode) => {
+    try {
+      axios
+        .get(
+          `https://maps.googleapis.com/maps/api/geocode/json?address=${zipcode}&key=${GOOGLE_API_KEY}`
+        )
+        .then((response) => {
+          console.log(response.data.results[0].geometry.location);
+          setLatitude(response.data.results[0].geometry.location.lat);
+          setLongitude(response.data.results[0].geometry.location.lng);
+        });
+    } catch (error) {
+      console.error("Error getting coordinates:", error);
+    }
+  };
 
   const checkAvailability = async (username) => {
     try {
@@ -45,9 +65,11 @@ const SignUpModal = ({ onClose }) => {
     height,
     weight,
     age,
-    gender
+    gender,
+    zipcode
   ) => {
     try {
+      await getCoordinates(zipcode);
       const hashedPassword = await bcrypt.hash(password, 10);
       const response = await axios.post(`${BASE_URL}users`, {
         username,
@@ -55,6 +77,8 @@ const SignUpModal = ({ onClose }) => {
         height: parseInt(height, 10), // Ensure it's an integer
         weight: parseInt(weight, 10), // Ensure it's an integer
         age: parseInt(age, 10), // Ensure it's an integer
+        latitude: latitude,
+        longitude: longitude,
         gender,
       });
 
@@ -292,6 +316,19 @@ const SignUpModal = ({ onClose }) => {
 
               {errors.gender && (
                 <span className="error-message">{errors.gender}</span>
+              )}
+
+              <label htmlFor="zipcode">Zip Code:</label>
+              <input
+                type="number"
+                id="zipcode"
+                value={zipcode}
+                onChange={(event) => setZipcode(event.target.value)}
+                className={errors.zipcode ? "error" : ""}
+                placeholder=""
+              />
+              {errors.height && (
+                <span className="error-message">{errors.zipcode}</span>
               )}
             </>
           )}

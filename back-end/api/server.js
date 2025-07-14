@@ -22,6 +22,7 @@ const {
   deleteFriend,
   getFriendRequests,
   getMutualFriends,
+  getTopFriendRecommendations,
 } = require("./model-prisma");
 
 const prisma = new PrismaClient();
@@ -533,7 +534,7 @@ server.get("/api/friendships", async (req, res, next) => {
 server.get("/api/users/:userId/recommendedFriends", async (req, res, next) => {
   const userId = Number(req.params.userId);
   try {
-    const recommendedFriends = await getRecommendedFriends(userId);
+    const recommendedFriends = await getTopFriendRecommendations(userId);
     if (recommendedFriends && recommendedFriends.length) {
       res.json(recommendedFriends);
     } else {
