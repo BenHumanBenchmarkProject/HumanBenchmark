@@ -35,6 +35,9 @@ model User {
   latitude          Float           @default(0)
   longitude         Float           @default(0)
 
+  recommendations   FriendRecommendation[] @relation("RecommendationsFor")
+  recommendedToOthers   FriendRecommendation[] @relation("RecommendedUsers")
+
 
   //prisma requires these
   friendshipsInitiated Friendship[] @relation("UserAsInitiator")
@@ -50,6 +53,19 @@ model Friendship{
   friend      User @relation("UserAsReceiver", fields: [friendId], references: [id])
 
   @@id([userId, friendId]) //enforces uniqueness
+}
+
+model FriendRecommendation{
+  id                     Int @id @default(autoincrement())
+  userId                 Int
+  recommendedUserId      Int
+  score                  Float
+  createdAt              DateTime @default(now())
+
+  user                   User @relation("RecommendationsFor", fields: [userId], references: [id])
+  recommendedUser        User @relation("RecommendedUsers", fields: [recommendedUserId], references: [id])
+
+  @@unique([userId, recommendedUserId])
 }
 
 model Exercise { // directly replects the API
