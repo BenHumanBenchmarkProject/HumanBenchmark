@@ -107,6 +107,42 @@ function getCosineSimilarity(userVector, friendVector) {
   return dotProduct / (userMagnitude * friendMagnitude); //cosine similarity
 }
 
+function getGeoDistanceScore(user, friend) {
+  const userLat = user.latitude;
+  const userLong = user.longitude;
+  const friendLat = friend.latitude;
+  const friendLong = friend.longitude;
+
+  if (
+    userLat == null ||
+    userLong == null ||
+    friendLat == null ||
+    friendLong == null
+  ) {
+    return 0;
+  }
+
+  // Calculate the distance between the two points in kilometers
+  let latitudeDistance = ((userLat - friendLat) * Math.pi) / 180.0;
+  let longitudeDistance = ((userLong - friendLong) * Math.pi) / 180.0;
+
+  // Convert to radians
+  userLat = (userLat * Math.pi) / 180.0;
+  friendLat = (friendLat * Math.pi) / 180.0;
+
+  // Calculate the Haversine formula
+  let a =
+    Math.pow(Math.sin(latitudeDistance / 2.0), 2) +
+    Math.pow(Math.sin(longitudeDistance / 2.0), 2) *
+      Math.cos(userLat) *
+      Math.cos(friendLat);
+
+  let earthRadius = 6371.0; // km
+  let c = 2.0 * Math.asin(Math.sqrt(a));
+
+  return earthRadius * c; // Distance in kilometers
+}
+
 module.exports = {
   async findUsers(where) {
     // GET http://localhost:5432/api/users?type=Recent
@@ -486,5 +522,34 @@ module.exports = {
     score += 0.4 * mutualFriends.length; // mutual friends
     score += 0.15 * getAgeDifference(user, friend); // age similarity
     score += 0.225 * getWorkoutFrequency(user, friend); // workout frequency similarity
+    score += 0.225 * getGeoDistanceScore(user, friend); // geographic similarity
+
+    return score;
+  },
+
+  async getTopFriendRecommendations(userId) { // Stretch Formula
+    try {
+      // Fetch all users except the current user
+      const allUsers = await prisma.user.findMany({
+        where: { id: { not: userId } },
+      });
+
+      // Calculate recommendation scores for each user
+      const recommendations = await Promise.all(
+        allUsers.map(async (friend) => {
+          const score = await this.getRecommendationScore(userId, friend.id);
+          return { friend, score };
+        })
+      );
+
+      // Sort by score in descending order
+      recommendations.sort((a, b) => b.score - a.score);
+
+      // Return the top 50 recommendations
+      return recommendations.slice(0, 50).map((rec) => rec.friend);
+    } catch (error) {
+      console.error("Error getting top friend recommendations:", error);
+      throw error;
+    }
   },
 };
