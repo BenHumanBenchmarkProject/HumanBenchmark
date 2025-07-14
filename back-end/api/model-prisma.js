@@ -545,12 +545,6 @@ module.exports = {
       // Sort by score in descending order
       recommendations.sort((a, b) => b.score - a.score);
 
-      recommendations.forEach((rec, index) => {
-        console.log(
-          `Rank ${index + 1}: Friend ID ${rec.friend.id}, Score: ${rec.score}`
-        );
-      });
-
       // Return the top 50 recommendations
       return recommendations.slice(0, 50).map((rec) => rec.friend);
     } catch (error) {
