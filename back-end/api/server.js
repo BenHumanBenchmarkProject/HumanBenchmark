@@ -17,7 +17,6 @@ const {
   findUsersLeaderboard,
   addFriend,
   getFriends,
-  getRecommendedFriends,
   acceptFriendRequest,
   deleteFriend,
   getFriendRequests,
