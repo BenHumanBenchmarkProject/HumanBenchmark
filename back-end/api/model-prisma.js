@@ -551,6 +551,38 @@ module.exports = {
     }
   },
 
+  async markWorkoutComplete(workoutId) {
+    try {
+      const updatedWorkout = await prisma.workout.update({
+        where: { id: workoutId },
+        data: { isComplete: true, completedAt: new Date() },
+      });
+      return updatedWorkout;
+    } catch (error) {
+      console.error("Error marking workout complete:", error);
+      throw error;
+    }
+  },
+
+  async deleteWorkout(workoutId) {
+    try {
+      // delete all movements first
+      await prisma.movement.deleteMany({
+        where: { workoutId },
+      });
+
+      // delete the workout
+      const deletedWorkout = await prisma.workout.delete({
+        where: { id: workoutId },
+      });
+
+      return deletedWorkout;
+    } catch (error) {
+      console.error("Error deleting workout:", error);
+      throw error;
+    }
+  },
+
   async refreshFriendRecommendations(userId) {
     const friendships = await prisma.friendship.findMany({
       where: {

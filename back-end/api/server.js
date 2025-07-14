@@ -22,6 +22,8 @@ const {
   getFriendRequests,
   getMutualFriends,
   getTopFriendRecommendations,
+  markWorkoutComplete,
+  deleteWorkout,
 } = require("./model-prisma");
 
 const prisma = new PrismaClient();
@@ -345,6 +347,32 @@ server.get("/api/users/:userId/workouts", async (req, res, next) => {
     next(err);
   }
 });
+
+//[Patch] /api/workouts/:workoutId/complete
+server.patch(
+  "/api/workouts/:workoutId/complete",
+  async (req, res) => {
+    try {
+      const workoutId = Number(req.params.workoutId);
+      const updatedWorkout = await markWorkoutComplete(workoutId);
+      res.json(updatedWorkout);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to mark workout as complete" });
+    }
+  }
+);
+
+//[Delete] /api/workouts/:workoutId
+server.delete('/api/workouts/:workoutId', async (req, res) => {
+  try {
+    const workoutId = Number(req.params.workoutId);
+    const deletedWorkout = await deleteWorkout(workoutId);
+    res.json(deletedWorkout);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete workout' });
+  }
+});
+
 
 //[Get] /api/users/:userId/musclestats
 server.get("/api/users/:userId/musclestats", async (req, res, next) => {
