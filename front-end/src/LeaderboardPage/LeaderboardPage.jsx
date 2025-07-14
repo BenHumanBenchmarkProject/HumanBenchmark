@@ -17,9 +17,11 @@ const LeaderboardPage = () => {
   const [sortKey, setSortKey] = useState(OVERALL_STAT_KEY);
 
   useEffect(() => {
-    fetchLeaderboard();
-    fetchFriends();
-  }, []);
+    if (user && user.id) {
+      fetchLeaderboard();
+      fetchFriends();
+    }
+  }, [user]);
 
   const fetchLeaderboard = async () => {
     try {

@@ -68,10 +68,12 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    fetchIncompleteWorkouts();
-    fetchFriends();
-    fetchRecommendedFriends();
-  }, []);
+    if (user && user.id) {
+      fetchIncompleteWorkouts();
+      fetchFriends();
+      fetchRecommendedFriends();
+    }
+  }, [user]);
 
   const handleWorkoutClick = (workout) => {
     setSelectedWorkout(workout);
