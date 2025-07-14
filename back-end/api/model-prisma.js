@@ -482,56 +482,22 @@ module.exports = {
     });
   },
 
-  async getRecommendedFriends(userId) {
-    const friendships = await prisma.friendship.findMany({
-      // 1st row of connections
-      where: {
-        OR: [{ userId }, { friendId: userId }],
-      },
-    });
-
-    const friendIds = getFriendIds(friendships, userId);
-
-    const secondDegreeFriends = await prisma.friendship.findMany({
-      // 2nd row of connections
-      where: {
-        OR: [{ userId: { in: friendIds } }, { friendId: { in: friendIds } }],
-      },
-    });
-
-    const secondDegreeFriendIds = secondDegreeFriends
-      // get second-degree friend IDs, filter out direct friends and the current user
-      .map((friend) => {
-        if (!friendIds.includes(friend.userId) && friend.userId !== userId) {
-          return friend.userId;
-        }
-        if (
-          !friendIds.includes(friend.friendId) &&
-          friend.friendId !== userId
-        ) {
-          return friend.friendId;
-        }
-        return null;
-      })
-      .filter(Boolean); // Remove null values
-
-    // Remove duplicates
-    const uniqueSuggestedIds = [...new Set(secondDegreeFriendIds)];
-
-    // fetch user data
-    const suggestedUsers = await prisma.user.findMany({
-      where: { id: { in: uniqueSuggestedIds } },
-    });
-
-    return suggestedUsers;
-  },
-
   async getTopFriendRecommendations(userId) {
     // Stretch Formula
     try {
+      // Fetch current friends
+      const friendships = await prisma.friendship.findMany({
+        where: {
+          OR: [{ userId }, { friendId: userId }],
+          status: ACCEPTED_STATUS,
+        },
+      });
+
+      const friendIds = getFriendIds(friendships, userId);
+
       // Fetch all users except the current user
       const allUsers = await prisma.user.findMany({
-        where: { id: { not: userId } },
+        where: { id: { not: userId, notIn: friendIds } },
       });
 
       // Calculate recommendation scores for each user
