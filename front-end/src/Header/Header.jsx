@@ -2,7 +2,7 @@ import "./Header.css";
 import React, { useContext, useState } from "react";
 import blankPfp from "../assets/blank-pfp.jpg";
 import SignInModal from "../SignInModal/SignInModal";
-import SignUpModal from "../SignUpModal/SIgnUpModal";
+import SignUpModal from "../SignUpModal/SignUpModal";
 import UserContext from "../userContext.jsx";
 import AccountModal from "../AccountModal/AccountModal.jsx";
 

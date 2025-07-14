@@ -49,9 +49,11 @@ const MyAccountPage = () => {
   };
 
   useEffect(() => {
-    fetchFriendRequests();
-    fetchCompleteWorkouts();
-  }, []);
+    if (user && user.id) {
+      fetchFriendRequests();
+      fetchCompleteWorkouts();
+    }
+  }, [user]);
 
   const formattedHeight = () => {
     let feet = Math.floor(user.height / 12);

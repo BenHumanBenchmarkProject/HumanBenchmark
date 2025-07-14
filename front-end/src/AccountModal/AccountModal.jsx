@@ -22,9 +22,12 @@ const AccountModal = () => {
               <button id="my-account-btn">My Account</button>{" "}
             </Link>
 
-            <button id="logout-btn" onClick={logout}>
-              Log Out
-            </button>
+            <Link to={"/"}>
+              {" "}
+              <button id="logout-btn" onClick={logout}>
+                Log Out
+              </button>{" "}
+            </Link>
           </div>
         </div>
       </div>
