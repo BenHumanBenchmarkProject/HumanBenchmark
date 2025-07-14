@@ -431,6 +431,9 @@ module.exports = {
         data: { status: ACCEPTED_STATUS },
       });
       console.log(`Friendship accepted between ${userId} and ${friendId}`);
+      await refreshFriendRecommendations(userId);
+      await refreshFriendRecommendations(friendId);
+
       return updatedFriendship;
     } catch (error) {
       console.error("Error accepting friendship:", error);
@@ -485,7 +488,22 @@ module.exports = {
   async getTopFriendRecommendations(userId) {
     // Stretch Formula
     try {
-      // Fetch current friends
+      const cached = await prisma.friendRecommendation.findMany({
+        where: { userId },
+        orderBy: { score: "desc" },
+        take: 50,
+        include: { recommendedUser: true },
+      });
+
+      const latest = cached[0]?.createdAt;
+      const ageMs = latest ? Date.now() - new Date(latest).getTime() : Infinity;
+      const isStale = ageMs > 1000 * 60 * 60 * 24; // 24 hours
+
+      if (cached.length && !isStale) {
+        return cached.map((recommendation) => recommendation.recommendedUser);
+      }
+
+      // Otherwise, generate new cache
       const friendships = await prisma.friendship.findMany({
         where: {
           OR: [{ userId }, { friendId: userId }],
@@ -511,11 +529,60 @@ module.exports = {
       // Sort by score in descending order
       recommendations.sort((a, b) => b.score - a.score);
 
-      // Return the top 50 recommendations
-      return recommendations.slice(0, 50).map((rec) => rec.friend);
+      // Get top 50 recommendations
+      const top = recommendations.slice(0, 50);
+
+      // Clear old cache
+      await prisma.friendRecommendation.deleteMany({ where: { userId } });
+
+      // Save new cache
+      await prisma.friendRecommendation.createMany({
+        data: top.map((r) => ({
+          userId,
+          recommendedUserId: r.friend.id,
+          score: r.score,
+        })),
+      });
+
+      return top.map((r) => r.friend);
     } catch (error) {
       console.error("Error getting top friend recommendations:", error);
       throw error;
     }
+  },
+
+  async refreshFriendRecommendations(userId) {
+    const friendships = await prisma.friendship.findMany({
+      where: {
+        OR: [{ userId }, { friendId: userId }],
+        status: ACCEPTED_STATUS,
+      },
+    });
+
+    const friendIds = getFriendIds(friendships, userId);
+
+    const allUsers = await prisma.user.findMany({
+      where: { id: { not: userId, notIn: friendIds } },
+    });
+
+    const recommendations = await Promise.all(
+      allUsers.map(async (friend) => {
+        const score = await getRecommendationScore(userId, friend.id);
+        return { friend, score };
+      })
+    );
+
+    recommendations.sort((a, b) => b.score - a.score);
+    const top = recommendations.slice(0, 50);
+
+    await prisma.friendRecommendation.deleteMany({ where: { userId } });
+
+    await prisma.friendRecommendation.createMany({
+      data: top.map((recommendation) => ({
+        userId,
+        recommendedUserId: recommendation.friend.id,
+        score: recommendation.score,
+      })),
+    });
   },
 };
