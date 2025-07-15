@@ -83,6 +83,32 @@ const HomePage = () => {
     setSelectedWorkout(null);
   };
 
+  const markWorkoutComplete = async (workoutId, event) => {
+    event.stopPropagation();
+    try {
+      await axios.patch(`${BASE_URL}workouts/${workoutId}/complete`, {
+        isComplete: true,
+      });
+      setWorkouts((prevWorkouts) =>
+        prevWorkouts.filter((workout) => workout.id !== workoutId)
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const deleteWorkout = async (workoutId, event) => {
+    event.stopPropagation();
+    try {
+      await axios.delete(`${BASE_URL}workouts/${workoutId}`);
+      setWorkouts((prevWorkouts) =>
+        prevWorkouts.filter((workout) => workout.id !== workoutId)
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <>
       <div className="container">
@@ -98,6 +124,20 @@ const HomePage = () => {
                 onClick={() => handleWorkoutClick(workout)}
               >
                 <span>{workout.name}</span>
+                <div className="home-workout-buttons">
+                  <button
+                    className="home-workout-button"
+                    onClick={(event) => markWorkoutComplete(workout.id,event)}
+                  >
+                    ✓
+                  </button>
+                  <button
+                    className="home-workout-button"
+                    onClick={(event) => deleteWorkout(workout.id, event)}
+                  >
+                    x
+                  </button>
+                </div>
               </div>
             ))}
           </div>
