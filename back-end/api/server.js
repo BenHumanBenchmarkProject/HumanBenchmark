@@ -1,4 +1,5 @@
 const express = require("express");
+const eventsRouter = require("./events.js");
 const cors = require("cors");
 const helmet = require("helmet");
 const bcrypt = require("bcryptjs");
@@ -36,6 +37,7 @@ server.use((req, res, next) => {
 
 server.use(helmet());
 server.use(express.json());
+server.use(eventsRouter);
 server.use(
   cors({
     origin: "http://localhost:5173",
@@ -588,164 +590,6 @@ server.get("/api/users/:userA/mutualFriends/:userB", async (req, res, next) => {
     }
   } catch (err) {
     next(err);
-  }
-});
-
-// [Post] /api/events
-server.post("/api/events", async (req, res) => {
-  // create new Calendar Event
-  const { title, description, start, end, type, createdById, participantIds } =
-    req.body;
-  try {
-    const event = await prisma.calendarEvent.create({
-      data: {
-        title,
-        description,
-        start: new Date(start),
-        end: new Date(end),
-        type,
-        createdBy: { connect: { id: createdById } },
-        participants: {
-          connect: participantIds.map((id) => ({ id })),
-        },
-      },
-    });
-
-    res.json(event);
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-//[Put] /api/events/:id
-server.put("/api/events/:id", async (req, res) => {
-  //edit event
-  const { title, start, end, description, type, participantIds } = req.body;
-  const id = Number(req.params.id);
-
-  try {
-    const updated = await prisma.calendarEvent.update({
-      where: { id: id },
-      data: {
-        title,
-        description,
-        start: start ? new Date(start) : undefined,
-        end: end ? new Date(end) : undefined,
-        type,
-        participants: participantIds
-          ? { set: participantIds.map((id) => ({ id })) }
-          : undefined,
-      },
-    });
-
-    res.json(updated);
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-//[Delete] /api/events/:id
-server.delete("/api/events/:id", async (req, res) => {
-  //Delete event
-  const id = Number(req.params.id);
-
-  try {
-    const deleted = await prisma.calendarEvent.delete({
-      where: { id: id },
-    });
-
-    res.json({ message: "Deleted", deleted });
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-//[Get] /api/events/:userId
-server.get("/api/events/:userId", async (req, res) => {
-  // get User Calendar Events
-  const userId = Number(req.params.userId);
-
-  try {
-    const events = await prisma.calendarEvent.findMany({
-      where: {
-        participants: {
-          some: { id: userId },
-        },
-      },
-      include: {
-        participants: {
-          select: { id: true, username: true },
-        },
-        createdBy: {
-          select: { id: true, username: true },
-        },
-      },
-    });
-
-    res.json(events);
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-//[Get] /api/availability/:userId
-server.get("/api/availability/:userId", async (req, res) => {
-  // get User Calendar Events
-  const userId = Number(req.params.userId);
-  try {
-    const availability = await prisma.availability.findMany({
-      where: { userId },
-    });
-
-    res.json(availability);
-  } catch (err) {}
-});
-
-//[Post] /api/availability
-server.post("/api/availability", async (req, res) => {
-  // create new availability block
-  const { userId, dayOfWeek, startTime, endTime } = req.body;
-
-  try {
-    const created = await prisma.availability.create({
-      data: { userId, dayOfWeek, startTime, endTime },
-    });
-
-    res.json(created);
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-//[Put] /api/availability/:id
-server.put("/api/availability/:id", async (req, res) => {
-  // edit availability block
-  const id = Number(req.params.id);
-  const { startTime, endTime } = req.body;
-  try {
-    const updated = await prisma.availability.update({
-      where: { id: id },
-      data: { startTime, endTime },
-    });
-
-    res.json(updated);
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-//[Delete] /api/availability/:id
-server.delete("/api/availability/:id", async (req, res) => {
-  const id = Number(req.params.id);
-
-  try {
-    const deleted = await prisma.availability.delete({
-      where: { id: id },
-    });
-
-    res.json({ message: "Availability deleted", deleted });
-  } catch (err) {
-    console.log(err);
   }
 });
 
