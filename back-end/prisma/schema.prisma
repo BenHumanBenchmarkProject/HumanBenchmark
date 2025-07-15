@@ -38,10 +38,35 @@ model User {
   recommendations   FriendRecommendation[] @relation("RecommendationsFor")
   recommendedToOthers   FriendRecommendation[] @relation("RecommendedUsers")
 
+  createdEvents         CalendarEvent[]          @relation("UserCreatedEvents")
+  joinedEvents          CalendarEvent[]          @relation("EventParticipants")
+  availabilities        Availability[]
+
 
   //prisma requires these
   friendshipsInitiated Friendship[] @relation("UserAsInitiator")
   friendshipsReceived Friendship[] @relation("UserAsReceiver")
+}
+
+model CalendarEvent {
+  id           Int        @id @default(autoincrement())
+  title        String
+  description  String?
+  start        DateTime   // stored in UTC
+  end          DateTime   // stored in UTC
+  type         String     // "workout", "block", "invite", etc.
+  createdById  Int
+  createdBy    User       @relation("UserCreatedEvents", fields: [createdById], references: [id])
+  participants User[]     @relation("EventParticipants")
+}
+
+model Availability {
+  id           Int        @id @default(autoincrement())
+  userId       Int
+  dayOfWeek    Int
+  startTime    String
+  endTime      String
+  user         User       @relation(fields: [userId], references: [id])
 }
 
 model Friendship{

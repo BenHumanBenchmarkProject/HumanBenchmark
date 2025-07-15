@@ -349,30 +349,26 @@ server.get("/api/users/:userId/workouts", async (req, res, next) => {
 });
 
 //[Patch] /api/workouts/:workoutId/complete
-server.patch(
-  "/api/workouts/:workoutId/complete",
-  async (req, res) => {
-    try {
-      const workoutId = Number(req.params.workoutId);
-      const updatedWorkout = await markWorkoutComplete(workoutId);
-      res.json(updatedWorkout);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to mark workout as complete" });
-    }
+server.patch("/api/workouts/:workoutId/complete", async (req, res) => {
+  try {
+    const workoutId = Number(req.params.workoutId);
+    const updatedWorkout = await markWorkoutComplete(workoutId);
+    res.json(updatedWorkout);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to mark workout as complete" });
   }
-);
+});
 
 //[Delete] /api/workouts/:workoutId
-server.delete('/api/workouts/:workoutId', async (req, res) => {
+server.delete("/api/workouts/:workoutId", async (req, res) => {
   try {
     const workoutId = Number(req.params.workoutId);
     const deletedWorkout = await deleteWorkout(workoutId);
     res.json(deletedWorkout);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to delete workout' });
+    res.status(500).json({ error: "Failed to delete workout" });
   }
 });
-
 
 //[Get] /api/users/:userId/musclestats
 server.get("/api/users/:userId/musclestats", async (req, res, next) => {
@@ -592,6 +588,164 @@ server.get("/api/users/:userA/mutualFriends/:userB", async (req, res, next) => {
     }
   } catch (err) {
     next(err);
+  }
+});
+
+// [Post] /api/events
+server.post("/api/events", async (req, res) => {
+  // create new Calendar Event
+  const { title, description, start, end, type, createdById, participantIds } =
+    req.body;
+  try {
+    const event = await prisma.calendarEvent.create({
+      data: {
+        title,
+        description,
+        start: new Date(start),
+        end: new Date(end),
+        type,
+        createdBy: { connect: { id: createdById } },
+        participants: {
+          connect: participantIds.map((id) => ({ id })),
+        },
+      },
+    });
+
+    res.json(event);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+//[Put] /api/events/:id
+server.put("/api/events/:id", async (req, res) => {
+  //edit event
+  const { title, start, end, description, type, participantIds } = req.body;
+  const id = Number(req.params.id);
+
+  try {
+    const updated = await prisma.calendarEvent.update({
+      where: { id: id },
+      data: {
+        title,
+        description,
+        start: start ? new Date(start) : undefined,
+        end: end ? new Date(end) : undefined,
+        type,
+        participants: participantIds
+          ? { set: participantIds.map((id) => ({ id })) }
+          : undefined,
+      },
+    });
+
+    res.json(updated);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+//[Delete] /api/events/:id
+server.delete("/api/events/:id", async (req, res) => {
+  //Delete event
+  const id = Number(req.params.id);
+
+  try {
+    const deleted = await prisma.calendarEvent.delete({
+      where: { id: id },
+    });
+
+    res.json({ message: "Deleted", deleted });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+//[Get] /api/events/:userId
+server.get("/api/events/:userId", async (req, res) => {
+  // get User Calendar Events
+  const userId = Number(req.params.userId);
+
+  try {
+    const events = await prisma.calendarEvent.findMany({
+      where: {
+        participants: {
+          some: { id: userId },
+        },
+      },
+      include: {
+        participants: {
+          select: { id: true, username: true },
+        },
+        createdBy: {
+          select: { id: true, username: true },
+        },
+      },
+    });
+
+    res.json(events);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+//[Get] /api/availability/:userId
+server.get("/api/availability/:userId", async (req, res) => {
+  // get User Calendar Events
+  const userId = Number(req.params.userId);
+  try {
+    const availability = await prisma.availability.findMany({
+      where: { userId },
+    });
+
+    res.json(availability);
+  } catch (err) {}
+});
+
+//[Post] /api/availability
+server.post("/api/availability", async (req, res) => {
+  // create new availability block
+  const { userId, dayOfWeek, startTime, endTime } = req.body;
+
+  try {
+    const created = await prisma.availability.create({
+      data: { userId, dayOfWeek, startTime, endTime },
+    });
+
+    res.json(created);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+//[Put] /api/availability/:id
+server.put("/api/availability/:id", async (req, res) => {
+  // edit availability block
+  const id = Number(req.params.id);
+  const { startTime, endTime } = req.body;
+  try {
+    const updated = await prisma.availability.update({
+      where: { id: id },
+      data: { startTime, endTime },
+    });
+
+    res.json(updated);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+//[Delete] /api/availability/:id
+server.delete("/api/availability/:id", async (req, res) => {
+  const id = Number(req.params.id);
+
+  try {
+    const deleted = await prisma.availability.delete({
+      where: { id: id },
+    });
+
+    res.json({ message: "Availability deleted", deleted });
+  } catch (err) {
+    console.log(err);
   }
 });
 
