@@ -84,6 +84,9 @@ body {
   margin: 10px;
   padding: 8px;
   border-radius: 4px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .home-workout-item:hover {
@@ -168,6 +171,20 @@ body {
 
 .home-friend-request-button:hover {
   background-color: #0056b3;
+}
+
+.home-workout-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.home-workout-button {
+  width: 10px;
+  height: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .pending-icon-container {
