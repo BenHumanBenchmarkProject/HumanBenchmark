@@ -6,6 +6,7 @@ import { BASE_URL } from "../constants";
 import UserContext from "../userContext";
 import WorkoutModal from "../WorkoutModal/WorkoutModal";
 import pendingIcon from "../assets/pending-icon.png";
+import Calendar from "../Calendar/Calendar";
 
 import { NavigationButtons } from "../constants";
 
@@ -197,6 +198,8 @@ const HomePage = () => {
           )}
         </div>
       </div>
+
+      <Calendar events={user.joinedEvents}/>
     </>
   );
 };
