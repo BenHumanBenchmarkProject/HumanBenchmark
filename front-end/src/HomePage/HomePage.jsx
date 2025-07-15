@@ -127,7 +127,7 @@ const HomePage = () => {
                 <div className="home-workout-buttons">
                   <button
                     className="home-workout-button"
-                    onClick={(event) => markWorkoutComplete(workout.id,event)}
+                    onClick={(event) => markWorkoutComplete(workout.id, event)}
                   >
                     ✓
                   </button>

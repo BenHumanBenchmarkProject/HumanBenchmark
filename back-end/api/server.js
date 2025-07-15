@@ -1,4 +1,5 @@
 const express = require("express");
+const eventsRouter = require("./events.js");
 const cors = require("cors");
 const helmet = require("helmet");
 const bcrypt = require("bcryptjs");
@@ -36,6 +37,7 @@ server.use((req, res, next) => {
 
 server.use(helmet());
 server.use(express.json());
+server.use(eventsRouter);
 server.use(
   cors({
     origin: "http://localhost:5173",
@@ -349,30 +351,26 @@ server.get("/api/users/:userId/workouts", async (req, res, next) => {
 });
 
 //[Patch] /api/workouts/:workoutId/complete
-server.patch(
-  "/api/workouts/:workoutId/complete",
-  async (req, res) => {
-    try {
-      const workoutId = Number(req.params.workoutId);
-      const updatedWorkout = await markWorkoutComplete(workoutId);
-      res.json(updatedWorkout);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to mark workout as complete" });
-    }
+server.patch("/api/workouts/:workoutId/complete", async (req, res) => {
+  try {
+    const workoutId = Number(req.params.workoutId);
+    const updatedWorkout = await markWorkoutComplete(workoutId);
+    res.json(updatedWorkout);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to mark workout as complete" });
   }
-);
+});
 
 //[Delete] /api/workouts/:workoutId
-server.delete('/api/workouts/:workoutId', async (req, res) => {
+server.delete("/api/workouts/:workoutId", async (req, res) => {
   try {
     const workoutId = Number(req.params.workoutId);
     const deletedWorkout = await deleteWorkout(workoutId);
     res.json(deletedWorkout);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to delete workout' });
+    res.status(500).json({ error: "Failed to delete workout" });
   }
 });
-
 
 //[Get] /api/users/:userId/musclestats
 server.get("/api/users/:userId/musclestats", async (req, res, next) => {
