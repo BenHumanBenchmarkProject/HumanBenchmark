@@ -8,7 +8,6 @@ import { BASE_URL, NavigationButtons } from "../constants";
 const LogWorkoutPage = () => {
   const { user, login } = useUser();
   const userId = user ? user.id : null;
-
   const exercises = useContext(ExerciseContext);
   const [selectedBodyPart, setSelectedBodyPart] = useState("");
   const [selectedMuscle, setSelectedMuscle] = useState("");

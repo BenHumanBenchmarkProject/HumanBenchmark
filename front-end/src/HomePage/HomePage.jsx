@@ -199,7 +199,7 @@ const HomePage = () => {
         </div>
       </div>
 
-      <Calendar events={user.joinedEvents}/>
+      <Calendar userId={user.id} />
     </>
   );
 };
