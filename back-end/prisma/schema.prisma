@@ -58,6 +58,9 @@ model CalendarEvent {
   createdById  Int
   createdBy    User       @relation("UserCreatedEvents", fields: [createdById], references: [id])
   participants User[]     @relation("EventParticipants")
+
+  workoutId    Int?       @unique
+  workout      Workout?   @relation("WorkoutEvent", fields: [workoutId], references: [id])
 }
 
 model Availability {
@@ -115,6 +118,8 @@ model Workout {
   createdAt    DateTime   @default(now())
   user         User       @relation("UserWorkouts", fields: [userId], references: [id])
   userId       Int
+
+  calendarEvent CalendarEvent? @relation("WorkoutEvent")
 }
 
 model Movement {
