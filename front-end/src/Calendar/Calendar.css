@@ -21,13 +21,14 @@
 .cell-time-label,
 .cell.slot {
   border: 1px solid #ccc;
-  padding: 5px;
+  padding: 0px;
   text-align: center;
 }
 
 .cell-header {
   background-color: #f0f0f0;
   font-size: 1.2em;
+  height: 60px;
 }
 
 .cell-time-label {
@@ -43,4 +44,22 @@
 
 .time-row {
   display: contents;
+}
+
+.event-block {
+  position: absolute;
+  background-color: lightblue;
+  border: 1px solid blue;
+  z-index: 1;
+  width: 90%;
+}
+
+.event-layer {
+  position: absolute;
+  height: 100%;
+}
+
+.event-block {
+  z-index: 2;
+  font-size: 12px;
 }
