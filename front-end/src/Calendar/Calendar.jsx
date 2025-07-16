@@ -3,6 +3,7 @@ import { useContext, useState, useEffect } from "react";
 import { NavigationButtons, BASE_URL } from "../constants";
 import UserContext from "../userContext";
 import axios from "axios";
+import EventModal from "../EventModal/EventModal";
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i); // 0 to 23
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -27,6 +28,7 @@ const Calendar = () => {
   const { user } = useContext(UserContext);
   const [week, setWeek] = useState(getCurrentWeek());
   const [events, setEvents] = useState([]);
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
 
   const fetchUserEvents = async () => {
     try {
@@ -36,6 +38,11 @@ const Calendar = () => {
     } catch (err) {
       console.error("Error fetching user events:", err);
     }
+  };
+
+  const handleCloseModal = () => {
+    setIsEventModalOpen(false);
+    fetchUserEvents();
   };
 
   useEffect(() => {
@@ -63,7 +70,6 @@ const Calendar = () => {
       (endHour * 60 + endMinutes - (startHour * 60 + startMinutes)) *
       pixelsPerMinute;
     const dayIndex = start.getDay();
-    console.log(`dayIndex: ${dayIndex}, top: ${top}, height: ${height}`);
 
     return { dayIndex, top, height };
   };
@@ -71,6 +77,8 @@ const Calendar = () => {
   return (
     <>
       <NavigationButtons />
+      <button onClick={() => setIsEventModalOpen(true)}>Create Event</button>
+
       <div className="home-calendar">
         <div className="cell-header-empty"></div>
         {week.map((date, i) => (
@@ -145,6 +153,8 @@ const Calendar = () => {
           </div>
         ))}
       </div>
+
+      {isEventModalOpen && <EventModal onClose={handleCloseModal} />}
     </>
   );
 };

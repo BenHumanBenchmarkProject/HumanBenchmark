@@ -1,6 +1,6 @@
-const express = require('express');
+const express = require("express");
 const cors = require("cors");
-const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 const events = express.Router();
@@ -12,12 +12,19 @@ events.use(
   })
 );
 
-
 // [Post] /api/events
 events.post("/api/events", async (req, res) => {
   // create new Calendar Event
-  const { title, description, start, end, type, createdById, participantIds } =
-    req.body;
+  const {
+    title,
+    description,
+    start,
+    end,
+    type,
+    createdById,
+    participantIds,
+    workoutId,
+  } = req.body;
   try {
     const event = await prisma.calendarEvent.create({
       data: {
