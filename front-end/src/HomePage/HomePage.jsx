@@ -1,12 +1,10 @@
 import "./HomePage.css";
 import React, { useContext, useEffect, useState } from "react";
-import bodyOutline from "../assets/body-outline.jpg";
 import axios from "axios";
 import { BASE_URL } from "../constants";
 import UserContext from "../userContext";
 import WorkoutModal from "../WorkoutModal/WorkoutModal";
 import pendingIcon from "../assets/pending-icon.png";
-import Calendar from "../Calendar/Calendar";
 
 import { NavigationButtons } from "../constants";
 
@@ -198,8 +196,6 @@ const HomePage = () => {
           )}
         </div>
       </div>
-
-      <Calendar userId={user.id} />
     </>
   );
 };
