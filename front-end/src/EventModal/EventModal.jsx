@@ -4,7 +4,7 @@ import axios from "axios";
 import { BASE_URL } from "../constants";
 import "./EventModal.css";
 
-const EventModal = ({ onClose, onCreate }) => {
+const EventModal = ({ onClose }) => {
   const { user } = useContext(UserContext);
   const [eventName, setEventName] = useState("");
   const [startTime, setStartTime] = useState("");
@@ -60,7 +60,7 @@ const EventModal = ({ onClose, onCreate }) => {
     try {
       const response = await axios.post(`${BASE_URL}events`, newEvent);
       console.log("Event created:", response.data);
-      onCreate(response.data);
+
       onClose();
     } catch (err) {
       console.error("Error creating event:", err);

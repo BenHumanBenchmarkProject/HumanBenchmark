@@ -51,10 +51,6 @@ const Calendar = () => {
     }
   }, [user]);
 
-  const handleCreateEvent = (newEvent) => {
-    console.log("New Event Created:", newEvent);
-  };
-
   const getGridPosition = (event) => {
     const start = new Date(event.start);
     const end = new Date(event.end);
@@ -158,9 +154,7 @@ const Calendar = () => {
         ))}
       </div>
 
-      {isEventModalOpen && (
-        <EventModal onClose={handleCloseModal} onCreate={handleCreateEvent} />
-      )}
+      {isEventModalOpen && <EventModal onClose={handleCloseModal} />}
     </>
   );
 };
