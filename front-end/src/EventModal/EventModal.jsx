@@ -55,6 +55,7 @@ const EventModal = ({ onClose }) => {
       type: "workout",
       createdById: user.id,
       participantIds: [user.id, ...selectedFriends.map(Number)],
+      workoutId: Number(selectedWorkout),
     };
 
     try {

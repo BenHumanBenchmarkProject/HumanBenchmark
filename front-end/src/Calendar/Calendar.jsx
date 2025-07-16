@@ -4,6 +4,7 @@ import { NavigationButtons, BASE_URL } from "../constants";
 import UserContext from "../userContext";
 import axios from "axios";
 import EventModal from "../EventModal/EventModal";
+import EventDetailsModal from "../EventDetailModal/EventDetailModal";
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i); // 0 to 23
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -29,6 +30,7 @@ const Calendar = () => {
   const [week, setWeek] = useState(getCurrentWeek());
   const [events, setEvents] = useState([]);
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   const fetchUserEvents = async () => {
     try {
@@ -120,15 +122,16 @@ const Calendar = () => {
 
               const positioned = [];
 
-              dayEvents.forEach((ev) => {
-                const { top, height } = getGridPosition(ev);
+              dayEvents.forEach((event) => {
+                const { top, height } = getGridPosition(event);
                 const width = CELL_WIDTH - 4; // 4px margin
                 const left = 2; // 2px margin
 
                 positioned.push(
                   <div
-                    key={ev.id}
+                    key={event.id}
                     className="event-block"
+                    onClick={() => setSelectedEvent(event)}
                     style={{
                       top: `${top}px`,
                       height: `${height}px`,
@@ -143,7 +146,7 @@ const Calendar = () => {
                       zIndex: 2,
                     }}
                   >
-                    {ev.title}
+                    {event.title}
                   </div>
                 );
               });
@@ -155,6 +158,12 @@ const Calendar = () => {
       </div>
 
       {isEventModalOpen && <EventModal onClose={handleCloseModal} />}
+      {selectedEvent && (
+        <EventDetailsModal
+          event={selectedEvent}
+          onClose={() => setSelectedEvent(null)}
+        />
+      )}
     </>
   );
 };
