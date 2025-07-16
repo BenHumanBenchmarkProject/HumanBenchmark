@@ -13,13 +13,12 @@ const EventModal = ({ onClose, onCreate }) => {
   const [selectedWorkout, setSelectedWorkout] = useState("");
   const [selectedFriends, setSelectedFriends] = useState([]);
   const [friends, setFriends] = useState([]);
+  const [workouts, setWorkouts] = useState([]);
 
   useEffect(() => {
     const fetchFriends = async () => {
       try {
-        const response = await axios.get(
-          `${BASE_URL}users/${user.id}/friends`
-        );
+        const response = await axios.get(`${BASE_URL}users/${user.id}/friends`);
 
         setFriends(response.data);
         console.log("Friends:", response.data);
@@ -28,21 +27,44 @@ const EventModal = ({ onClose, onCreate }) => {
       }
     };
 
+    const fetchWorkouts = async () => {
+      try {
+        const response = await axios.get(
+          `${BASE_URL}users/${user.id}/workouts`
+        );
+        const incompleteWorkouts = response.data.filter(
+          (workout) => !workout.isComplete
+        );
+        setWorkouts(incompleteWorkouts);
+      } catch (err) {
+        console.error("Error fetching workouts:", err);
+      }
+    };
+
     if (user && user.id) {
       fetchFriends();
+      fetchWorkouts();
     }
   }, [user]);
 
-  const handleCreateEvent = () => {
+  const handleCreateEvent = async () => {
     const newEvent = {
-      name: eventName,
-      start: new Date(`${date}T${startTime}`),
-      end: new Date(`${date}T${endTime}`),
-      workout: selectedWorkout,
-      friends: selectedFriends,
+      title: eventName,
+      start: new Date(`${date}T${startTime}`).toISOString(),
+      end: new Date(`${date}T${endTime}`).toISOString(),
+      type: "workout",
+      createdById: user.id,
+      participantIds: [user.id, ...selectedFriends.map(Number)],
     };
-    onCreate(newEvent);
-    onClose();
+
+    try {
+      const response = await axios.post(`${BASE_URL}events`, newEvent);
+      console.log("Event created:", response.data);
+      onCreate(response.data);
+      onClose();
+    } catch (err) {
+      console.error("Error creating event:", err);
+    }
   };
 
   return (
@@ -54,7 +76,7 @@ const EventModal = ({ onClose, onCreate }) => {
           <input
             type="text"
             value={eventName}
-            onChange={(e) => setEventName(e.target.value)}
+            onChange={(event) => setEventName(event.target.value)}
           />
         </label>
         <label>
@@ -62,7 +84,7 @@ const EventModal = ({ onClose, onCreate }) => {
           <input
             type="date"
             value={date}
-            onChange={(e) => setDate(e.target.value)}
+            onChange={(event) => setDate(event.target.value)}
           />
         </label>
         <label>
@@ -70,7 +92,7 @@ const EventModal = ({ onClose, onCreate }) => {
           <input
             type="time"
             value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
+            onChange={(event) => setStartTime(event.target.value)}
           />
         </label>
         <label>
@@ -78,43 +100,68 @@ const EventModal = ({ onClose, onCreate }) => {
           <input
             type="time"
             value={endTime}
-            onChange={(e) => setEndTime(e.target.value)}
+            onChange={(event) => setEndTime(event.target.value)}
           />
         </label>
         <label>
           Workout:
           <select
             value={selectedWorkout}
-            onChange={(e) => setSelectedWorkout(e.target.value)}
+            onChange={(event) => setSelectedWorkout(event.target.value)}
           >
             <option value="">Select a workout</option>
-            {user.workouts
-              .filter((workout) => !workout.isComplete)
-              .map((workout) => (
-                <option key={workout.id} value={workout.id}>
-                  {workout.name}
-                </option>
-              ))}
-          </select>
-        </label>
-        <label>
-          Friends:
-          <select
-            multiple
-            value={selectedFriends}
-            onChange={(e) =>
-              setSelectedFriends(
-                Array.from(e.target.selectedOptions, (option) => option.value)
-              )
-            }
-          >
-            {friends.map((friend) => (
-              <option key={friend.id} value={friend.id}>
-                {friend.username}
+            {workouts.map((workout) => (
+              <option key={workout.id} value={workout.id}>
+                {workout.name}
               </option>
             ))}
           </select>
         </label>
+        <label>Friends:</label>
+        <div className="checkbox-group">
+          {friends.map((friend) => (
+            <label key={friend.id} className="checkbox-option">
+              <input
+                type="checkbox"
+                value={friend.id}
+                checked={selectedFriends.includes(friend.id.toString())}
+                onChange={(e) => {
+                  const id = e.target.value;
+                  setSelectedFriends((prev) =>
+                    prev.includes(id)
+                      ? prev.filter((fid) => fid !== id)
+                      : [...prev, id]
+                  );
+                }}
+              />
+              {friend.username}
+            </label>
+          ))}
+        </div>
+
+        {selectedFriends.length > 0 && (
+          <div className="selected-friends">
+            {selectedFriends.map((friendId) => {
+              const friend = friends.find(
+                (f) => f.id.toString() === friendId.toString()
+              );
+              return (
+                <div
+                  key={friendId}
+                  className="friend-chip"
+                  onClick={() =>
+                    setSelectedFriends((prev) =>
+                      prev.filter((id) => id !== friendId)
+                    )
+                  }
+                >
+                  {friend?.username || "Unknown"}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
         <button onClick={handleCreateEvent}>Create Event</button>
         <button onClick={onClose}>Cancel</button>
       </div>

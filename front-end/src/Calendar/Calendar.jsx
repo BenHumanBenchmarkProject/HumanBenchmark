@@ -40,6 +40,11 @@ const Calendar = () => {
     }
   };
 
+  const handleCloseModal = () => {
+    setIsEventModalOpen(false);
+    fetchUserEvents();
+  };
+
   useEffect(() => {
     if (user && user.id) {
       fetchUserEvents();
@@ -69,7 +74,6 @@ const Calendar = () => {
       (endHour * 60 + endMinutes - (startHour * 60 + startMinutes)) *
       pixelsPerMinute;
     const dayIndex = start.getDay();
-    console.log(`dayIndex: ${dayIndex}, top: ${top}, height: ${height}`);
 
     return { dayIndex, top, height };
   };
@@ -155,10 +159,7 @@ const Calendar = () => {
       </div>
 
       {isEventModalOpen && (
-        <EventModal
-          onClose={() => setIsEventModalOpen(false)}
-          onCreate={handleCreateEvent}
-        />
+        <EventModal onClose={handleCloseModal} onCreate={handleCreateEvent} />
       )}
     </>
   );
