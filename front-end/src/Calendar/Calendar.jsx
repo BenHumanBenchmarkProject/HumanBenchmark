@@ -3,6 +3,7 @@ import { useContext, useState, useEffect } from "react";
 import { NavigationButtons, BASE_URL } from "../constants";
 import UserContext from "../userContext";
 import axios from "axios";
+import EventModal from "../EventModal/EventModal";
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i); // 0 to 23
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -27,6 +28,7 @@ const Calendar = () => {
   const { user } = useContext(UserContext);
   const [week, setWeek] = useState(getCurrentWeek());
   const [events, setEvents] = useState([]);
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
 
   const fetchUserEvents = async () => {
     try {
@@ -43,6 +45,10 @@ const Calendar = () => {
       fetchUserEvents();
     }
   }, [user]);
+
+  const handleCreateEvent = (newEvent) => {
+    console.log("New Event Created:", newEvent);
+  };
 
   const getGridPosition = (event) => {
     const start = new Date(event.start);
@@ -71,6 +77,8 @@ const Calendar = () => {
   return (
     <>
       <NavigationButtons />
+      <button onClick={() => setIsEventModalOpen(true)}>Create Event</button>
+
       <div className="home-calendar">
         <div className="cell-header-empty"></div>
         {week.map((date, i) => (
@@ -145,6 +153,13 @@ const Calendar = () => {
           </div>
         ))}
       </div>
+
+      {isEventModalOpen && (
+        <EventModal
+          onClose={() => setIsEventModalOpen(false)}
+          onCreate={handleCreateEvent}
+        />
+      )}
     </>
   );
 };
