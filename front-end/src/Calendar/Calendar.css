@@ -1,0 +1,46 @@
+.home-calendar {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: auto;
+  height: 60vh;
+  overflow-y: auto;
+  border: 1px solid black;
+  position: relative;
+}
+
+.cell {
+  border: 1px solid #ccc;
+  padding: 5px;
+}
+
+.cell-header-empty {
+  grid-column: 1;
+}
+
+.cell-header,
+.cell-time-label,
+.cell.slot {
+  border: 1px solid #ccc;
+  padding: 5px;
+  text-align: center;
+}
+
+.cell-header {
+  background-color: #f0f0f0;
+  font-size: 1.2em;
+}
+
+.cell-time-label {
+  grid-column: 1;
+  font-size: 1.1em;
+}
+
+.slot {
+  background-color: #fff;
+  height: 50px;
+  width: 90px;
+}
+
+.time-row {
+  display: contents;
+}

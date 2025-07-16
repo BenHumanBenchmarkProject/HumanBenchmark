@@ -15,6 +15,9 @@ const NavigationButtons = () => {
       <Link to={"/log-workout"}>
         <button>LOG WORKOUT</button>
       </Link>
+      <Link to={"/calendar"}>
+        <button>CALENDAR</button>
+      </Link>
     </div>
   );
 };

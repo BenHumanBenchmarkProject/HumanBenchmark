@@ -12,6 +12,7 @@ import { UserProvider } from "./userContext.jsx";
 import { ExerciseProvider } from "./ExerciseContext";
 import MyAccountPage from "./MyAccountPage/MyAccountPage.jsx";
 import Layout from "./Layout/Layout.jsx";
+import Calendar from "./Calendar/Calendar.jsx";
 
 const routes = createBrowserRouter([
   {
@@ -54,6 +55,14 @@ const routes = createBrowserRouter([
       </Layout>
     ),
   },
+  {
+    path: "/calendar",
+    element: (
+      <Layout>
+        <Calendar />
+      </Layout>
+    )
+  }
 ]);
 
 createRoot(document.getElementById("root")).render(

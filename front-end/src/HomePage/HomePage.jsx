@@ -1,6 +1,5 @@
 import "./HomePage.css";
 import React, { useContext, useEffect, useState } from "react";
-import bodyOutline from "../assets/body-outline.jpg";
 import axios from "axios";
 import { BASE_URL } from "../constants";
 import UserContext from "../userContext";
