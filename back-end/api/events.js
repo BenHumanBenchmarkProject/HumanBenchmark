@@ -5,6 +5,8 @@ const prisma = new PrismaClient();
 
 const events = express.Router();
 
+const { findFreeTimes } = require("./model-prisma");
+
 events.use(
   cors({
     origin: "http://localhost:5173",
@@ -181,6 +183,34 @@ events.delete("/api/availability/:id", async (req, res) => {
     res.json({ message: "Availability deleted", deleted });
   } catch (err) {
     console.log(err);
+  }
+});
+
+// [POST] /api/availability/common
+events.post("/api/availability/common", async (req, res) => {
+  const { userIds, workoutLength } = req.body; // userIds as an array
+
+  if (!Array.isArray(userIds)) {
+    return res.status(400).json({ error: "userIds must be an array" });
+  }
+
+  const chunkLength = workoutLength ? workoutLength : 60; // default to 60 minutes
+
+  try {
+    const events = await prisma.calendarEvent.findMany({
+      where: {
+        participants: {
+          some: { id: { in: userIds } },
+        },
+      },
+      orderBy: { start: "asc" },
+    });
+
+    const freeTimes = await findFreeTimes(events, chunkLength);
+    res.json(freeTimes);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Failed to fetch free times" });
   }
 });
 

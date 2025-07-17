@@ -14,6 +14,7 @@ const EventModal = ({ onClose }) => {
   const [selectedFriends, setSelectedFriends] = useState([]);
   const [friends, setFriends] = useState([]);
   const [workouts, setWorkouts] = useState([]);
+  const [suggestedTimes, setSuggestedTimes] = useState([]);
 
   useEffect(() => {
     const fetchFriends = async () => {
@@ -44,8 +45,16 @@ const EventModal = ({ onClose }) => {
     if (user && user.id) {
       fetchFriends();
       fetchWorkouts();
+      fetchSuggestedTimes([user.id]);
     }
   }, [user]);
+
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const allUserIds = [user.id, ...selectedFriends.map(Number)];
+    fetchSuggestedTimes(allUserIds);
+  }, [user, selectedFriends, selectedWorkout]);
 
   const handleCreateEvent = async () => {
     const newEvent = {
@@ -66,6 +75,66 @@ const EventModal = ({ onClose }) => {
     } catch (err) {
       console.error("Error creating event:", err);
     }
+  };
+
+  const fetchSuggestedTimes = async (userIds) => {
+    // Calculate workout length based on selected workout
+    let workoutLength = 60; // default to 60 minutes
+
+    if (selectedWorkout) {
+      const workout = workouts.find(
+        (w) => w.id.toString() === selectedWorkout.toString()
+      );
+
+      if (workout && Array.isArray(workout.movements)) {
+        workoutLength = workout.movements.length * 15;
+      }
+    }
+
+    try {
+      const response = await axios.post(`${BASE_URL}availability/common`, {
+        userIds,
+        workoutLength,
+      });
+      setSuggestedTimes(response.data);
+    } catch (err) {
+      console.error("Failed to fetch suggestions:", err);
+    }
+  };
+
+  const updateSelectedFriends = (id) => {
+    const updated = selectedFriends.includes(id)
+      ? selectedFriends.filter((fid) => fid !== id)
+      : [...selectedFriends, id];
+    setSelectedFriends(updated);
+    fetchSuggestedTimes([user.id, ...updated.map(Number)]);
+  };
+
+  const formatTimeRange = (start, end) => {
+    const options = {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    };
+
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
+    const sameDay = startDate.toDateString() === endDate.toDateString();
+
+    const formattedStart = startDate.toLocaleString([], options);
+    const formattedEnd = endDate.toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+
+    return sameDay
+      ? `${formattedStart} - ${formattedEnd}`
+      : `${formattedStart} → ${formattedEnd}`;
   };
 
   return (
@@ -128,14 +197,7 @@ const EventModal = ({ onClose }) => {
                 type="checkbox"
                 value={friend.id}
                 checked={selectedFriends.includes(friend.id.toString())}
-                onChange={(e) => {
-                  const id = e.target.value;
-                  setSelectedFriends((prev) =>
-                    prev.includes(id)
-                      ? prev.filter((fid) => fid !== id)
-                      : [...prev, id]
-                  );
-                }}
+                onChange={() => updateSelectedFriends(friend.id.toString())}
               />
               {friend.username}
             </label>
@@ -162,6 +224,30 @@ const EventModal = ({ onClose }) => {
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {suggestedTimes.length > 0 && (
+          <div className="suggested-times">
+            <h4>Suggested Times</h4>
+            <ul>
+              {suggestedTimes.map((slot, index) => (
+                <li key={index}>
+                  <button
+                    className="time-slot"
+                    onClick={() => {
+                      const start = new Date(slot.start);
+                      const end = new Date(slot.end);
+                      setDate(start.toISOString().split("T")[0]);
+                      setStartTime(start.toTimeString().slice(0, 5));
+                      setEndTime(end.toTimeString().slice(0, 5));
+                    }}
+                  >
+                    {formatTimeRange(slot.start, slot.end)}{" "}
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
 
