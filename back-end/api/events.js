@@ -37,6 +37,7 @@ events.post("/api/events", async (req, res) => {
         participants: {
           connect: participantIds.map((id) => ({ id })),
         },
+        workout: workoutId ? { connect: { id: workoutId } } : undefined,
       },
     });
 
@@ -107,6 +108,11 @@ events.get("/api/events/:userId", async (req, res) => {
         },
         createdBy: {
           select: { id: true, username: true },
+        },
+        workout: {
+          include: {
+            movements: true,
+          },
         },
       },
     });
