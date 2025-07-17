@@ -123,3 +123,31 @@
 .friend-chip:hover {
   background-color: #0056b3;
 }
+
+.suggested-times ul {
+  display: flex;
+  gap: 10px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  overflow: auto;
+}
+
+.suggested-times li {
+  flex: 0 0 auto;
+}
+
+.suggested-times button {
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+}
+
+.suggested-times button:hover {
+  background-color: #e0e0e0;
+}

@@ -40,7 +40,6 @@ model User {
 
   createdEvents         CalendarEvent[]          @relation("UserCreatedEvents")
   joinedEvents          CalendarEvent[]          @relation("EventParticipants")
-  availabilities        Availability[]
 
 
   //prisma requires these
@@ -63,14 +62,7 @@ model CalendarEvent {
   workout      Workout?   @relation("WorkoutEvent", fields: [workoutId], references: [id])
 }
 
-model Availability {
-  id           Int        @id @default(autoincrement())
-  userId       Int
-  dayOfWeek    Int
-  startTime    String
-  endTime      String
-  user         User       @relation(fields: [userId], references: [id])
-}
+
 
 model Friendship{
   userId      Int

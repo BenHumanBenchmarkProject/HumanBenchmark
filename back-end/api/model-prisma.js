@@ -10,6 +10,8 @@ const MUTUAL_FRIENDS_WEIGHT = 0.4;
 const WORKOUT_FREQUENCY_WEIGHT = 0.225;
 const AGE_DIFFERENCE_WEIGHT = 0.15;
 const GEO_DISTANCE_WEIGHT = 0.225;
+const DAY_START = 0;
+const DAY_END = 24 * 60;
 
 function calculateXP(movement) {
   // Should take user roughly 3 workouts to level up
@@ -616,5 +618,50 @@ module.exports = {
         score: recommendation.score,
       })),
     });
+  },
+
+  async findFreeTimes(events) {
+    // Group events by day
+    const eventsByDay = {};
+
+    for (let event of events) {
+      const dateKey = event.start.toISOString().split("T")[0];
+      if (!eventsByDay[dateKey]) eventsByDay[dateKey] = [];
+      eventsByDay[dateKey].push({
+        start: new Date(event.start),
+        end: new Date(event.end),
+      });
+    }
+
+    const freeSlots = [];
+
+    for (let [date, dailyEvents] of Object.entries(eventsByDay)) {
+      dailyEvents.sort((a, b) => a.start - b.start);
+
+      let current = new Date(`${date}T00:00:00`);
+      const endOfDay = new Date(`${date}T23:59:00`);
+
+      for (let event of dailyEvents) {
+        if (event.start > current) {
+          freeSlots.push({
+            start: new Date(current),
+            end: new Date(event.start),
+          });
+        }
+        if (event.end > current) {
+          current = new Date(event.end);
+        }
+      }
+
+      // Final slot to end of day
+      if (current < endOfDay) {
+        freeSlots.push({
+          start: current,
+          end: endOfDay,
+        });
+      }
+    }
+
+    return freeSlots;
   },
 };
