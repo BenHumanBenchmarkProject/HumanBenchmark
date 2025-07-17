@@ -10,7 +10,7 @@ const MUTUAL_FRIENDS_WEIGHT = 0.4;
 const WORKOUT_FREQUENCY_WEIGHT = 0.225;
 const AGE_DIFFERENCE_WEIGHT = 0.15;
 const GEO_DISTANCE_WEIGHT = 0.225;
-const MILLISECONDS_PER_MINUTE = 60000;
+const MILLISECONDS_PER_MINUTE = 1000 * 60;
 
 function calculateXP(movement) {
   // Should take user roughly 3 workouts to level up
@@ -659,10 +659,28 @@ module.exports = {
           current.getTime() + chunkLength * MILLISECONDS_PER_MINUTE <
           event.start.getTime()
         ) {
-          const potentialStart = new Date(current);
-          const potentialEnd = new Date(
-            current.getTime() + chunkLength * MILLISECONDS_PER_MINUTE
+          let potentialStart = new Date(current);
+
+          // round potentialStart to nearest 15-min mark if not already
+          const startMinutes = potentialStart.getMinutes();
+          const startOffset =
+            startMinutes % 15 === 0 ? 0 : 15 - (startMinutes % 15);
+          if (startOffset > 0) {
+            potentialStart.setMinutes(startMinutes + startOffset);
+            potentialStart.setSeconds(0, 0);
+          }
+
+          // set potentialEnd to original potentialStart + chunkLength
+          let potentialEnd = new Date(
+            potentialStart.getTime() + chunkLength * MILLISECONDS_PER_MINUTE
           );
+
+          // if end time has minutes, truncate to the last full hour
+          if (potentialEnd.getMinutes() !== 0) {
+            potentialEnd.setMinutes(0);
+            potentialEnd.setSeconds(0, 0);
+          }
+
           const key = potentialStart.toISOString();
           if (!seen.has(key) && potentialStart >= now) {
             freeSlots.push({ start: potentialStart, end: potentialEnd });
