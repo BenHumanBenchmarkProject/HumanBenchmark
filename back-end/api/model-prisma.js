@@ -620,7 +620,6 @@ module.exports = {
   },
 
   async findFreeTimes(events, chunkLength) {
-    const MILLISECONDS_PER_MINUTE = 60000;
     const freeSlots = [];
     const seen = new Set();
     const now = new Date();
