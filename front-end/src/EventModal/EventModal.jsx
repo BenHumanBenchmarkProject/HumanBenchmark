@@ -94,6 +94,7 @@ const EventModal = ({ onClose }) => {
             type="time"
             value={startTime}
             onChange={(event) => setStartTime(event.target.value)}
+            step="900" // 15 minute increments
           />
         </label>
         <label>
@@ -102,6 +103,7 @@ const EventModal = ({ onClose }) => {
             type="time"
             value={endTime}
             onChange={(event) => setEndTime(event.target.value)}
+            step="900" // 15 minute increments
           />
         </label>
         <label>
