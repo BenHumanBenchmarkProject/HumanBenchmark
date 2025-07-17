@@ -50,11 +50,11 @@ const EventModal = ({ onClose }) => {
   }, [user]);
 
   useEffect(() => {
-    if (user && user.id) {
-      const allUserIds = [user.id, ...selectedFriends.map(Number)];
-      fetchSuggestedTimes(allUserIds);
-    }
-  }, [user, selectedFriends]);
+    if (!user?.id) return;
+
+    const allUserIds = [user.id, ...selectedFriends.map(Number)];
+    fetchSuggestedTimes(allUserIds);
+  }, [user, selectedFriends, selectedWorkout]);
 
   const handleCreateEvent = async () => {
     const newEvent = {
@@ -78,9 +78,23 @@ const EventModal = ({ onClose }) => {
   };
 
   const fetchSuggestedTimes = async (userIds) => {
+    // Calculate workout length based on selected workout
+    let workoutLength = 60; // default to 60 minutes
+
+    if (selectedWorkout) {
+      const workout = workouts.find(
+        (w) => w.id.toString() === selectedWorkout.toString()
+      );
+
+      if (workout && Array.isArray(workout.movements)) {
+        workoutLength = workout.movements.length * 15;
+      }
+    }
+
     try {
       const response = await axios.post(`${BASE_URL}availability/common`, {
         userIds,
+        workoutLength,
       });
       setSuggestedTimes(response.data);
     } catch (err) {
@@ -119,7 +133,7 @@ const EventModal = ({ onClose }) => {
     });
 
     return sameDay
-      ? `${formattedStart} – ${formattedEnd}`
+      ? `${formattedStart} - ${formattedEnd}`
       : `${formattedStart} → ${formattedEnd}`;
   };
 

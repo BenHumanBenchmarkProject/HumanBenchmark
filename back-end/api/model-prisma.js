@@ -10,8 +10,7 @@ const MUTUAL_FRIENDS_WEIGHT = 0.4;
 const WORKOUT_FREQUENCY_WEIGHT = 0.225;
 const AGE_DIFFERENCE_WEIGHT = 0.15;
 const GEO_DISTANCE_WEIGHT = 0.225;
-const DAY_START = 0;
-const DAY_END = 24 * 60;
+const MILLISECONDS_PER_MINUTE = 60000;
 
 function calculateXP(movement) {
   // Should take user roughly 3 workouts to level up
@@ -620,10 +619,14 @@ module.exports = {
     });
   },
 
-  async findFreeTimes(events) {
+  async findFreeTimes(events, chunkLength) {
+    const MILLISECONDS_PER_MINUTE = 60000;
+    const freeSlots = [];
+    const seen = new Set();
+    const now = new Date();
+
     // Group events by day
     const eventsByDay = {};
-
     for (let event of events) {
       const dateKey = event.start.toISOString().split("T")[0];
       if (!eventsByDay[dateKey]) eventsByDay[dateKey] = [];
@@ -633,32 +636,61 @@ module.exports = {
       });
     }
 
-    const freeSlots = [];
+    // today through the next 6 days (7 days total)
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(now);
+      date.setDate(now.getDate() + i);
+      const dateKey = date.toISOString().split("T")[0];
 
-    for (let [date, dailyEvents] of Object.entries(eventsByDay)) {
-      dailyEvents.sort((a, b) => a.start - b.start);
-
-      let current = new Date(`${date}T00:00:00`);
-      const endOfDay = new Date(`${date}T23:59:00`);
+      const dailyEvents = (eventsByDay[dateKey] || []).sort(
+        (a, b) => a.start - b.start
+      );
+      let current;
+      if (dateKey === now.toISOString().split("T")[0]) {
+        current = new Date();
+        current.setSeconds(0, 0); // Remove seconds/millis
+        current.setMinutes(0); // Remove minutes
+      } else {
+        current = new Date(`${dateKey}T00:00:00`);
+      }
+      const endOfDay = new Date(`${dateKey}T23:59:00`);
 
       for (let event of dailyEvents) {
-        if (event.start > current) {
-          freeSlots.push({
-            start: new Date(current),
-            end: new Date(event.start),
-          });
+        while (
+          current.getTime() + chunkLength * MILLISECONDS_PER_MINUTE <
+          event.start.getTime()
+        ) {
+          const potentialStart = new Date(current);
+          const potentialEnd = new Date(
+            current.getTime() + chunkLength * MILLISECONDS_PER_MINUTE
+          );
+          const key = potentialStart.toISOString();
+          if (!seen.has(key) && potentialStart >= now) {
+            freeSlots.push({ start: potentialStart, end: potentialEnd });
+            seen.add(key);
+          }
+          current = potentialEnd;
         }
+
         if (event.end > current) {
-          current = new Date(event.end);
+          current = event.end;
         }
       }
 
-      // Final slot to end of day
-      if (current < endOfDay) {
-        freeSlots.push({
-          start: current,
-          end: endOfDay,
-        });
+      while (
+        current.getTime() + chunkLength * MILLISECONDS_PER_MINUTE <=
+        endOfDay.getTime()
+      ) {
+        const potentialStart = new Date(current);
+        const potentialEnd = new Date(
+          current.getTime() + chunkLength * MILLISECONDS_PER_MINUTE
+        );
+        const key = potentialStart.toISOString();
+        if (!seen.has(key) && potentialStart >= now) {
+          freeSlots.push({ start: potentialStart, end: potentialEnd });
+          seen.add(key);
+        }
+        current = potentialEnd;
       }
     }
 

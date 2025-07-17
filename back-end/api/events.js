@@ -188,11 +188,13 @@ events.delete("/api/availability/:id", async (req, res) => {
 
 // [POST] /api/availability/common
 events.post("/api/availability/common", async (req, res) => {
-  const { userIds } = req.body; // userIds as an array
+  const { userIds, workoutLength } = req.body; // userIds as an array
 
   if (!Array.isArray(userIds)) {
     return res.status(400).json({ error: "userIds must be an array" });
   }
+
+  const chunkLength = workoutLength ? workoutLength : 60; // default to 60 minutes
 
   try {
     const events = await prisma.calendarEvent.findMany({
@@ -204,7 +206,7 @@ events.post("/api/availability/common", async (req, res) => {
       orderBy: { start: "asc" },
     });
 
-    const freeTimes = await findFreeTimes(events, userIds);
+    const freeTimes = await findFreeTimes(events, chunkLength);
     res.json(freeTimes);
   } catch (err) {
     console.log(err);
