@@ -141,8 +141,26 @@ const HomePage = () => {
             ))}
           </div>
 
-          <div className="calendar">
-            <h1>Calendar Placeholder</h1>
+          <div className="stats-container">
+            {user ? (
+              <>
+                <h2>{`${user.username}'s stats`}</h2>
+                <div className="user-stats">
+                  {user.bodyPartStats.map((stat, index) => (
+                    <div key={index} className="user-single-stat">
+                      <span>
+                        <strong>{stat.bodyPart}</strong>
+                      </span>
+                      <span>{stat.score}</span>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="no-user-stats">
+                <h2>Log in to see your stats</h2>
+              </div>
+            )}
           </div>
 
           <div className="home-friends-box">
