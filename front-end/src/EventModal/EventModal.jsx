@@ -22,7 +22,6 @@ const EventModal = ({ onClose }) => {
         const response = await axios.get(`${BASE_URL}users/${user.id}/friends`);
 
         setFriends(response.data);
-        console.log("Friends:", response.data);
       } catch (err) {
         console.error("Error fetching friends:", err);
       }
@@ -54,7 +53,7 @@ const EventModal = ({ onClose }) => {
 
     const allUserIds = [user.id, ...selectedFriends.map(Number)];
     fetchSuggestedTimes(allUserIds);
-  }, [user, selectedFriends, selectedWorkout]);
+  }, [user, selectedFriends, selectedWorkout, workouts]);
 
   const handleCreateEvent = async () => {
     const newEvent = {
@@ -69,7 +68,6 @@ const EventModal = ({ onClose }) => {
 
     try {
       const response = await axios.post(`${BASE_URL}events`, newEvent);
-      console.log("Event created:", response.data);
 
       onClose();
     } catch (err) {
@@ -81,13 +79,15 @@ const EventModal = ({ onClose }) => {
     // Calculate workout length based on selected workout
     let workoutLength = 60; // default to 60 minutes
 
+    let selectedWorkoutObject = null;
+
     if (selectedWorkout) {
-      const workout = workouts.find(
-        (w) => w.id.toString() === selectedWorkout.toString()
+      selectedWorkoutObject = workouts.find(
+        (workout) => workout.id.toString() === selectedWorkout.toString()
       );
 
-      if (workout && Array.isArray(workout.movements)) {
-        workoutLength = workout.movements.length * 15;
+      if (selectedWorkoutObject?.movements?.length) {
+        workoutLength = selectedWorkoutObject.movements.length * 15;
       }
     }
 
@@ -95,8 +95,16 @@ const EventModal = ({ onClose }) => {
       const response = await axios.post(`${BASE_URL}availability/common`, {
         userIds,
         workoutLength,
+        selectedWorkout: selectedWorkoutObject
+          ? {
+              movements: (selectedWorkoutObject.movements || [])
+                .filter((movement) => movement?.bodyPart)
+                .map((movement) => ({ bodyPart: movement.bodyPart })),
+            }
+          : null,
       });
-      setSuggestedTimes(response.data);
+
+      setSuggestedTimes(response.data.times);
     } catch (err) {
       console.error("Failed to fetch suggestions:", err);
     }
@@ -104,10 +112,9 @@ const EventModal = ({ onClose }) => {
 
   const updateSelectedFriends = (id) => {
     const updated = selectedFriends.includes(id)
-      ? selectedFriends.filter((fid) => fid !== id)
+      ? selectedFriends.filter((friendId) => friendId !== id)
       : [...selectedFriends, id];
     setSelectedFriends(updated);
-    fetchSuggestedTimes([user.id, ...updated.map(Number)]);
   };
 
   const formatTimeRange = (start, end) => {
@@ -227,7 +234,7 @@ const EventModal = ({ onClose }) => {
           </div>
         )}
 
-        {suggestedTimes.length > 0 && (
+        {Array.isArray(suggestedTimes) && suggestedTimes.length > 0 && (
           <div className="suggested-times">
             <h4>Suggested Times</h4>
             <ul>
