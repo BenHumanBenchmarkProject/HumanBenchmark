@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 const events = express.Router();
 
-const { findFreeTimes } = require("./model-prisma");
+const { findFreeTimes, rankSuggestedTimes } = require("./events-model");
 
 events.use(
   cors({
@@ -186,31 +186,46 @@ events.delete("/api/availability/:id", async (req, res) => {
   }
 });
 
-// [POST] /api/availability/common
+//[Post] /api/availability/common
 events.post("/api/availability/common", async (req, res) => {
-  const { userIds, workoutLength } = req.body; // userIds as an array
-
-  if (!Array.isArray(userIds)) {
-    return res.status(400).json({ error: "userIds must be an array" });
-  }
-
-  const chunkLength = workoutLength ? workoutLength : 60; // default to 60 minutes
+  const { userIds, workoutLength, selectedWorkout } = req.body;
 
   try {
-    const events = await prisma.calendarEvent.findMany({
-      where: {
-        participants: {
-          some: { id: { in: userIds } },
+    const users = await prisma.user.findMany({
+      where: { id: { in: userIds } },
+      include: {
+        createdEvents: true,
+        joinedEvents: true,
+        eventLeaves: true,
+        workouts: {
+          where: { isComplete: true },
+          include: { movements: true },
         },
       },
-      orderBy: { start: "asc" },
     });
 
-    const freeTimes = await findFreeTimes(events, chunkLength);
-    res.json(freeTimes);
+    const allEvents = users.flatMap((user) => [
+      ...user.createdEvents,
+      ...user.joinedEvents,
+    ]);
+    const allLeaves = users.flatMap((user) =>
+      user.eventLeaves.map((leave) => leave.leftAt)
+    );
+    const allWorkouts = users.flatMap((user) => user.workouts);
+
+    const freeTimes = await findFreeTimes(allEvents, workoutLength);
+
+    const ranked = await rankSuggestedTimes(
+      freeTimes,
+      allEvents,
+      allLeaves,
+      allWorkouts,
+      selectedWorkout
+    );
+
+    res.json({ times: ranked });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "Failed to fetch free times" });
   }
 });
 
