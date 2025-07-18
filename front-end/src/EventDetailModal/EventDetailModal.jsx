@@ -1,6 +1,11 @@
 import "./EventDetailModal.css";
+import { useContext } from "react";
+import UserContext from "../userContext";
+import axios from "axios";
+import { BASE_URL } from "../constants";
 
 const EventDetailsModal = ({ event, onClose }) => {
+  const { user } = useContext(UserContext);
   if (!event) return null;
 
   const startTime = new Date(event.start).toLocaleTimeString([], {
@@ -11,6 +16,15 @@ const EventDetailsModal = ({ event, onClose }) => {
     hour: "2-digit",
     minute: "2-digit",
   });
+
+  const handleLeaveEvent = async () => {
+    try {
+      await axios.delete(`${BASE_URL}events/${event.id}/leave/${user.id}`);
+      onClose();
+    } catch (err) {
+      console.error("Failed to leave event:", err);
+    }
+  };
 
   return (
     <div className="event-details-modal">
@@ -51,6 +65,10 @@ const EventDetailsModal = ({ event, onClose }) => {
             ))}
           </div>
         </div>
+
+        <button className="leave-button" onClick={handleLeaveEvent}>
+          Leave Event
+        </button>
 
         <p className="creator-info">
           Created by: {event.createdBy?.username || "Unknown"}
