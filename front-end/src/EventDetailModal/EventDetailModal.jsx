@@ -20,6 +20,7 @@ const EventDetailsModal = ({ event, onClose }) => {
   const handleLeaveEvent = async () => {
     try {
       await axios.delete(`${BASE_URL}events/${event.id}/leave/${user.id}`);
+      console.log("Successfully left event");
       onClose();
     } catch (err) {
       console.error("Failed to leave event:", err);
