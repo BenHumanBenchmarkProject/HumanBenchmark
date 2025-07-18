@@ -91,6 +91,22 @@
   color: #666;
 }
 
+.leave-button {
+  margin-top: 1rem;
+  padding: 8px 12px;
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.leave-button:hover {
+  background-color: #d9363e;
+}
+
+
 @keyframes fadeIn {
   from {
     opacity: 0;

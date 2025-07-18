@@ -214,4 +214,27 @@ events.post("/api/availability/common", async (req, res) => {
   }
 });
 
+
+// [DELETE] /api/events/:eventId/leave/:userId
+events.delete("/api/events/:eventId/leave/:userId", async (req, res) => {
+  const { eventId, userId } = req.params;
+
+  try {
+    await prisma.calendarEvent.update({
+      where: { id: Number(eventId) },
+      data: {
+        participants: {
+          disconnect: { id: Number(userId) },
+        },
+      },
+    });
+
+    res.json({ message: "User left the event" });
+  } catch (err) {
+    console.error("Error leaving event:", err);
+    res.status(500).json({ error: "Failed to leave event" });
+  }
+});
+
+
 module.exports = events;

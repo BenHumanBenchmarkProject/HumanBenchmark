@@ -161,7 +161,10 @@ const Calendar = () => {
       {selectedEvent && (
         <EventDetailsModal
           event={selectedEvent}
-          onClose={() => setSelectedEvent(null)}
+          onClose={() => {
+            setSelectedEvent(null);
+            fetchUserEvents();
+          }}
         />
       )}
     </>

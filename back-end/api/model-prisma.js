@@ -476,9 +476,10 @@ module.exports = {
   async getFriendRequests(userId) {
     const friends = await prisma.friendship.findMany({
       where: {
-        OR: [{ userId }, { friendId: userId }],
+        friendId: userId,
         status: PENDING_STATUS,
       },
+      include: { user: true },
     });
 
     return await prisma.user.findMany({
