@@ -10,7 +10,7 @@ const MUTUAL_FRIENDS_WEIGHT = 0.4;
 const WORKOUT_FREQUENCY_WEIGHT = 0.225;
 const AGE_DIFFERENCE_WEIGHT = 0.15;
 const GEO_DISTANCE_WEIGHT = 0.225;
-const MILLISECONDS_PER_MINUTE = 1000 * 60;
+
 
 function calculateXP(movement) {
   // Should take user roughly 3 workouts to level up
@@ -620,98 +620,4 @@ module.exports = {
     });
   },
 
-  async findFreeTimes(events, chunkLength) {
-    const freeSlots = [];
-    const seen = new Set();
-    const now = new Date();
-
-    // Group events by day
-    const eventsByDay = {};
-    for (let event of events) {
-      const dateKey = event.start.toISOString().split("T")[0];
-      if (!eventsByDay[dateKey]) eventsByDay[dateKey] = [];
-      eventsByDay[dateKey].push({
-        start: new Date(event.start),
-        end: new Date(event.end),
-      });
-    }
-
-    // today through the next 6 days (7 days total)
-    for (let i = 0; i < 7; i++) {
-      const date = new Date(now);
-      date.setDate(now.getDate() + i);
-      const dateKey = date.toISOString().split("T")[0];
-
-      const dailyEvents = (eventsByDay[dateKey] || []).sort(
-        (a, b) => a.start - b.start
-      );
-      let current;
-      if (dateKey === now.toISOString().split("T")[0]) {
-        current = new Date();
-        current.setSeconds(0, 0); // Remove seconds/millis
-        current.setMinutes(0); // Remove minutes
-      } else {
-        current = new Date(`${dateKey}T00:00:00`);
-      }
-      const endOfDay = new Date(`${dateKey}T23:59:00`);
-
-      for (let event of dailyEvents) {
-        while (
-          current.getTime() + chunkLength * MILLISECONDS_PER_MINUTE <
-          event.start.getTime()
-        ) {
-          let potentialStart = new Date(current);
-
-          // round potentialStart to nearest 15-min mark if not already
-          const startMinutes = potentialStart.getMinutes();
-          const startOffset =
-            startMinutes % 15 === 0 ? 0 : 15 - (startMinutes % 15);
-          if (startOffset > 0) {
-            potentialStart.setMinutes(startMinutes + startOffset);
-            potentialStart.setSeconds(0, 0);
-          }
-
-          // set potentialEnd to original potentialStart + chunkLength
-          let potentialEnd = new Date(
-            potentialStart.getTime() + chunkLength * MILLISECONDS_PER_MINUTE
-          );
-
-          // if end time has minutes, truncate to the last full hour
-          if (potentialEnd.getMinutes() !== 0) {
-            potentialEnd.setMinutes(0);
-            potentialEnd.setSeconds(0, 0);
-          }
-
-          const key = potentialStart.toISOString();
-          if (!seen.has(key) && potentialStart >= now) {
-            freeSlots.push({ start: potentialStart, end: potentialEnd });
-            seen.add(key);
-          }
-          current = potentialEnd;
-        }
-
-        if (event.end > current) {
-          current = event.end;
-        }
-      }
-
-      while (
-        current.getTime() + chunkLength * MILLISECONDS_PER_MINUTE <=
-        endOfDay.getTime()
-      ) {
-        const potentialStart = new Date(current);
-        const potentialEnd = new Date(
-          current.getTime() + chunkLength * MILLISECONDS_PER_MINUTE
-        );
-        const key = potentialStart.toISOString();
-        if (!seen.has(key) && potentialStart >= now) {
-          freeSlots.push({ start: potentialStart, end: potentialEnd });
-          seen.add(key);
-        }
-        current = potentialEnd;
-      }
-    }
-
-    return freeSlots;
-  },
 };
