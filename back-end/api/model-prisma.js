@@ -11,7 +11,6 @@ const WORKOUT_FREQUENCY_WEIGHT = 0.225;
 const AGE_DIFFERENCE_WEIGHT = 0.15;
 const GEO_DISTANCE_WEIGHT = 0.225;
 
-
 function calculateXP(movement) {
   // Should take user roughly 3 workouts to level up
   return (movement.reps * movement.sets * movement.weight) / 725;
@@ -183,17 +182,48 @@ function getGeoDistanceScore(user, friend) {
   return earthRadius * c; // Distance in kilometers
 }
 
-async function getRecommendationScore(userId, friendId) {
-  const user = await prisma.user.findUnique({ where: { id: userId } });
-  const friend = await prisma.user.findUnique({ where: { id: friendId } });
+async function getDynamicWeights(user, userFriends) {
+  if (userFriends.length === 0) {
+    return {
+      mutual: MUTUAL_FRIENDS_WEIGHT,
+      age: AGE_DIFFERENCE_WEIGHT,
+      geo: GEO_DISTANCE_WEIGHT,
+      workout: WORKOUT_FREQUENCY_WEIGHT,
+    };
+  }
 
-  const mutualFriends = await getMutualFriends(userId, friendId);
+  let totalAgeSimilarity = 0;
+  let totalGeoSimilarity = 0;
+  let totalWorkoutSimilarity = 0;
+
+  for (const friend of userFriends) {
+    totalAgeSimilarity += getAgeDifference(user, friend);
+    totalGeoSimilarity += getGeoDistanceScore(user, friend);
+    totalWorkoutSimilarity += getWorkoutFrequency(user, friend);
+  }
+
+  const total =
+    totalAgeSimilarity + totalGeoSimilarity + totalWorkoutSimilarity || 1;
+
+  const scale = 0.6; // remaining 60% after mutual
+  return {
+    mutual: MUTUAL_FRIENDS_WEIGHT,
+    age: (totalAgeSimilarity / total) * scale,
+    geo: (totalGeoSimilarity / total) * scale,
+    workout: (totalWorkoutSimilarity / total) * scale,
+  };
+}
+
+async function getRecommendationScore(user, friend, weights, mutualCount) {
+  const ageScore = getAgeDifference(user, friend);
+  const workoutScore = getWorkoutFrequency(user, friend);
+  const geoScore = getGeoDistanceScore(user, friend);
 
   let score = 0;
-  score += MUTUAL_FRIENDS_WEIGHT * mutualFriends.length; // mutual friends
-  score += AGE_DIFFERENCE_WEIGHT * getAgeDifference(user, friend); // age similarity
-  score += WORKOUT_FREQUENCY_WEIGHT * getWorkoutFrequency(user, friend); // workout frequency similarity
-  score += GEO_DISTANCE_WEIGHT * getGeoDistanceScore(user, friend); // geographic similarity
+  score += weights.mutual * mutualCount;
+  score += weights.age * ageScore;
+  score += weights.workout * workoutScore;
+  score += weights.geo * geoScore;
 
   return score;
 }
@@ -515,6 +545,12 @@ module.exports = {
 
       const friendIds = getFriendIds(friendships, userId);
 
+      const user = await prisma.user.findUnique({ where: { id: userId } });
+      const userFriends = await prisma.user.findMany({
+        where: { id: { in: friendIds } },
+      });
+      const dynamicWeights = await getDynamicWeights(user, userFriends);
+
       // Fetch all users except the current user
       const allUsers = await prisma.user.findMany({
         where: { id: { not: userId, notIn: friendIds } },
@@ -522,9 +558,16 @@ module.exports = {
 
       // Calculate recommendation scores for each user
       const recommendations = await Promise.all(
-        allUsers.map(async (friend) => {
-          const score = await getRecommendationScore(userId, friend.id);
-          return { friend, score };
+        allUsers.map(async (potential) => {
+          const mutualCount = (await getMutualFriends(userId, potential.id))
+            .length;
+          const score = await getRecommendationScore(
+            user,
+            potential,
+            dynamicWeights,
+            mutualCount
+          );
+          return { friend: potential, score };
         })
       );
 
@@ -619,5 +662,4 @@ module.exports = {
       })),
     });
   },
-
 };
