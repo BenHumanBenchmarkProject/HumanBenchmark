@@ -5,7 +5,11 @@ const prisma = new PrismaClient();
 
 const events = express.Router();
 
-const { findFreeTimes, rankSuggestedTimes } = require("./events-model");
+const {
+  findFreeTimes,
+  rankSuggestedTimes,
+  createLeaveEvent,
+} = require("./events-model");
 
 events.use(
   cors({
@@ -229,7 +233,6 @@ events.post("/api/availability/common", async (req, res) => {
   }
 });
 
-
 // [DELETE] /api/events/:eventId/leave/:userId
 events.delete("/api/events/:eventId/leave/:userId", async (req, res) => {
   const { eventId, userId } = req.params;
@@ -244,6 +247,8 @@ events.delete("/api/events/:eventId/leave/:userId", async (req, res) => {
       },
     });
 
+    await createLeaveEvent(Number(userId), Number(eventId));
+
     res.json({ message: "User left the event" });
   } catch (err) {
     console.error("Error leaving event:", err);
@@ -251,5 +256,30 @@ events.delete("/api/events/:eventId/leave/:userId", async (req, res) => {
   }
 });
 
+// [GET] /api/user/:userId/eventLeaves
+events.get("/api/user/:userId/eventLeaves", async (req, res) => {
+  const userId = Number(req.params.userId);
+
+  try {
+    const eventLeaves = await prisma.eventLeave.findMany({
+      where: { userId },
+      include: {
+        event: {
+          select: {
+            id: true,
+            title: true,
+            start: true,
+            end: true,
+          },
+        },
+      },
+    });
+
+    res.json(eventLeaves);
+  } catch (err) {
+    console.error("Error fetching event leaves:", err);
+    res.status(500).json({ error: "Failed to fetch event leaves" });
+  }
+});
 
 module.exports = events;

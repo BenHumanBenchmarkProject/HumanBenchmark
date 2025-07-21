@@ -1,4 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 
 const MILLISECONDS_PER_MINUTE = 1000 * 60;
 
@@ -173,5 +174,21 @@ module.exports = {
         return { ...slot, score };
       })
       .sort((a, b) => b.score - a.score);
+  },
+
+  async createLeaveEvent(userId, eventId, leftAt = new Date()) {
+    try {
+      const leave = await prisma.eventLeave.create({
+        data: {
+          userId,
+          eventId,
+          leftAt,
+        },
+      });
+      return leave;
+    } catch (err) {
+      console.error("Failed to create leave event object:", err);
+      throw err;
+    }
   },
 };
