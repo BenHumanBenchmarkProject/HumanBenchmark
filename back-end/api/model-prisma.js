@@ -261,12 +261,6 @@ module.exports = {
     return updated;
   },
 
-  async findExercises() {
-    const exercises = await prisma.exercise.findMany();
-    console.log(`Number of exercises in database: ${exercises.length}`);
-    return exercises;
-  },
-
   async createBodyPartStat(userId, newBodyPartStat) {
     const created = await prisma.bodyPartStat.create({ data: newBodyPartStat });
 
