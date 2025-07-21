@@ -138,8 +138,8 @@ const EventModal = ({ onClose }) => {
   };
 
   return (
-    <div className="modal">
-      <div className="modal-content">
+    <div className="event-modal">
+      <div className="event-modal-content">
         <h2>Create Event</h2>
         <label>
           Event Name:
