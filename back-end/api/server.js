@@ -33,7 +33,7 @@ server.use((req, res, next) => {
   next();
 });
 
-const eventsRouter = require("./events.js");
+const eventsRouter = require("./events/events.js");
 const exercisesRouter = require("./exercises/exercises.js");
 
 server.use(helmet());
