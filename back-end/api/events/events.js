@@ -129,67 +129,6 @@ events.get("/api/events/:userId", async (req, res) => {
   }
 });
 
-//[Get] /api/availability/:userId
-events.get("/api/availability/:userId", async (req, res) => {
-  // get User Calendar Events
-  const userId = Number(req.params.userId);
-  try {
-    const availability = await prisma.availability.findMany({
-      where: { userId },
-    });
-
-    res.json(availability);
-  } catch (err) {}
-});
-
-//[Post] /api/availability
-events.post("/api/availability", async (req, res) => {
-  // create new availability block
-  const { userId, dayOfWeek, startTime, endTime } = req.body;
-
-  try {
-    const created = await prisma.availability.create({
-      data: { userId, dayOfWeek, startTime, endTime },
-    });
-
-    res.json(created);
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-//[Put] /api/availability/:id
-events.put("/api/availability/:id", async (req, res) => {
-  // edit availability block
-  const id = Number(req.params.id);
-  const { startTime, endTime } = req.body;
-  try {
-    const updated = await prisma.availability.update({
-      where: { id: id },
-      data: { startTime, endTime },
-    });
-
-    res.json(updated);
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-//[Delete] /api/availability/:id
-events.delete("/api/availability/:id", async (req, res) => {
-  const id = Number(req.params.id);
-
-  try {
-    const deleted = await prisma.availability.delete({
-      where: { id: id },
-    });
-
-    res.json({ message: "Availability deleted", deleted });
-  } catch (err) {
-    console.log(err);
-  }
-});
-
 //[Post] /api/availability/common
 events.post("/api/availability/common", async (req, res) => {
   const { userIds, workoutLength, selectedWorkout } = req.body;
