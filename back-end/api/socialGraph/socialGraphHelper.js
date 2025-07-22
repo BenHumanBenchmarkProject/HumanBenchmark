@@ -145,11 +145,11 @@ async function getDynamicWeights(user, userFriends) {
   };
 }
 
-async function getRecommendationScore(user, friend, weights) {
+async function getRecommendationScore(user, friend, weights, friendMap) {
   const ageScore = getAgeDifference(user, friend);
   const workoutScore = getWorkoutFrequency(user, friend);
   const geoScore = getGeoDistanceScore(user, friend);
-  const mutualScore = await getMutualFriendScore(user.id, friend.id);
+  const mutualScore = await getMutualFriendScore(user.id, friend.id, friendMap);
 
   let score = 0;
   score += weights.mutual * mutualScore;
@@ -160,25 +160,15 @@ async function getRecommendationScore(user, friend, weights) {
   return score;
 }
 
-async function getMutualFriendScore(userId, possibleFriendId, maxDepth = 5) {
+async function getMutualFriendScore(
+  userId,
+  possibleFriendId,
+  friendMap,
+  maxDepth = 5
+) {
   // max depth of 5 to save on potential memory usage
   const visited = new Set();
   const queue = [{ id: userId, depth: 0 }]; // BFS queue, depth starts at 0
-  // use map for O(1) lookup
-  const friendMap = new Map(); // key: userId, value: Set<friendId>
-
-  // build map of only "accepted friends"
-  const allFriendships = await prisma.friendship.findMany({
-    where: { status: ACCEPTED_STATUS },
-  });
-
-  // populate map with bidirectional edges for friendships
-  for (const { userId, friendId } of allFriendships) {
-    if (!friendMap.has(userId)) friendMap.set(userId, new Set());
-    if (!friendMap.has(friendId)) friendMap.set(friendId, new Set());
-    friendMap.get(userId).add(friendId);
-    friendMap.get(friendId).add(userId);
-  }
 
   let score = 0;
 
