@@ -1,8 +1,12 @@
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
+
 const MAX_AGE_DIFFERENCE = 20;
 const MUTUAL_FRIENDS_WEIGHT = 0.4;
 const WORKOUT_FREQUENCY_WEIGHT = 0.225;
 const AGE_DIFFERENCE_WEIGHT = 0.15;
 const GEO_DISTANCE_WEIGHT = 0.225;
+const ACCEPTED_STATUS = "ACCEPTED";
 
 function getFriendIds(friends, userId) {
   return friends.map((friend) =>
@@ -141,16 +145,70 @@ async function getDynamicWeights(user, userFriends) {
   };
 }
 
-async function getRecommendationScore(user, friend, weights, mutualCount) {
+async function getRecommendationScore(user, friend, weights) {
   const ageScore = getAgeDifference(user, friend);
   const workoutScore = getWorkoutFrequency(user, friend);
   const geoScore = getGeoDistanceScore(user, friend);
+  const mutualScore = await getMutualFriendScore(user.id, friend.id);
+
+  console.log("mutualScore: ", mutualScore);
+  console.log("ageScore: ", ageScore);
+  console.log("workoutScore: ", workoutScore);
+  console.log("geoScore: ", geoScore);
 
   let score = 0;
-  score += weights.mutual * mutualCount;
+  score += weights.mutual * mutualScore;
   score += weights.age * ageScore;
   score += weights.workout * workoutScore;
   score += weights.geo * geoScore;
+
+  return score;
+}
+
+async function getMutualFriendScore(userId, possibleFriendId, maxDepth = 5) {
+  // max depth of 5 to save on potential memory usage
+  const visited = new Set();
+  const queue = [{ id: userId, depth: 0 }]; // BFS queue, depth starts at 0
+  // use map for O(1) lookup
+  const friendMap = new Map(); // key: userId, value: Set<friendId>
+
+  // build map of only "accepted friends"
+  const allFriendships = await prisma.friendship.findMany({
+    where: { status: ACCEPTED_STATUS },
+  });
+
+  // populate map with bidirectional edges for friendships
+  for (const { userId, friendId } of allFriendships) {
+    if (!friendMap.has(userId)) friendMap.set(userId, new Set());
+    if (!friendMap.has(friendId)) friendMap.set(friendId, new Set());
+    friendMap.get(userId).add(friendId);
+    friendMap.get(friendId).add(userId);
+  }
+
+  let score = 0;
+
+  while (queue.length > 0) {
+    const { id: currentId, depth } = queue.shift();
+
+    //stop if reach max depth or already visited
+    if (depth > maxDepth || visited.has(currentId)) continue;
+    visited.add(currentId);
+
+    const friends = friendMap.get(currentId);
+    if (!friends) continue;
+
+    for (const friendId of friends) {
+      if (friendId === possibleFriendId) {
+        const weight = 1 / (depth + 1); // add score inversley proportional to depth (+depth = -score)
+        score += weight;
+      }
+
+      if (!visited.has(friendId)) {
+        // add to queue if not visited
+        queue.push({ id: friendId, depth: depth + 1 });
+      }
+    }
+  }
 
   return score;
 }
@@ -164,4 +222,5 @@ module.exports = {
   getGeoDistanceScore,
   getDynamicWeights,
   getRecommendationScore,
+  getMutualFriendScore,
 };

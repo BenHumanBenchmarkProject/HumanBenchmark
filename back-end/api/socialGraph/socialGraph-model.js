@@ -179,8 +179,7 @@ module.exports = {
           const score = await getRecommendationScore(
             user,
             potential,
-            dynamicWeights,
-            mutualCount
+            dynamicWeights
           );
           return { friend: potential, score };
         })
