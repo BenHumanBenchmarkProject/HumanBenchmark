@@ -4,11 +4,12 @@ const prisma = new PrismaClient();
 const ERROR_RELATION_ALREADY_EXISTS = "P2002";
 const ACCEPTED_STATUS = "accepted";
 const PENDING_STATUS = "pending";
-const MAX_AGE_DIFFERENCE = 20;
-const MUTUAL_FRIENDS_WEIGHT = 0.4;
-const WORKOUT_FREQUENCY_WEIGHT = 0.225;
-const AGE_DIFFERENCE_WEIGHT = 0.15;
-const GEO_DISTANCE_WEIGHT = 0.225;
+
+const {
+  getFriendIds,
+  getDynamicWeights,
+  getRecommendationScore,
+} = require("./socialGraphHelper");
 
 async function getMutualFriends(userA, userB) {
   try {
@@ -44,156 +45,6 @@ async function getMutualFriends(userA, userB) {
   }
 }
 
-function getFriendIds(friends, userId) {
-  return friends.map((friend) =>
-    friend.userId === userId ? friend.friendId : friend.userId
-  );
-}
-
-function getAgeDifference(user, friend) {
-  dif = Math.abs(user.age - friend.age);
-  return 1 - Math.min(dif / MAX_AGE_DIFFERENCE, 1); // 20 is the max age difference
-}
-
-function getWorkoutFrequency(user, friend) {
-  let userVector = getMuscleVector(user);
-  let friendVector = getMuscleVector(friend);
-
-  return getCosineSimilarity(userVector, friendVector);
-}
-
-function getMuscleVector(user) {
-  const muscleVector = {};
-
-  if (!user.workouts || user.workouts.length === 0) return muscleVector;
-
-  // Iterate through each workout
-  user.workouts.forEach((workout) => {
-    // Iterate through each movement in the workout
-    workout.movements.forEach((movement) => {
-      const muscle = movement.muscle;
-      // Increment the count for the muscle in the vector
-      if (muscle) {
-        muscleVector[muscle] = (muscleVector[muscle] || 0) + 1;
-      }
-    });
-  });
-
-  return muscleVector;
-}
-
-function getCosineSimilarity(userVector, friendVector) {
-  const allMuscles = new Set([
-    ...Object.keys(userVector),
-    ...Object.keys(friendVector),
-  ]);
-
-  // dot product and magnitudes
-  let dotProduct = 0;
-  let userMagnitude = 0;
-  let friendMagnitude = 0;
-
-  allMuscles.forEach((muscle) => {
-    const userValue = userVector[muscle] || 0;
-    const friendValue = friendVector[muscle] || 0;
-
-    dotProduct += userValue * friendValue;
-    userMagnitude += userValue * userValue;
-    friendMagnitude += friendValue * friendValue;
-  });
-
-  // calculate magnitudes
-  userMagnitude = Math.sqrt(userMagnitude);
-  friendMagnitude = Math.sqrt(friendMagnitude);
-
-  if (userMagnitude === 0 || friendMagnitude === 0) {
-    return 0; // Avoid division by zero
-  }
-
-  return dotProduct / (userMagnitude * friendMagnitude); //cosine similarity
-}
-
-function getGeoDistanceScore(user, friend) {
-  let userLat = user.latitude;
-  let userLong = user.longitude;
-  let friendLat = friend.latitude;
-  let friendLong = friend.longitude;
-
-  if (
-    userLat == null ||
-    userLong == null ||
-    friendLat == null ||
-    friendLong == null
-  ) {
-    return 0;
-  }
-
-  // Calculate the distance between the two points in kilometers
-  let latitudeDistance = ((userLat - friendLat) * Math.PI) / 180.0;
-  let longitudeDistance = ((userLong - friendLong) * Math.PI) / 180.0;
-
-  // Convert to radians
-  userLat = (userLat * Math.PI) / 180.0;
-  friendLat = (friendLat * Math.PI) / 180.0;
-
-  // Calculate the Haversine formula
-  let a =
-    Math.pow(Math.sin(latitudeDistance / 2.0), 2) +
-    Math.pow(Math.sin(longitudeDistance / 2.0), 2) *
-      Math.cos(userLat) *
-      Math.cos(friendLat);
-
-  let earthRadius = 6371.0; // km
-  let c = 2.0 * Math.asin(Math.sqrt(a));
-
-  return earthRadius * c; // Distance in kilometers
-}
-
-async function getDynamicWeights(user, userFriends) {
-  if (userFriends.length === 0) {
-    return {
-      mutual: MUTUAL_FRIENDS_WEIGHT,
-      age: AGE_DIFFERENCE_WEIGHT,
-      geo: GEO_DISTANCE_WEIGHT,
-      workout: WORKOUT_FREQUENCY_WEIGHT,
-    };
-  }
-
-  let totalAgeSimilarity = 0;
-  let totalGeoSimilarity = 0;
-  let totalWorkoutSimilarity = 0;
-
-  for (const friend of userFriends) {
-    totalAgeSimilarity += getAgeDifference(user, friend);
-    totalGeoSimilarity += getGeoDistanceScore(user, friend);
-    totalWorkoutSimilarity += getWorkoutFrequency(user, friend);
-  }
-
-  const total =
-    totalAgeSimilarity + totalGeoSimilarity + totalWorkoutSimilarity || 1;
-
-  const scale = 0.6; // remaining 60% after mutual
-  return {
-    mutual: MUTUAL_FRIENDS_WEIGHT,
-    age: (totalAgeSimilarity / total) * scale,
-    geo: (totalGeoSimilarity / total) * scale,
-    workout: (totalWorkoutSimilarity / total) * scale,
-  };
-}
-
-async function getRecommendationScore(user, friend, weights, mutualCount) {
-  const ageScore = getAgeDifference(user, friend);
-  const workoutScore = getWorkoutFrequency(user, friend);
-  const geoScore = getGeoDistanceScore(user, friend);
-
-  let score = 0;
-  score += weights.mutual * mutualCount;
-  score += weights.age * ageScore;
-  score += weights.workout * workoutScore;
-  score += weights.geo * geoScore;
-
-  return score;
-}
 module.exports = {
   getMutualFriends,
 
