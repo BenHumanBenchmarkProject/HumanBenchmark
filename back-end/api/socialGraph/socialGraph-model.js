@@ -151,46 +151,71 @@ module.exports = {
       }
 
       // Otherwise, generate new cache
-      const friendships = await prisma.friendship.findMany({
-        where: {
-          OR: [{ userId }, { friendId: userId }],
-          status: ACCEPTED_STATUS,
+      const allFriendships = await prisma.friendship.findMany({
+        where: { status: ACCEPTED_STATUS },
+      });
+
+      const friendMap = new Map(); // build map to reuse
+      for (const { userId, friendId } of allFriendships) {
+        if (!friendMap.has(userId)) friendMap.set(userId, new Set());
+        if (!friendMap.has(friendId)) friendMap.set(friendId, new Set());
+        friendMap.get(userId).add(friendId);
+        friendMap.get(friendId).add(userId);
+      }
+
+      const friendIds = Array.from(friendMap.get(userId) || []);
+
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        include: {
+          workouts: {
+            include: { movements: true },
+          },
         },
       });
 
-      const friendIds = getFriendIds(friendships, userId);
-
-      const user = await prisma.user.findUnique({ where: { id: userId } });
       const userFriends = await prisma.user.findMany({
         where: { id: { in: friendIds } },
+        include: {
+          workouts: {
+            include: { movements: true },
+          },
+        },
       });
       const dynamicWeights = await getDynamicWeights(user, userFriends);
 
       // Fetch all users except the current user
       const allUsers = await prisma.user.findMany({
-        where: { id: { not: userId, notIn: friendIds } },
+        where: {
+          id: {
+            not: userId,
+            notIn: friendIds,
+          },
+        },
+        include: {
+          workouts: {
+            include: { movements: true },
+          },
+        },
       });
 
       // Calculate recommendation scores for each user
       const recommendations = await Promise.all(
         allUsers.map(async (potential) => {
-          const mutualCount = (await getMutualFriends(userId, potential.id))
-            .length;
           const score = await getRecommendationScore(
             user,
             potential,
             dynamicWeights,
-            mutualCount
+            friendMap // pass in friendMap to reuse
           );
           return { friend: potential, score };
         })
       );
 
-      // Sort by score in descending order
-      recommendations.sort((a, b) => b.score - a.score);
-
-      // Get top 50 recommendations
-      const top = recommendations.slice(0, 50);
+      // Get top 50 recommendations sorted
+      const top = recommendations
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 50);
 
       // Clear old cache
       await prisma.friendRecommendation.deleteMany({ where: { userId } });
