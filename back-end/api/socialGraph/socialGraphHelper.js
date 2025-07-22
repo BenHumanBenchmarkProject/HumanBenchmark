@@ -151,11 +151,6 @@ async function getRecommendationScore(user, friend, weights) {
   const geoScore = getGeoDistanceScore(user, friend);
   const mutualScore = await getMutualFriendScore(user.id, friend.id);
 
-  console.log("mutualScore: ", mutualScore);
-  console.log("ageScore: ", ageScore);
-  console.log("workoutScore: ", workoutScore);
-  console.log("geoScore: ", geoScore);
-
   let score = 0;
   score += weights.mutual * mutualScore;
   score += weights.age * ageScore;
