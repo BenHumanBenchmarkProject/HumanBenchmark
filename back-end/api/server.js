@@ -36,70 +36,18 @@ const eventsRouter = require("./events/events.js");
 const exercisesRouter = require("./exercises/exercises.js");
 const socialGraphRouter = require("./socialGraph/socialGraph.js");
 const usersRouter = require("./users/users.js");
+const workoutsRouter = require("./workouts/workouts.js");
 server.use(eventsRouter);
 server.use(exercisesRouter);
 server.use(socialGraphRouter);
 server.use(usersRouter);
+server.use(workoutsRouter);
 
-const {
-  createWorkout,
-  findUsersLeaderboard,
-  markWorkoutComplete,
-  deleteWorkout,
-} = require("./model-prisma");
+const { findUsersLeaderboard } = require("./model-prisma");
 
 server.use((req, res, next) => {
   console.log(`Request received: ${req.method} ${req.url}`);
   next();
-});
-
-//[Post] /api/users/:userId/workouts
-server.post("/api/users/:userId/workouts", async (req, res, next) => {
-  const { name, isComplete, completedAt, movements } = req.body;
-  const userId = Number(req.params.userId);
-
-  if (!name || !Array.isArray(movements) || movements.length === 0) {
-    return res
-      .status(400)
-      .json({ error: "Workout name and movements are required" });
-  }
-
-  try {
-    const { createdWorkout, updatedUser } = await createWorkout(userId, {
-      name,
-      isComplete,
-      completedAt,
-      movements,
-    });
-
-    res
-      .status(201)
-      .json({ message: "Workouts created", createdWorkout, updatedUser });
-  } catch (err) {
-    next(err);
-  }
-});
-
-//[Patch] /api/workouts/:workoutId/complete
-server.patch("/api/workouts/:workoutId/complete", async (req, res) => {
-  try {
-    const workoutId = Number(req.params.workoutId);
-    const updatedWorkout = await markWorkoutComplete(workoutId);
-    res.json(updatedWorkout);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to mark workout as complete" });
-  }
-});
-
-//[Delete] /api/workouts/:workoutId
-server.delete("/api/workouts/:workoutId", async (req, res) => {
-  try {
-    const workoutId = Number(req.params.workoutId);
-    const deletedWorkout = await deleteWorkout(workoutId);
-    res.json(deletedWorkout);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to delete workout" });
-  }
 });
 
 // [Get] /api/leaderboard
