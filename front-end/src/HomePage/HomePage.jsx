@@ -15,6 +15,7 @@ const HomePage = () => {
   const [selectedWorkout, setSelectedWorkout] = useState(null);
   const [pendingRequests, setPendingRequests] = useState([]);
   const [recommendedFriends, setRecommendedFriends] = useState([]);
+  const [bodyPartStats, setBodyPartStats] = useState([]);
 
   const fetchIncompleteWorkouts = async () => {
     try {
@@ -66,11 +67,24 @@ const HomePage = () => {
     }
   };
 
+  const fetchBodyPartStats = async () => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}users/${user.id}/bodyPartStats`
+      );
+      setBodyPartStats(response.data);
+      setUser((prevUser) => ({ ...prevUser, bodyPartStats: response.data })); // Update context
+    } catch (err) {
+      console.error("Error fetching body part stats:", err);
+    }
+  };
+
   useEffect(() => {
     if (user && user.id) {
       fetchIncompleteWorkouts();
       fetchFriends();
       fetchRecommendedFriends();
+      fetchBodyPartStats();
     }
   }, [user]);
 
@@ -110,6 +124,7 @@ const HomePage = () => {
 
   return (
     <>
+      {console.log("user body part stats", bodyPartStats)}
       <div className="container">
         <NavigationButtons className="navButtons" />
 
@@ -146,14 +161,18 @@ const HomePage = () => {
               <>
                 <h2>{`${user.username}'s stats`}</h2>
                 <div className="user-stats">
-                  {user.bodyPartStats.map((stat, index) => (
-                    <div key={index} className="user-single-stat">
-                      <span>
-                        <strong>{stat.bodyPart}</strong>
-                      </span>
-                      <span>{stat.score}</span>
-                    </div>
-                  ))}
+                  {bodyPartStats && bodyPartStats.length > 0 ? (
+                    bodyPartStats.map((stat, index) => (
+                      <div key={index} className="user-single-stat">
+                        <span>
+                          <strong>{stat.bodyPart}</strong>
+                        </span>
+                        <span>{stat.score}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <div>No stats available</div>
+                  )}
                 </div>
               </>
             ) : (
