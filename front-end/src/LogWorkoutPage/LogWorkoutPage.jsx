@@ -3,10 +3,12 @@ import ExerciseContext from "../ExerciseContext";
 import React, { useContext, useState } from "react";
 import { useUser } from "../userContext";
 import axios from "axios";
+import { useLoading } from "../loadingContext";
 import { BASE_URL, NavigationButtons } from "../constants";
 
 const LogWorkoutPage = () => {
   const { user, login } = useUser();
+  const { setLoading } = useLoading();
   const userId = user ? user.id : null;
   const exercises = useContext(ExerciseContext);
   const [selectedBodyPart, setSelectedBodyPart] = useState("");
@@ -90,7 +92,7 @@ const LogWorkoutPage = () => {
       console.error("No exercises in plan");
       return;
     }
-
+    setLoading(true);
     try {
       // Create the workout
       const response = await axios.post(`${BASE_URL}users/${userId}/workouts`, {
@@ -123,6 +125,8 @@ const LogWorkoutPage = () => {
       handleClearPlan(); // clear plan after submission
     } catch (error) {
       console.error("Error logging workout:", error);
+    } finally {
+      setLoading(false);
     }
   };
 

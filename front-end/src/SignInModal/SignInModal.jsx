@@ -2,10 +2,11 @@ import "./SignInModal.css";
 import axios from "axios";
 import { useState, useContext } from "react";
 import UserContext from "..//userContext.jsx";
-
+import { useLoading } from "../loadingContext"
 import { BASE_URL } from "../constants";
 
 const SignInModal = ({ onClose }) => {
+  const { setLoading } = useLoading();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -13,7 +14,7 @@ const SignInModal = ({ onClose }) => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-
+    setLoading(true);
     try {
       const response = await axios.post(
         `${BASE_URL}users/login`,
@@ -37,6 +38,8 @@ const SignInModal = ({ onClose }) => {
     } catch (err) {
       console.error("Error logging in:", err);
       setError("An error occurred during login");
+    } finally{
+      setLoading(false);
     }
   };
 
