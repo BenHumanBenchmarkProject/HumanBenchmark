@@ -219,7 +219,16 @@ const SignUpModal = ({ onClose }) => {
                 <span className="error-message">{errors.username}</span>
               )}
 
-              <label htmlFor="password">Password:</label>
+              <div className="password-tooltip-wrapper">
+                <label htmlFor="password">Password:</label>
+                <div className="tooltip-icon" tabIndex="0">
+                  ⓘ
+                  <span className="tooltip-text">
+                    Password must be at least 10 characters long.
+                  </span>
+                </div>
+              </div>
+
               <input
                 type="password"
                 id="password"
