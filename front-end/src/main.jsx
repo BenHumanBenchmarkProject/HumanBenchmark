@@ -13,6 +13,7 @@ import { ExerciseProvider } from "./ExerciseContext";
 import MyAccountPage from "./MyAccountPage/MyAccountPage.jsx";
 import Layout from "./Layout/Layout.jsx";
 import Calendar from "./Calendar/Calendar.jsx";
+import { LoadingProvider } from "./loadingContext.jsx";
 
 const routes = createBrowserRouter([
   {
@@ -61,14 +62,16 @@ const routes = createBrowserRouter([
       <Layout>
         <Calendar />
       </Layout>
-    )
-  }
+    ),
+  },
 ]);
 
 createRoot(document.getElementById("root")).render(
-  <UserProvider>
-    <ExerciseProvider>
-      <RouterProvider router={routes} />
-    </ExerciseProvider>
-  </UserProvider>
+  <LoadingProvider>
+    <UserProvider>
+      <ExerciseProvider>
+        <RouterProvider router={routes} />
+      </ExerciseProvider>
+    </UserProvider>
+  </LoadingProvider>
 );

@@ -3,6 +3,7 @@ import { useState } from "react";
 import axios from "axios";
 import bcrypt from "bcryptjs";
 import { BASE_URL } from "../constants";
+import { useLoading } from "../loadingContext";
 const STEP_ONE = 1;
 const STEP_TWO = 2;
 const GENDER_MALE = "M";
@@ -10,6 +11,7 @@ const GENDER_FEMALE = "F";
 const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 
 const SignUpModal = ({ onClose }) => {
+  const { setLoading } = useLoading();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -68,6 +70,7 @@ const SignUpModal = ({ onClose }) => {
     gender,
     zipcode
   ) => {
+    setLoading(true);
     try {
       await getCoordinates(zipcode);
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -90,6 +93,8 @@ const SignUpModal = ({ onClose }) => {
         error.response ? error.response.data : error.message
       );
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 

@@ -2,10 +2,12 @@ import React, { useState, useContext, useEffect } from "react";
 import UserContext from "../userContext";
 import axios from "axios";
 import { BASE_URL } from "../constants";
+import { useLoading } from "../loadingContext";
 import "./EventModal.css";
 
 const EventModal = ({ onClose }) => {
   const { user } = useContext(UserContext);
+  const { setLoading } = useLoading();
   const [eventName, setEventName] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
@@ -66,12 +68,15 @@ const EventModal = ({ onClose }) => {
       workoutId: Number(selectedWorkout),
     };
 
+    setLoading(true);
     try {
       const response = await axios.post(`${BASE_URL}events`, newEvent);
 
       onClose();
     } catch (err) {
       console.error("Error creating event:", err);
+    } finally {
+      setLoading(false);
     }
   };
 

@@ -4,11 +4,13 @@ import axios from "axios";
 import { useState } from "react";
 import { BODY_PARTS, BASE_URL, NavigationButtons } from "../constants";
 import { useUser } from "../userContext";
+import { useLoading } from "../loadingContext";
 
 const MINIMUM_MOVEMENT_VARIABLE_NUMBER = 1;
 
 const BuildWorkoutPage = () => {
   const { login, user } = useUser();
+  const { setLoading } = useLoading();
   const userId = user ? user.id : null;
 
   const [selectedBodyPart, setSelectedBodyPart] = useState("");
@@ -42,7 +44,7 @@ const BuildWorkoutPage = () => {
       console.error("Workout name and exercises are required");
       return;
     }
-
+    setLoading(true);
     try {
       const response = await axios.post(`${BASE_URL}users/${userId}/workouts`, {
         name: workoutName,
@@ -62,6 +64,8 @@ const BuildWorkoutPage = () => {
       handleClearPlan(); // Clear the plan after saving
     } catch (error) {
       console.error("Error saving workout:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
