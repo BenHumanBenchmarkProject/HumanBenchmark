@@ -162,6 +162,61 @@
   border-radius: 4px;
 }
 
+.ai-helper {
+  margin-top: 20px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.ai-toggle-btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #4f46e5; /* indigo */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.ai-toggle-btn:hover {
+  background-color: #4338ca;
+}
+
+.ai-input-section {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ai-textarea {
+  width: 100%;
+  max-width: 500px;
+  min-height: 80px;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  resize: vertical;
+  margin-bottom: 10px;
+}
+
+.ai-generate-btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #10b981; /* teal */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.ai-generate-btn:hover {
+  background-color: #059669;
+}
+
 @media (max-width: 768px) {
   .builder-container {
     flex-direction: column;

@@ -12,11 +12,54 @@ const BuildWorkoutPage = () => {
   const { login, user } = useUser();
   const { setLoading } = useLoading();
   const userId = user ? user.id : null;
+  const [showAiInput, setShowAiInput] = useState(false);
+  const [aiInput, setAiInput] = useState("");
 
   const [selectedBodyPart, setSelectedBodyPart] = useState("");
   const [exercises, setExercises] = useState([]);
   const [plan, setPlan] = useState([]);
   const [workoutName, setWorkoutName] = useState("");
+
+  const handleAiGenerate = async () => {
+    setPlan([]); // clear the plan before generating a new one
+    setLoading(true);
+    try {
+      // send users prompt
+      const aiResponse = await axios.post(`${BASE_URL}generateWorkout`, {
+        userPrompt: aiInput,
+      });
+
+      if (aiResponse.data?.plan) {
+        // match response to database exercises
+        const dbExercisesRes = await axios.get(`${BASE_URL}exercises`);
+
+        const matchedPlan = aiResponse.data.plan
+          .map((aiExercise) => {
+            const match = dbExercisesRes.data.find(
+              (exercise) => exercise.name.toLowerCase() === aiExercise.name.toLowerCase()
+            );
+
+            return {
+              ...match,
+              reps: aiExercise.reps,
+              sets: aiExercise.sets,
+              weight: aiExercise.weight,
+            };
+          })
+          .filter(Boolean); // filter out unmatched items
+
+        console.log("Matched Plan:", matchedPlan);
+        setPlan(matchedPlan);
+      } else {
+        console.error("No plan returned from Gemini.");
+      }
+    } catch (err) {
+      console.error("Error generating workout:", err);
+    } finally {
+      setLoading(false);
+      setAiInput(""); // clear the input after generating the workout
+    }
+  };
 
   const handleBodyPartChange = async (event) => {
     const bodyPart = event.target.value.toLowerCase();
@@ -94,6 +137,29 @@ const BuildWorkoutPage = () => {
         <div className="main-content">
           <NavigationButtons />
           <h1>Build Workout</h1>
+
+          <div className="ai-helper">
+            <button
+              className="ai-toggle-btn"
+              onClick={() => setShowAiInput(!showAiInput)}
+            >
+              {showAiInput ? "Hide AI Assistant" : "Use AI to Build Workout"}
+            </button>
+
+            {showAiInput && (
+              <div className="ai-input-section">
+                <textarea
+                  className="ai-textarea"
+                  placeholder="Describe what kind of workout you want..."
+                  value={aiInput}
+                  onChange={(event) => setAiInput(event.target.value)}
+                />
+                <button className="ai-generate-btn" onClick={handleAiGenerate}>
+                  Generate Workout
+                </button>
+              </div>
+            )}
+          </div>
 
           <div className="builder-container">
             <div className="bodyparts-box">
