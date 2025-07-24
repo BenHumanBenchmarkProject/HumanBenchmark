@@ -25,25 +25,25 @@ const BuildWorkoutPage = () => {
     setLoading(true);
     try {
       // send users prompt
-      const aiRes = await axios.post(`${BASE_URL}generateWorkout`, {
+      const aiResponse = await axios.post(`${BASE_URL}generateWorkout`, {
         userPrompt: aiInput,
       });
 
-      if (aiRes.data?.plan) {
+      if (aiResponse.data?.plan) {
         // match response to database exercises
         const dbExercisesRes = await axios.get(`${BASE_URL}exercises`);
 
-        const matchedPlan = aiRes.data.plan
-          .map((aiEx) => {
+        const matchedPlan = aiResponse.data.plan
+          .map((aiExercise) => {
             const match = dbExercisesRes.data.find(
-              (ex) => ex.name.toLowerCase() === aiEx.name.toLowerCase()
+              (exercise) => exercise.name.toLowerCase() === aiExercise.name.toLowerCase()
             );
 
             return {
               ...match,
-              reps: aiEx.reps,
-              sets: aiEx.sets,
-              weight: aiEx.weight,
+              reps: aiExercise.reps,
+              sets: aiExercise.sets,
+              weight: aiExercise.weight,
             };
           })
           .filter(Boolean); // filter out unmatched items
