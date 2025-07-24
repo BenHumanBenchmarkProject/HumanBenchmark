@@ -61,7 +61,7 @@ const HomePage = () => {
         `${BASE_URL}users/${user.id}/friends/${friendId}`
       );
       console.log("Friend request sent:", response.data);
-      fetchFriends(); // get new friends list after sending request
+      setPendingRequests((prev) => [...prev, friendId]); // Update pending requests
     } catch (error) {
       console.error("Error sending friend request:", error);
     }
@@ -124,7 +124,6 @@ const HomePage = () => {
 
   return (
     <>
-      {console.log("user body part stats", bodyPartStats)}
       <div className="container">
         <NavigationButtons className="navButtons" />
 

@@ -48,11 +48,10 @@ async function getMutualFriends(userA, userB) {
 module.exports = {
   getMutualFriends,
 
-  async addFriend(userA, userB) {
-    const [userId, friendId] = userA < userB ? [userA, userB] : [userB, userA]; // Prevents duplicate friendships. Ensures order is always the same
+  async addFriend(userId, friendId) {
 
     try {
-      friend = await prisma.friendship.create({
+      const friend = await prisma.friendship.create({
         data: { userId, friendId, status: PENDING_STATUS },
       });
       console.log(`Friendship created between ${userId} and ${friendId}`);
