@@ -35,6 +35,7 @@ const SignUpModal = ({ onClose }) => {
 
   const getCoordinates = async (zipcode) => {
     try {
+      console.log("Getting coordinates for zipcode:", zipcode);
       axios
         .get(
           `https://maps.googleapis.com/maps/api/geocode/json?address=${zipcode}&key=${GOOGLE_API_KEY}`
@@ -71,6 +72,8 @@ const SignUpModal = ({ onClose }) => {
     zipcode
   ) => {
     setLoading(true);
+      console.log("Creating account with zipcode:", zipcode); // Debugging log
+
     try {
       await getCoordinates(zipcode);
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -80,8 +83,8 @@ const SignUpModal = ({ onClose }) => {
         height: parseInt(height, 10), // Ensure it's an integer
         weight: parseInt(weight, 10), // Ensure it's an integer
         age: parseInt(age, 10), // Ensure it's an integer
-        latitude: latitude,
-        longitude: longitude,
+        latitude: parseFloat(latitude),
+        longitude: parseFloat(longitude),
         gender,
       });
 
@@ -190,7 +193,7 @@ const SignUpModal = ({ onClose }) => {
     } else if (step === STEP_TWO) {
       if (validateStep2()) {
         try {
-          await createAccount(username, password, height, weight, age, gender);
+          await createAccount(username, password, height, weight, age, gender, zipcode);
           // reset all inputs and return to step 1
           resetInputState();
           setStep(STEP_ONE);
