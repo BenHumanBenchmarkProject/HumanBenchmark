@@ -4,6 +4,7 @@ import axios from "axios";
 import { BASE_URL } from "../constants";
 import UserContext from "../userContext";
 import WorkoutModal from "../WorkoutModal/WorkoutModal";
+import UserModal from "../UserModal/UserModal";
 import pendingIcon from "../assets/pending-icon.png";
 
 import { NavigationButtons } from "../constants";
@@ -16,6 +17,15 @@ const HomePage = () => {
   const [pendingRequests, setPendingRequests] = useState([]);
   const [recommendedFriends, setRecommendedFriends] = useState([]);
   const [bodyPartStats, setBodyPartStats] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  const handleUserClick = (user) => {
+    setSelectedUser(user);
+  };
+
+  const closeUserModal = () => {
+    setSelectedUser(null);
+  };
 
   const fetchIncompleteWorkouts = async () => {
     try {
@@ -185,7 +195,11 @@ const HomePage = () => {
             <div className="home-friends-header">Your Friends</div>
             <div className="friends-list">
               {friends.map((friend, index) => (
-                <div key={index} className="home-friend-item">
+                <div
+                  key={index}
+                  className="home-friend-item"
+                  onClick={() => handleUserClick(friend)}
+                >
                   <span>{friend.username}</span>
                 </div>
               ))}
@@ -202,12 +216,19 @@ const HomePage = () => {
                 const isCurrentUser = user.id === recommendedFriend.id;
 
                 return (
-                  <div key={recommendedFriend.id} className="home-friend-item">
+                  <div
+                    key={recommendedFriend.id}
+                    className="home-friend-item"
+                    onClick={() => handleUserClick(recommendedFriend)}
+                  >
                     <span>{recommendedFriend.username}</span>
                     {!isFriend && !isPending && !isCurrentUser && (
                       <button
                         className="home-friend-request-button"
-                        onClick={() => sendFriendRequest(recommendedFriend.id)}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          sendFriendRequest(recommendedFriend.id);
+                        }}
                       >
                         Add
                       </button>
@@ -232,6 +253,9 @@ const HomePage = () => {
           )}
         </div>
       </div>
+      {selectedUser && (
+        <UserModal user={selectedUser} onClose={closeUserModal} />
+      )}
     </>
   );
 };
