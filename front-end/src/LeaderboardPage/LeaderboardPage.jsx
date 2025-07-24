@@ -40,6 +40,7 @@ const LeaderboardPage = () => {
       const pendingResponse = await axios.get(
         `${BASE_URL}users/${user.id}/friendRequests`
       );
+      console.log("Pending friend requests:", pendingResponse.data);
       setPendingRequests(pendingResponse.data.map((request) => request.id));
     } catch (error) {
       console.error("Error fetching friends:", error);
