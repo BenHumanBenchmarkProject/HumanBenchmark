@@ -52,7 +52,7 @@ const LeaderboardPage = () => {
         `${BASE_URL}users/${user.id}/friends/${friendId}`
       );
       console.log("Friend request sent:", response.data);
-      fetchFriends(); // get new friends list after sending request
+      setPendingRequests((prev) => [...prev, friendId]); // Update pending requests
     } catch (error) {
       console.error("Error sending friend request:", error);
     }
