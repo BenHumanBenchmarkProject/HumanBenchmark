@@ -109,6 +109,9 @@ const LogWorkoutPage = () => {
           muscle: exercise.muscle,
         })),
       });
+
+      await updateBodyPartStats(plan);
+
       // Ftech updated user data
       const updatedUserResponse = await axios.get(`${BASE_URL}users/${userId}`);
 
@@ -127,6 +130,24 @@ const LogWorkoutPage = () => {
       console.error("Error logging workout:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Function to update body part stats
+  const updateBodyPartStats = async (exercises) => {
+    try {
+      for (const exercise of exercises) {
+        // Logic to calculate new stats based on the exercise
+        const newScore = calculateNewScore(exercise);
+
+        // Update the body part stat in the database
+        await axios.put(`${BASE_URL}users/${userId}/bodyPartStats`, {
+          bodyPart: exercise.bodyPart,
+          score: newScore,
+        });
+      }
+    } catch (error) {
+      console.error("Error updating body part stats:", error);
     }
   };
 
