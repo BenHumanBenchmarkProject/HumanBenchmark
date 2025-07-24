@@ -5,6 +5,7 @@ import UserContext from "../userContext";
 import blankProfilePic from "../assets/blank-pfp.jpg";
 import axios from "axios";
 import WorkoutModal from "../WorkoutModal/WorkoutModal";
+import UserModal from "../UserModal/UserModal";
 
 const GENDER_FEMALE = "F";
 const GENDER_MALE = "M";
@@ -14,6 +15,15 @@ const MyAccountPage = () => {
   const [friendRequests, setFriendRequests] = useState([]);
   const [workouts, setWorkouts] = useState([]);
   const [selectedWorkout, setSelectedWorkout] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  const handleUserClick = (user) => {
+    setSelectedUser(user);
+  };
+
+  const closeUserModal = () => {
+    setSelectedUser(null);
+  };
 
   const fetchCompleteWorkouts = async () => {
     try {
@@ -141,19 +151,29 @@ const MyAccountPage = () => {
             <div className="friend-request-header">Friend Requests</div>
             <div className="friend-request-list">
               {friendRequests.map((request) => (
-                <div key={request.id} className="friend-request-item">
+                <div
+                  key={request.id}
+                  className="friend-request-item"
+                  onClick={() => handleUserClick(request)}
+                >
                   <span>{request.username}</span>
 
                   <div className="friend-request-buttons">
                     <button
                       className="friend-request-button"
-                      onClick={() => handleAccept(request.id)}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleAccept(request.id);
+                      }}
                     >
                       ✓
                     </button>
                     <button
                       className="friend-request-button"
-                      onClick={() => handleDecline(request.id)}
+                      onClick={(event) => {
+                        event.stopPropagation(); 
+                        handleDecline(request.id);
+                      }}
                     >
                       x
                     </button>
@@ -183,6 +203,9 @@ const MyAccountPage = () => {
       </div>
       {selectedWorkout && (
         <WorkoutModal workout={selectedWorkout} onClose={closeModal} />
+      )}
+      {selectedUser && (
+        <UserModal user={selectedUser} onClose={closeUserModal} />
       )}
     </div>
   );
