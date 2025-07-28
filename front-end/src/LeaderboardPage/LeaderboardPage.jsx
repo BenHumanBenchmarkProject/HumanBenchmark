@@ -15,6 +15,8 @@ const LeaderboardPage = () => {
   const [friends, setFriends] = useState([]); // friends wont have an add button
   const [pendingRequests, setPendingRequests] = useState([]); // pending friend requests wont have an add button
   const [sortKey, setSortKey] = useState(OVERALL_STAT_KEY);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredUsers, setFilteredUsers] = useState([]);
 
   useEffect(() => {
     if (user && user.id) {
@@ -86,12 +88,41 @@ const LeaderboardPage = () => {
     setSortKey(key);
   };
 
+  const updateFilteredUsers = () => {
+    const filtered = users.filter((user) =>
+      user.username.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredUsers(filtered);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      updateFilteredUsers();
+    }
+  };
+
+  const clearSearch = () => {
+    setSearchQuery("");
+  };
+
   return (
     <div>
       <div className="container">
         <div className="main-content">
           <NavigationButtons />
           <h1>Leaderboard</h1>
+          <div className="search-container">
+            <input
+              type="text"
+              placeholder="Search users..."
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+            <button className="leaderboard-search-button" onClick={updateFilteredUsers}>Search</button>
+            <button className="leaderboard-search-button" onClick={clearSearch}>Clear</button>
+          </div>
+
           <table>
             <thead>
               <tr>
@@ -125,7 +156,7 @@ const LeaderboardPage = () => {
               </tr>
             </thead>
             <tbody>
-              {users.map((leaderboardUser) => {
+              {filteredUsers.map((leaderboardUser) => {
                 const isFriend = friends.includes(leaderboardUser.id);
                 const isPending = pendingRequests.includes(leaderboardUser.id);
                 const isCurrentUser = user.id === leaderboardUser.id;
