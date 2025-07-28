@@ -2,10 +2,11 @@ import "./MyAccountPage.css";
 import { NavigationButtons, BASE_URL } from "../constants";
 import { useContext, useState, useEffect } from "react";
 import UserContext from "../userContext";
-import blankProfilePic from "../assets/blank-pfp.jpg";
 import axios from "axios";
 import WorkoutModal from "../WorkoutModal/WorkoutModal";
 import UserModal from "../UserModal/UserModal";
+import boyPFP from "../assets/blue-pfp.jpg";
+import girlPFP from "../assets/pink-pfp.jpeg";
 
 const GENDER_FEMALE = "F";
 const GENDER_MALE = "M";
@@ -120,7 +121,7 @@ const MyAccountPage = () => {
       <div className="account-content">
         <div className="account-top">
           <div className="user-info-left">
-            <img src={blankProfilePic} alt="user profile picture" />
+            <img src={user.gender === "M" ? boyPFP : girlPFP} alt="user profile picture" />
             <h2>{user.username}</h2>
             <p>{`User since: ${formattedDate}`}</p>
           </div>
@@ -171,7 +172,7 @@ const MyAccountPage = () => {
                     <button
                       className="friend-request-button"
                       onClick={(event) => {
-                        event.stopPropagation(); 
+                        event.stopPropagation();
                         handleDecline(request.id);
                       }}
                     >
