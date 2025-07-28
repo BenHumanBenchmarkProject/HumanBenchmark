@@ -3,11 +3,27 @@ import React, { use } from "react";
 import axios from "axios";
 import { useContext, useState, useEffect } from "react";
 import UserContext from "../userContext";
+import { BASE_URL } from "../constants";
 
 const Sidebar = () => {
-  const { user, login } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const [hasAnimated, setHasAnimated] = useState(false);
-  const [bodyPartStats, setBodyPartStats] = useState([]);
+  const [overallStat, setOverallStat] = useState(0);
+
+  const fetchOverallStat = async () => {
+    if (user) {
+      try {
+        const response = await axios.get(`${BASE_URL}users/${user.id}`);
+        setOverallStat(response.data.overallStat);
+      } catch (error) {
+        console.error("Error fetching overall stat:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchOverallStat();
+  }, [user]);
 
   useEffect(() => {
     // make sure the animation only runs on page load
@@ -23,22 +39,6 @@ const Sidebar = () => {
   const xpPercentage = () => {
     if (!user) return 0;
     return (user.xp / neededXP()) * 100;
-  };
-
-  const calculateOverallScore = () => {
-    if (!user || !user.bodyPartStats || user.bodyPartStats.length === 0)
-      return 0;
-
-    console.log(user.bodyPartStats);
-
-    const totalScore = user.bodyPartStats.reduce(
-      (sum, stat) => sum + stat.score,
-      0
-    );
-    const averageScore = totalScore / user.bodyPartStats.length;
-
-    console.log(`TotalScore: ${totalScore}, AverageScore: ${averageScore}`);
-    return averageScore;
   };
 
   return (
@@ -64,14 +64,12 @@ const Sidebar = () => {
           <div className="bar">
             <div
               style={{
-                "--final-width": `${
-                  user && user.overallStat ? user.overallStat : 0
-                }%`,
+                "--final-width": `${user && overallStat ? overallStat : 0}%`,
               }}
             ></div>
           </div>
           {user && user.overallStat !== undefined
-            ? user.overallStat.toFixed(2)
+            ? overallStat.toFixed(2)
             : "0.00"}
         </div>
       </div>

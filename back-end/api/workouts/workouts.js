@@ -49,8 +49,10 @@ workouts.post("/api/users/:userId/workouts", async (req, res, next) => {
 workouts.patch("/api/workouts/:workoutId/complete", async (req, res) => {
   try {
     const workoutId = Number(req.params.workoutId);
-    const updatedWorkout = await markWorkoutComplete(workoutId);
-    res.json(updatedWorkout);
+    const { updatedWorkout, updatedUser } = await markWorkoutComplete(
+      workoutId
+    );
+    res.json({ updatedWorkout, updatedUser });
   } catch (error) {
     res.status(500).json({ error: "Failed to mark workout as complete" });
   }
