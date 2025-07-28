@@ -14,7 +14,7 @@
 }
 
 .modal-content {
-  background: #ffffff;
+  background: #f0f0f0;
   padding: 24px 28px;
   border-radius: 12px;
   width: 90%;
@@ -24,7 +24,6 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   position: relative;
   font-family: "Segoe UI", sans-serif;
-  color: #333;
 }
 
 .close-button {
