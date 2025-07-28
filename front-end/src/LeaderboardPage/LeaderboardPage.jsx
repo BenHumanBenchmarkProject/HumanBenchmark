@@ -104,6 +104,7 @@ const LeaderboardPage = () => {
 
   const clearSearch = () => {
     setSearchQuery("");
+    setFilteredUsers(users);
   };
 
   return (
