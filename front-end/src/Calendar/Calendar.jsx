@@ -138,8 +138,6 @@ const Calendar = () => {
                       width: `${width}px`,
                       left: `${left}px`,
                       position: "absolute",
-                      backgroundColor: "lightblue",
-                      border: "1px solid blue",
                       boxSizing: "border-box",
                       padding: "2px",
                       borderRadius: "4px",

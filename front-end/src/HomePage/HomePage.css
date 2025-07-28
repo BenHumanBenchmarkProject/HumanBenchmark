@@ -51,6 +51,15 @@ body {
   align-items: center;
 }
 
+.stats-container h2 {
+  font-size: 45px;
+  margin-bottom: 0px;
+}
+
+body {
+  color: #16425b;
+}
+
 .stats-container {
   display: flex;
   flex-direction: column;
@@ -97,32 +106,12 @@ body {
 
 .user-single-stat span {
   font-size: 16px;
-  color: #333;
+  color: #16425b;
 }
 
 .user-single-stat span:first-child {
   font-weight: bold;
   margin-bottom: 10px;
-}
-
-.home-workouts-box {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-}
-
-.home-workouts-box {
-  width: 250px;
-  height: 500px;
-  background-color: #f0f0f0;
-  border: 1px solid #999;
-  border-radius: 6px;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  flex-shrink: 0;
-  margin-top: 20px;
 }
 
 .home-workout-item {
@@ -140,11 +129,11 @@ body {
 }
 
 .home-workouts-header {
-  background-color: #ddd;
+  background-color: #f0f0f0;
   font-weight: bold;
   text-align: center;
   padding: 10px;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid #16425B;
   flex-shrink: 0;
 }
 
@@ -153,7 +142,7 @@ body {
   width: 250px;
   height: 500px;
   background-color: #f0f0f0;
-  border: 1px solid #999;
+
   border-radius: 6px;
   display: flex;
   flex-direction: column;
@@ -181,16 +170,16 @@ body {
 
 .home-friends-header,
 .recommended-friends-header {
-  background-color: #ddd;
+  background-color: #f0f0f0;
   font-weight: bold;
   text-align: center;
   padding: 10px;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid #16425B;
   flex-shrink: 0;
 }
 
 .recommended-friends-header {
-  border-top: 1px solid #333;
+  border-top: 1px solid #16425B;
 }
 
 .friends-list,
@@ -209,8 +198,8 @@ body {
   padding: 5px 10px;
   font-size: 12px;
   cursor: pointer;
-  background-color: #007bff;
-  color: white;
+  background-color: #81c3d7;
+  color: #16425b;
   border: none;
   border-radius: 4px;
 }

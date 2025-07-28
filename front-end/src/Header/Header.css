@@ -3,12 +3,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #e0e0e0;
+    background-color: #16425B;
     padding: 10px 20px;
 }
 
 .logo {
     font-weight: bold;
+    color: #ffffff;
 }
 
 .account {
@@ -21,6 +22,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+
 }
 
 .account h3 {
@@ -33,4 +35,8 @@
     height: 40px;
     width: 40px;
     margin-top: 10px;
+}
+
+.account button {
+    background-color: #f0f0f0;
 }

@@ -4,7 +4,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1000;
-  background-color: white;
+  background-color: #f0f0f0;
   padding: 50px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
@@ -54,7 +54,7 @@
 .signin-form button {
   width: 409px;
   height: 40px;
-  background-color: rgb(91, 177, 243);
+  background-color: #81c3d7;
   border-radius: 0px;
   margin-top: 10px;
   margin-bottom: 30px;

@@ -6,13 +6,13 @@
 
 
 #logout-btn{
-    background-color: rgb(249, 184, 184);
-    border: solid 1px rgb(248, 126, 126);
+    background-color: rgb(233, 161, 161);
+    border: solid 1px rgb(193, 98, 98);
 }
 
 #my-account-btn{
-    background-color: rgb(184, 249, 247);
-    border: solid 1px rgb(117, 241, 252);
+    background-color: #81c3d7;
+    border: solid 1px #6394a3;
 }
 
 #my-account-btn, #logout-btn{
@@ -46,7 +46,7 @@
     position: absolute;
     top: 123px;
     right: 1.5% ;
-    background-color: white;
+    background-color: #f0f0f0;
     border: 1px solid black;
     padding: 20px;
     z-index: 1000;

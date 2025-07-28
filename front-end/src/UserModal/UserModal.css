@@ -13,7 +13,7 @@
 }
 
 .user-modal {
-  background: #fff;
+  background: #f0f0f0;
   width: 90%;
   max-width: 400px;
   padding: 2rem;
@@ -54,15 +54,15 @@
 .user-modal h2 {
   margin-top: 0;
   font-size: 1.75rem;
-  color: #222;
+
 }
 
 .user-modal p {
   margin: 0.5rem 0;
   font-size: 1rem;
-  color: #444;
+  color: #1e5b7e;
 }
 
 .user-modal strong {
-  color: #000;
+  color: #16425B;
 }

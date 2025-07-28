@@ -1,24 +1,25 @@
 /* Sidebar */
 .sidebar {
-  background-color: #e0e0e0;
+  background-color: #16425B;
   padding: 20px;
   width: 250px;
 }
 
 .level h2 {
   margin: 10px 0;
+  color: white;
 }
 
 .xp-bar {
   height: 10px;
-  background-color: #ccc;
+  background-color: #3A7CA5;
   border-radius: 5px;
   overflow: hidden;
 }
 
 .xp-fill {
   height: 100%;
-  background-color: gray;
+  background-color: #ffffff;
   width: 0;
   animation: growBar 1s ease-out forwards;
   animation-delay: 0.3s;
@@ -32,10 +33,12 @@
   justify-content: space-between;
   font-size: 12px;
   margin-top: 5px;
+  color: white;
 }
 
 .stats h3 {
-  background-color: #ccc;
+  background-color: #3A7CA5;
+  color: white;
   padding: 5px;
   text-align: center;
   margin-top: 20px;
@@ -44,11 +47,12 @@
 .stat {
   margin: 10px 0;
   font-size: 14px;
+  color: white;
 }
 
 .stat .bar {
   height: 10px;
-  background-color: #ccc;
+  background-color: #3A7CA5;
   border-radius: 4px;
   overflow: hidden;
   margin: 5px 0;
@@ -56,7 +60,7 @@
 
 .stat .bar div {
   height: 100%;
-  background-color: gray;
+  background-color: rgb(255, 255, 255);
   width: 0;
   animation: growBar 1s ease-out forwards;
   animation-delay: 0.3s;

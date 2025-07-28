@@ -34,6 +34,7 @@
 .cell-time-label {
   grid-column: 1;
   font-size: 1.1em;
+  background-color: #f0f0f0;
 }
 
 .slot {
@@ -48,8 +49,8 @@
 
 .event-block {
   position: absolute;
-  background-color: lightblue;
-  border: 1px solid blue;
+  background-color: #81c3d7;
+  border: 1px solid #16425b;
   z-index: 1;
   width: 90%;
 }
