@@ -28,6 +28,7 @@ const HomePage = () => {
   };
 
   const fetchIncompleteWorkouts = async () => {
+    if (!user?.id) return; // error handle no user
     try {
       const response = await axios.get(`${BASE_URL}users/${user.id}/workouts`);
       const incompleteWorkouts = response.data.filter(
@@ -41,6 +42,8 @@ const HomePage = () => {
   };
 
   const fetchRecommendedFriends = async () => {
+    if (!user?.id) return; // error handle no user
+
     try {
       const response = await axios.get(
         `${BASE_URL}users/${user.id}/recommendedFriends`
@@ -52,6 +55,8 @@ const HomePage = () => {
   };
 
   const fetchFriends = async () => {
+    if (!user?.id) return; // error handle no user
+
     try {
       const response = await axios.get(`${BASE_URL}users/${user.id}/friends`);
       setFriends(response.data);
@@ -78,6 +83,8 @@ const HomePage = () => {
   };
 
   const fetchBodyPartStats = async () => {
+    if (!user?.id) return; // error handle no user
+
     try {
       const response = await axios.get(
         `${BASE_URL}users/${user.id}/bodyPartStats`
@@ -154,6 +161,7 @@ const HomePage = () => {
         <div className="central-content">
           <div className="home-workouts-box">
             <div className="home-workouts-header">Your Workouts</div>
+
             {workouts.map((workout, index) => (
               <div
                 key={index}
@@ -227,7 +235,7 @@ const HomePage = () => {
                 const isPending = pendingRequests.includes(
                   recommendedFriend.id
                 );
-                const isCurrentUser = user.id === recommendedFriend.id;
+                const isCurrentUser = user?.id === recommendedFriend.id;
 
                 return (
                   <div
