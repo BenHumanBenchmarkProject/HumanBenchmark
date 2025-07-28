@@ -72,7 +72,7 @@ const SignUpModal = ({ onClose }) => {
     zipcode
   ) => {
     setLoading(true);
-      console.log("Creating account with zipcode:", zipcode); // Debugging log
+    console.log("Creating account with zipcode:", zipcode); // Debugging log
 
     try {
       await getCoordinates(zipcode);
@@ -134,16 +134,17 @@ const SignUpModal = ({ onClose }) => {
     let valid = true;
     const newErrors = { height: "", weight: "", age: "", gender: "" };
 
-    if (!height || isNaN(height)) {
-      newErrors.height = "Please enter a valid number for height.";
+    if (!height || isNaN(height) || height < 36 || height > 96) {
+      newErrors.height =
+        "Please enter a valid height between 36 and 96 inches.";
       valid = false;
     }
-    if (!weight || isNaN(weight)) {
-      newErrors.weight = "Please enter a valid number for weight.";
+    if (!weight || isNaN(weight) || weight < 0 || weight > 1000) {
+      newErrors.weight = "Please enter a valid weight between 0 and 1000 lbs.";
       valid = false;
     }
-    if (!age || isNaN(age)) {
-      newErrors.age = "Please enter a valid number for age.";
+    if (!age || isNaN(age) || age < 13 || age > 100) {
+      newErrors.age = "Please enter a valid age between 13 and 100.";
       valid = false;
     }
     if (!gender || (gender !== GENDER_MALE && gender !== GENDER_FEMALE)) {
@@ -193,7 +194,15 @@ const SignUpModal = ({ onClose }) => {
     } else if (step === STEP_TWO) {
       if (validateStep2()) {
         try {
-          await createAccount(username, password, height, weight, age, gender, zipcode);
+          await createAccount(
+            username,
+            password,
+            height,
+            weight,
+            age,
+            gender,
+            zipcode
+          );
           // reset all inputs and return to step 1
           resetInputState();
           setStep(STEP_ONE);
@@ -274,6 +283,8 @@ const SignUpModal = ({ onClose }) => {
                 onChange={(event) => setHeight(event.target.value)}
                 className={errors.height ? "error" : ""}
                 placeholder=""
+                min="36"
+                max="96"
               />
               {errors.height && (
                 <span className="error-message">{errors.height}</span>
@@ -287,6 +298,8 @@ const SignUpModal = ({ onClose }) => {
                 onChange={(event) => setWeight(event.target.value)}
                 className={errors.weight ? "error" : ""}
                 placeholder=""
+                min="0"
+                max="1000"
               />
               {errors.weight && (
                 <span className="error-message">{errors.weight}</span>
@@ -300,6 +313,8 @@ const SignUpModal = ({ onClose }) => {
                 onChange={(event) => setAge(event.target.value)}
                 className={errors.age ? "error" : ""}
                 placeholder=""
+                min="13"
+                max="100"
               />
               {errors.age && (
                 <span className="error-message">{errors.age}</span>
