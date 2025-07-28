@@ -1,6 +1,7 @@
 import "./AccountModal.css";
 import UserContext from "../userContext";
-import blankProfile from "../assets/blank-pfp.jpg";
+import boyPFP from "../assets/blue-pfp.jpg";
+import girlPFP from "../assets/pink-pfp.jpeg";
 import { useContext } from "react";
 import { Link } from "react-router";
 
@@ -11,7 +12,7 @@ const AccountModal = () => {
     <div className="account-modal-container">
       <div className="modal-all">
         <img
-          src={blankProfile}
+          src={user.gender === "M" ? boyPFP : girlPFP}
           alt="userProfilePicture"
           id="modal-profile-picture"
         />

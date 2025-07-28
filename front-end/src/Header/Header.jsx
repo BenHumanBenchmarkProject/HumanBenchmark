@@ -1,11 +1,11 @@
 import "./Header.css";
 import React, { useContext, useState } from "react";
-import blankPfp from "../assets/blank-pfp.jpg";
 import SignInModal from "../SignInModal/SignInModal";
 import SignUpModal from "../SignUpModal/SignUpModal";
 import UserContext from "../userContext.jsx";
 import AccountModal from "../AccountModal/AccountModal.jsx";
-
+import boyPFP from "../assets/blue-pfp.jpg";
+import girlPFP from "../assets/pink-pfp.jpeg";
 
 const SIGN_IN_MODAL = "SIGN_IN_MODAL";
 const SIGN_UP_MODAL = "SIGN_UP_MODAL";
@@ -43,7 +43,11 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
           <button>
             <div className="account">
               <h3>{user.username}</h3>
-              <img src={blankPfp} alt="profile picture" width="40px" />
+              <img
+                src={user.gender === "M" ? boyPFP : girlPFP}
+                alt="profile picture"
+                width="40px"
+              />
             </div>
           </button>
           {activeModal === ACCOUNT_MODAL && <AccountModal />}
