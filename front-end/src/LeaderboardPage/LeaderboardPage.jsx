@@ -29,6 +29,7 @@ const LeaderboardPage = () => {
     try {
       const response = await axios.get(`${BASE_URL}leaderboard`);
       setUsers(response.data);
+      setFilteredUsers(response.data);
     } catch (error) {
       console.error("Error fetching leaderboard data:", error);
     }
@@ -64,7 +65,7 @@ const LeaderboardPage = () => {
   const sortUsers = (key) => {
     key = key.toLowerCase();
 
-    const sortedUsers = [...users].sort((a, b) => {
+    const sortedUsers = [...filteredUsers].sort((a, b) => {
       let aValue, bValue;
 
       if ([USERNAME_KEY, LEVEL_KEY, OVERALL_STAT_KEY].includes(key)) {
@@ -84,7 +85,7 @@ const LeaderboardPage = () => {
       return bValue - aValue; // simplified sort by score
     });
 
-    setUsers(sortedUsers);
+    setFilteredUsers(sortedUsers);
     setSortKey(key);
   };
 
@@ -119,8 +120,15 @@ const LeaderboardPage = () => {
               onChange={(event) => setSearchQuery(event.target.value)}
               onKeyDown={handleKeyDown}
             />
-            <button className="leaderboard-search-button" onClick={updateFilteredUsers}>Search</button>
-            <button className="leaderboard-search-button" onClick={clearSearch}>Clear</button>
+            <button
+              className="leaderboard-search-button"
+              onClick={updateFilteredUsers}
+            >
+              Search
+            </button>
+            <button className="leaderboard-search-button" onClick={clearSearch}>
+              Clear
+            </button>
           </div>
 
           <table>
