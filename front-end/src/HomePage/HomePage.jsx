@@ -109,9 +109,23 @@ const HomePage = () => {
   const markWorkoutComplete = async (workoutId, event) => {
     event.stopPropagation();
     try {
-      await axios.patch(`${BASE_URL}workouts/${workoutId}/complete`, {
-        isComplete: true,
-      });
+      const response = await axios.patch(
+        `${BASE_URL}workouts/${workoutId}/complete`,
+        {
+          isComplete: true,
+        }
+      );
+      const { updatedUser } = response.data;
+
+      // update the user new overall stat
+      if (updatedUser) {
+        setUser((prevUser) => ({
+          ...prevUser,
+          overallStat: updatedUser.overallStat,
+          bodyPartStats: updatedUser.bodyPartStats,
+        }));
+      }
+
       setWorkouts((prevWorkouts) =>
         prevWorkouts.filter((workout) => workout.id !== workoutId)
       );

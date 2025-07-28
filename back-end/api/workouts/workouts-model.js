@@ -142,6 +142,22 @@ module.exports = {
         where: { id: workoutId },
         data: { isComplete: true, completedAt: new Date() },
       });
+
+      // fetch the user associated with the workout
+      const user = await prisma.user.findUnique({
+        where: { id: updatedWorkout.userId },
+        include: { bodyPartStats: true },
+      });
+
+      // calculate the overall stat
+      const overallStat = calculateOverallStat(user.bodyPartStats);
+
+      // update user overall stat
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { overallStat },
+      });
+
       return updatedWorkout;
     } catch (error) {
       console.error("Error marking workout complete:", error);
