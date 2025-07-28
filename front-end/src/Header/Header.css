@@ -3,12 +3,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #e0e0e0;
+    background-color: #16425B;
     padding: 10px 20px;
 }
 
 .logo {
     font-weight: bold;
+    color: #ffffff;
 }
 
 .account {

@@ -11,7 +11,7 @@
   width: 250px;
   height: 500px;
   background-color: #f0f0f0;
-  border: 1px solid #999;
+
   border-radius: 6px;
   display: flex;
   flex-direction: column;
@@ -23,7 +23,7 @@
   width: 250px;
   height: 481px;
   background-color: #f0f0f0;
-  border: 1px solid #999;
+
   border-radius: 6px;
   display: flex;
   flex-direction: column;
@@ -43,11 +43,11 @@
 .plan-header,
 .workouts-header,
 .bodyparts-header {
-  background-color: #ddd;
+  background-color: #f0f0f0;
   font-weight: bold;
   text-align: center;
   padding: 10px;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid #16425b;
   flex-shrink: 0;
 }
 
@@ -67,14 +67,14 @@
 .plan-buttons {
   display: flex;
   justify-content: space-around;
+  color: #16425b;
   padding: 10px;
   margin-top: auto;
   flex-shrink: 0;
 }
 
 .plan-btn {
-  background-color: #ccc;
-  border: 1px solid #999;
+  color: #16425B;
   padding: 6px 12px;
   cursor: pointer;
 }
@@ -171,8 +171,8 @@
 .ai-toggle-btn {
   padding: 10px 20px;
   font-size: 1rem;
-  background-color: #4f46e5; /* indigo */
-  color: white;
+  background-color: #81c3d7;
+  color: #16425b;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -180,7 +180,7 @@
 }
 
 .ai-toggle-btn:hover {
-  background-color: #4338ca;
+  background-color: #308ec4;
 }
 
 .ai-input-section {
@@ -205,8 +205,8 @@
 .ai-generate-btn {
   padding: 10px 20px;
   font-size: 1rem;
-  background-color: #10b981; /* teal */
-  color: white;
+  background-color: #6adab5; /* teal */
+  color: #16425b;
   border: none;
   border-radius: 8px;
   cursor: pointer;

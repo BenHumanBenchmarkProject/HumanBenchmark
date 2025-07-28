@@ -25,10 +25,9 @@ h1 {
 .workout-builder,
 .log-plan-box{
   flex: 1;
-  background-color: #f5f5f5;
+  background-color: #f0f0f0;
   padding: 20px;
   border-radius: 8px;
-  border: 1px solid #ccc;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -93,7 +92,7 @@ h1 {
 .plan-btn {
   flex: 1;
   padding: 12px;
-  background-color: #80e0ff;
+  background-color: #81c3d7;
   border: none;
   font-weight: bold;
   cursor: pointer;
@@ -103,8 +102,8 @@ h1 {
 .submit-btn {
   margin-top: 20px;
   width: 100%;
-  background-color: #80e0ff;
-  color: black;
+  background-color: #81c3d7;
+  color: #16425B;
   border: none;
   padding: 16px;
   font-size: 18px;
