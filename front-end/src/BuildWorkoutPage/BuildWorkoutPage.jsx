@@ -36,11 +36,13 @@ const BuildWorkoutPage = () => {
         const matchedPlan = aiResponse.data.plan
           .map((aiExercise) => {
             const match = dbExercisesRes.data.find(
-              (exercise) => exercise.name.toLowerCase() === aiExercise.name.toLowerCase()
+              (exercise) =>
+                exercise.name.toLowerCase() === aiExercise.name.toLowerCase()
             );
 
             return {
               ...match,
+              name: aiExercise.name,
               reps: aiExercise.reps,
               sets: aiExercise.sets,
               weight: aiExercise.weight,

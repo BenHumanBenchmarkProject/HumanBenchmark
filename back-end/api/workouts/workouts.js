@@ -95,6 +95,8 @@ You are a fitness AI assistant. A user said: "${userPrompt}"
 You have access to the following exercises:
 ${formattedList}
 
+Ensure you only return exercises that are in the list above.
+
 Return a workout plan as an array of JSON objects with the following format:
 [
   {
