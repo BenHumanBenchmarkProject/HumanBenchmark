@@ -92,10 +92,14 @@ workouts.post("/api/generateWorkout", async (req, res) => {
     const prompt = `
 You are a fitness AI assistant. A user said: "${userPrompt}"
 
+You may only choose workout names from the following list:
+
 You have access to the following exercises:
 ${formattedList}
 
 Ensure you only return exercises that are in the list above.
+Ensure for the sets, reps, and weight, you only return a number.
+Make sure the name you return is exactly the same as the name in the list above. Do not include what muscle it targets in the same of the returned object.
 
 Return a workout plan as an array of JSON objects with the following format:
 [

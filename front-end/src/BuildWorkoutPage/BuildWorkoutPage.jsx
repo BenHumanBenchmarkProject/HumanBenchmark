@@ -46,8 +46,6 @@ const BuildWorkoutPage = () => {
               reps: aiExercise.reps,
               sets: aiExercise.sets,
               weight: aiExercise.weight,
-              bodyPart: match.bodyParts[0], // Ensure bodyParts is included
-              targetMuscle: match.targetMuscle,
             };
           })
           .filter(Boolean); // filter out unmatched items
