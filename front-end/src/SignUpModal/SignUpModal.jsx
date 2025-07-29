@@ -2,13 +2,18 @@ import "./SignUpModal.css";
 import { useState } from "react";
 import axios from "axios";
 import bcrypt from "bcryptjs";
-import { BASE_URL } from "../constants";
+import { BASE_URL, GENDER_FEMALE, GENDER_MALE } from "../constants";
 import { useLoading } from "../loadingContext";
 const STEP_ONE = 1;
 const STEP_TWO = 2;
-const GENDER_MALE = "M";
-const GENDER_FEMALE = "F";
+
 const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
+const MIN_HEIGHT = 36;
+const MAX_HEIGHT = 96;
+const MIN_WEIGHT = 0;
+const MAX_WEIGHT = 1000;
+const MIN_AGE = 13;
+const MAX_AGE = 100;
 
 const SignUpModal = ({ onClose }) => {
   const { setLoading } = useLoading();
@@ -134,16 +139,26 @@ const SignUpModal = ({ onClose }) => {
     let valid = true;
     const newErrors = { height: "", weight: "", age: "", gender: "" };
 
-    if (!height || isNaN(height) || height < 36 || height > 96) {
+    if (
+      !height ||
+      isNaN(height) ||
+      height < MIN_HEIGHT ||
+      height > MAX_HEIGHT
+    ) {
       newErrors.height =
         "Please enter a valid height between 36 and 96 inches.";
       valid = false;
     }
-    if (!weight || isNaN(weight) || weight < 0 || weight > 1000) {
+    if (
+      !weight ||
+      isNaN(weight) ||
+      weight < MIN_WEIGHT ||
+      weight > MAX_WEIGHT
+    ) {
       newErrors.weight = "Please enter a valid weight between 0 and 1000 lbs.";
       valid = false;
     }
-    if (!age || isNaN(age) || age < 13 || age > 100) {
+    if (!age || isNaN(age) || age < MIN_AGE || age > MAX_AGE) {
       newErrors.age = "Please enter a valid age between 13 and 100.";
       valid = false;
     }
