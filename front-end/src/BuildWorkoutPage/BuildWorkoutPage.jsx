@@ -46,11 +46,12 @@ const BuildWorkoutPage = () => {
               reps: aiExercise.reps,
               sets: aiExercise.sets,
               weight: aiExercise.weight,
+              bodyPart: match.bodyParts[0], // Ensure bodyParts is included
+              targetMuscle: match.targetMuscle,
             };
           })
           .filter(Boolean); // filter out unmatched items
 
-        console.log("Matched Plan:", matchedPlan);
         setPlan(matchedPlan);
       } else {
         console.error("No plan returned from Gemini.");
@@ -95,15 +96,22 @@ const BuildWorkoutPage = () => {
         name: workoutName,
         isComplete: false,
         completedAt: null,
-        movements: plan.map((exercise) => ({
-          name: exercise.name,
-          bodyPart: exercise.bodyParts[0], // the api returns bodyParts as an array, so we're just taking the first one
-          reps: parseInt(exercise.reps),
-          sets: parseInt(exercise.sets),
-          weight: parseInt(exercise.weight),
-          max: exercise.weight * (1 + exercise.reps / 30), // Epley Formula
-          muscle: exercise.targetMuscle,
-        })),
+        movements: plan.map((exercise) => {
+          const bodyPart =
+            exercise.bodyParts && exercise.bodyParts.length > 0
+              ? exercise.bodyParts[0]
+              : "Unknown";
+
+          return {
+            name: exercise.name,
+            bodyPart: bodyPart, // the api returns bodyParts as an array, so we're just taking the first one
+            reps: parseInt(exercise.reps),
+            sets: parseInt(exercise.sets),
+            weight: parseInt(exercise.weight),
+            max: exercise.weight * (1 + exercise.reps / 30), // Epley Formula
+            muscle: exercise.targetMuscle,
+          };
+        }),
       });
 
       handleClearPlan(); // Clear the plan after saving
