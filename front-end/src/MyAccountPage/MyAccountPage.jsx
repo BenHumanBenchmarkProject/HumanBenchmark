@@ -1,5 +1,10 @@
 import "./MyAccountPage.css";
-import { NavigationButtons, BASE_URL } from "../constants";
+import {
+  NavigationButtons,
+  BASE_URL,
+  GENDER_FEMALE,
+  GENDER_MALE,
+} from "../constants";
 import { useContext, useState, useEffect } from "react";
 import UserContext from "../userContext";
 import axios from "axios";
@@ -7,9 +12,6 @@ import WorkoutModal from "../WorkoutModal/WorkoutModal";
 import UserModal from "../UserModal/UserModal";
 import boyPFP from "../assets/blue-pfp.jpg";
 import girlPFP from "../assets/pink-pfp.jpeg";
-
-const GENDER_FEMALE = "F";
-const GENDER_MALE = "M";
 
 const MyAccountPage = () => {
   const { user } = useContext(UserContext);
@@ -121,7 +123,10 @@ const MyAccountPage = () => {
       <div className="account-content">
         <div className="account-top">
           <div className="user-info-left">
-            <img src={user.gender === "M" ? boyPFP : girlPFP} alt="user profile picture" />
+            <img
+              src={user.gender === GENDER_MALE ? boyPFP : girlPFP}
+              alt="user profile picture"
+            />
             <h2>{user.username}</h2>
             <p>{`User since: ${formattedDate}`}</p>
           </div>

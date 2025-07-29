@@ -14,3 +14,6 @@ export const BODY_PARTS = [
   "Waist",
   "Cardio",
 ];
+
+export const GENDER_MALE = "M";
+export const GENDER_FEMALE = "F";

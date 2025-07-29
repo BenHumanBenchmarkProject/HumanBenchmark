@@ -6,6 +6,7 @@ import UserContext from "../userContext.jsx";
 import AccountModal from "../AccountModal/AccountModal.jsx";
 import boyPFP from "../assets/blue-pfp.jpg";
 import girlPFP from "../assets/pink-pfp.jpeg";
+import { GENDER_MALE } from "../constants.js";
 
 const SIGN_IN_MODAL = "SIGN_IN_MODAL";
 const SIGN_UP_MODAL = "SIGN_UP_MODAL";
@@ -44,7 +45,7 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
             <div className="account">
               <h3>{user.username}</h3>
               <img
-                src={user.gender === "M" ? boyPFP : girlPFP}
+                src={user.gender === GENDER_MALE ? boyPFP : girlPFP}
                 alt="profile picture"
                 width="40px"
               />
