@@ -17,6 +17,7 @@ const LeaderboardPage = () => {
   const [sortKey, setSortKey] = useState(OVERALL_STAT_KEY);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
+  const [showOnlyFriends, setShowOnlyFriends] = useState(false);
 
   useEffect(() => {
     if (user && user.id) {
@@ -107,6 +108,14 @@ const LeaderboardPage = () => {
     setFilteredUsers(users);
   };
 
+  const toggleShowOnlyFriends = () => {
+    setShowOnlyFriends((prev) => !prev);
+  };
+
+  const displayedUsers = showOnlyFriends
+    ? filteredUsers.filter((user) => friends.includes(user.id))
+    : filteredUsers;
+
   return (
     <div>
       <div className="container">
@@ -129,6 +138,12 @@ const LeaderboardPage = () => {
             </button>
             <button className="leaderboard-search-button" onClick={clearSearch}>
               Clear
+            </button>
+            <button
+              className="leaderboard-search-button"
+              onClick={toggleShowOnlyFriends}
+            >
+              {showOnlyFriends ? "Show Everyone" : "Show Only Friends"}
             </button>
           </div>
 
@@ -165,7 +180,7 @@ const LeaderboardPage = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredUsers.map((leaderboardUser) => {
+              {displayedUsers.map((leaderboardUser) => {
                 const isFriend = friends.includes(leaderboardUser.id);
                 const isPending = pendingRequests.includes(leaderboardUser.id);
                 const isCurrentUser = user.id === leaderboardUser.id;
