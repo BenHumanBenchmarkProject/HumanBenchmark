@@ -7,6 +7,7 @@ import AccountModal from "../AccountModal/AccountModal.jsx";
 import boyPFP from "../assets/blue-pfp.jpg";
 import girlPFP from "../assets/pink-pfp.jpeg";
 import { GENDER_MALE } from "../constants.js";
+import logo from "../assets/color-logo.png";
 
 const SIGN_IN_MODAL = "SIGN_IN_MODAL";
 const SIGN_UP_MODAL = "SIGN_UP_MODAL";
@@ -34,7 +35,7 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
 
   return (
     <header className="banner">
-      <div className="logo">HUMAN BENCHMARK (LOGO)</div>
+      <img src={logo} alt="site logo" id="site-logo" />
       {user ? (
         <div
           className="account-signed-in"
