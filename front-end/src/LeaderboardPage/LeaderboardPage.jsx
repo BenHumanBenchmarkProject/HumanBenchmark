@@ -113,7 +113,10 @@ const LeaderboardPage = () => {
   };
 
   const displayedUsers = showOnlyFriends
-    ? filteredUsers.filter((user) => friends.includes(user.id))
+    ? filteredUsers.filter(
+        (leaderboardUser) =>
+          friends.includes(leaderboardUser.id) || leaderboardUser.id === user.id
+      )
     : filteredUsers;
 
   return (
