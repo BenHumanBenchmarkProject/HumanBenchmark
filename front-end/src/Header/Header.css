@@ -40,3 +40,10 @@
 .account button {
     background-color: #f0f0f0;
 }
+
+#site-logo{
+    width: 170px;
+    filter: brightness(0) invert(1);
+    margin-left: 42px;
+    margin-top: 10px;
+}
