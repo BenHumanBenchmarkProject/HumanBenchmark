@@ -21,7 +21,7 @@ const WorkoutModal = ({ workout, onClose }) => {
         <ul>
           {workout.movements.map((movement, index) => (
             <li key={index}>
-              <strong>{movement.name}</strong>: {movement.reps} reps,{" "}
+              <span>&bull;</span><strong>{movement.name}</strong>: {movement.reps} reps,{" "}
               {movement.sets} sets, {movement.weight} lbs
             </li>
           ))}

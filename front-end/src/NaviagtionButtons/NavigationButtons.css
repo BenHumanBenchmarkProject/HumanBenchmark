@@ -1,17 +1,92 @@
-.top-buttons {
+
+
+
+.nav-list {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
-  justify-content: center;
-  margin-bottom: 20px;
+  position: relative;
+  gap: 25px;
 }
 
-.top-buttons button {
-  padding: 10px 15px;
-  background-color: #f0f0f0;
-  border: none;
+.nav-list li {
+  position: relative;
+  list-style: none;
+  width: 60px;
+  height: 60px;
+  background: #f0f0f0;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  border-radius: 60px;
   cursor: pointer;
-  border-radius: 6px;
-  color: #16425B;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.5s;
+}
+
+.nav-list li::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 60px;
+  background: linear-gradient(45deg, #3a7ca5, #16425b);
+  opacity: 0;
+  transition: 0.5s;
+}
+
+.nav-list li::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  width: 100%;
+  height: 100%;
+  border-radius: 60px;
+  background: linear-gradient(45deg, #3a7ca5, #16425b);
+  transition: 0.5s;
+  filter: blur(15px);
+  z-index: -1;
+  opacity: 0;
+}
+
+.nav-list li:hover {
+  width: 180px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0);
+}
+
+.nav-list li:hover::before {
+  opacity: 1;
+}
+
+.nav-list li:hover::after {
+  opacity: 0.5;
+}
+
+.nav-list li:hover .icon {
+  transform: scale(0);
+
+  transition-delay: 0s;
+}
+
+.nav-list li span {
+  position: absolute;
+}
+
+.nav-list li .title {
+  color: #fff;
+  font-size: 1.1em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transform: scale(0);
+  transition: 0.5s;
+  transition-delay: 0s;
+}
+
+.nav-list li:hover .title {
+  transform: scale(1);
+  transition-delay: 0.25s;
+}
+
+.icon img {
+  width: 25px;
+  height: 25px;
+  transition: 0.5s;
+  transition-delay: 0.25s;
 }

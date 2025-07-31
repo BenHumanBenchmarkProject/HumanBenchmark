@@ -105,7 +105,7 @@ body {
 }
 
 .user-single-stat span {
-  font-size: 16px;
+  font-size: 20px;
   color: #16425b;
 }
 
@@ -166,6 +166,11 @@ body {
 
 .home-friend-item:hover {
   background-color: #ccc;
+}
+
+.home-friend-item,
+.home-workout-item {
+  cursor: pointer;
 }
 
 .home-friends-header,
