@@ -8,7 +8,7 @@ import calendarIcon from "../assets/calendar.png";
 const NavigationButtons = () => {
   return (
     <>
-      <ul>
+      <ul className="nav-list">
         <Link to={"/"}>
           <li>
             <span className="icon">
