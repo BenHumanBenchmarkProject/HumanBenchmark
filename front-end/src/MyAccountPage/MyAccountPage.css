@@ -143,6 +143,11 @@
   gap: 10px;
 }
 
+.navigation-buttons-container {
+  display: flex;
+  justify-content: center;
+}
+
 .friend-request-button {
   width: 10px;
   height: 10px;

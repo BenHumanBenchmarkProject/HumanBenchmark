@@ -119,7 +119,9 @@ const MyAccountPage = () => {
   };
   return (
     <div>
-      <NavigationButtons />
+      <div className="navigation-buttons-container">
+        <NavigationButtons />
+      </div>
       <div className="account-content">
         <div className="account-top">
           <div className="user-info-left">
