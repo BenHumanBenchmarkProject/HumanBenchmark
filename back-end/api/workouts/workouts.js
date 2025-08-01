@@ -76,7 +76,7 @@ const genAI = new GoogleGenerativeAI(process.env.VITE_AI_API_KEY);
 workouts.post("/api/generateWorkout", async (req, res) => {
   const { userPrompt } = req.body;
 
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-lite" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
   try {
     const exercises = await prisma.exercise.findMany();
